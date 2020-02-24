@@ -7,43 +7,46 @@ class Welcome extends StatelessWidget {
     return MaterialApp(
       title: 'Welcome to RACP App',
       home: Scaffold(
-        body: Column(  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
 
-          children: [
-            Image.asset('assets/racpLogo.png'),
-            Text('Welcome to our RACP App, this app is very helpeful for refugees childrens',
-            style: TextStyle(
-          color: Colors.black,
-          fontWeight: FontWeight.w800,
-          fontFamily: 'Roboto',
-          letterSpacing: 0.5,
-          fontSize: 20,
-        ),),
-            const SizedBox(height: 30),
-        RaisedButton(
-          onPressed: () {},
-          textColor: Colors.white,
-          padding: const EdgeInsets.all(0.0),
-          child: Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: <Color>[
-                  Color(0xFF0D47A1),
-                  Color(0xFF1976D2),
-                  Color(0xFF42A5F5),
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Card(
+            child: Container(
+              child: Column(
+                children: <Widget>[
+                   Image.asset('assets/racpLogo.png'),
                 ],
               ),
             ),
-            padding: const EdgeInsets.all(10.0),
-            child: const Text(
-              'Start',
-              style: TextStyle(fontSize: 20)
+          ),
+          Card(
+            child: Container(
+              
+              child: Column(
+                children: <Widget>[
+                  Text('Welcome to our RACP App, this app is very helpeful for refugees childrens')
+                ],
+              ),
             ),
           ),
-        ),
-
-          ]
-        ),
+          Card(
+            child: Container(
+              color: Colors.blue,
+              child: Column(
+                children: <Widget>[
+                  FlatButton(
+                    child: Text('Start'),
+                    textColor: Colors.white,
+                    onPressed: () {},
+                  ),
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
       ),
     );
   }
