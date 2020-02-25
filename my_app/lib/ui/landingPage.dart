@@ -56,7 +56,9 @@ class LandingPage extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                             color: Colors.grey[800])),
                     RaisedButton(
-                      onPressed: ()=>print('Start is working'),
+                         onPressed: () {
+            Navigator.pop(context);
+          },
                       child: Text(
                         'Start Learning',
                         style: TextStyle(

@@ -10,7 +10,7 @@ class SecondScreen extends StatelessWidget {
       body: Center(
         child: RaisedButton(
           onPressed: () {
-            // Navigate back to the first screen by popping the current route
+            // Navigate back to the Home screen by popping the current route
             // off the stack.
             Navigator.pop(context);
           },
@@ -21,20 +21,3 @@ class SecondScreen extends StatelessWidget {
   }
 }
 
- // Column(
-            //   children: <Widget>[
-            //     Card(
-            //       child: Container(
-            //         margin: const EdgeInsets.all(10.0),
-            //         padding: const EdgeInsets.all(8.0),
-            //         color: Colors.amber[600],
-            //         width: 400,
-            //         height: 300,
-            //         child: RaisedButton(
-            //           onPressed: () {},
-            //           child: Text('Start '),
-            //         ),
-            //       ),
-            //     )
-            //   ],
-            // )
