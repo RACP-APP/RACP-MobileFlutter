@@ -14,12 +14,16 @@ class LandingPage extends StatelessWidget {
             IconButton(
                 alignment: Alignment.centerLeft,
                 color: Colors.blue,
-                icon: const Icon(Icons.notifications_active),
+                icon: const Icon(
+                  Icons.notifications_active,
+                ),
                 onPressed: null),
             Image.asset('assets/racpLogo.png'),
           ],
         ),
         body: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Center(
               child: Container(
@@ -43,6 +47,7 @@ class LandingPage extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
+                  
                   children: <Widget>[
                     Text(
                         'Welcome to our RACP App, this app is very helpeful for refugees childrens.',
@@ -51,12 +56,14 @@ class LandingPage extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                             color: Colors.grey[800])),
                     RaisedButton(
-                      onPressed: null,
+                      onPressed: ()=>print('Start is working'),
                       child: Text(
                         'Start Learning',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
+                          color: Colors.blue,
+                        
                         ),
                       ),
                     ),
