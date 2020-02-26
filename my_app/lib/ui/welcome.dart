@@ -47,7 +47,7 @@ class Welcome extends StatelessWidget {
               child: Column(
                 children: <Widget>[
                   FlatButton(
-                    child: Text('Start'),
+                    child: Text('Get Started'),
                     textColor: Colors.white,
                     onPressed: () {
                       Navigator.push(
