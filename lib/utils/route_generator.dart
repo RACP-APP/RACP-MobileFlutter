@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../ui/module_view.dart';
 import '../ui/module_list.dart';
+import '../ui/landing_page.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -9,8 +10,10 @@ class RouteGenerator {
 
     switch (settings.name) {
       case '/':
+        return MaterialPageRoute(builder: (_) => Landing());
+      case '/ML':
         return MaterialPageRoute(builder: (_) => ModulesList());
-      case '/second':
+      case '/MV':
         // Validation of correct data type
         if (args is List) {
           return MaterialPageRoute(
