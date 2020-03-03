@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'utils/route_generator.dart';
-import 'ui/module_list.dart';
+
 import 'package:flutter_downloader/flutter_downloader.dart';
 
 import 'package:provider/provider.dart';
@@ -40,24 +40,6 @@ class MyApp extends StatelessWidget {
         ),
         initialRoute: '/',
         onGenerateRoute: RouteGenerator.generateRoute,
-      ),
-    );
-  }
-}
-
-class Mylol extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return new MaterialApp(
-      title: 'Flutter Demo',
-      theme: new ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: Scaffold(
-        backgroundColor: Colors.white,
-        body: Center(
-          child: Landing(),
-        ),
       ),
     );
   }

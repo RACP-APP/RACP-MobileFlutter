@@ -7,7 +7,7 @@ import '../stores/module_page_store.dart';
 
 class MyDrawer extends StatelessWidget {
   MyDrawer(this.itemList);
-  List itemList = [];
+  final List itemList;
 
   @override
   Widget build(BuildContext context) {

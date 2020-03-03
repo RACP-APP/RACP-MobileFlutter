@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
-import '../stores/module_list_store.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:provider/provider.dart';
+
 import 'package:expandable/expandable.dart';
 import "package:percent_indicator/circular_percent_indicator.dart";
 
@@ -12,6 +9,7 @@ class ModulesList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: MyCustomAppBar(height: 58),
       body: ExpandableTheme(
         data:
             const ExpandableThemeData(iconColor: Colors.blue, useInkWell: true),
@@ -117,7 +115,8 @@ class Card1 extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            VeView(),
+            VerticalView(true),
+            //VeView(),
           ],
         ),
       );
@@ -238,7 +237,7 @@ class Card2 extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            VeView(),
+            VerticalView(false),
           ],
         ),
       );
@@ -369,7 +368,7 @@ class HoriView extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 4.0),
             child: GestureDetector(
               onTap: () => Navigator.of(context).pushNamed(
-                '/second',
+                '/MV',
                 arguments: foo(),
               ),
               child: Container(
@@ -423,52 +422,60 @@ class HoriView extends StatelessWidget {
   }
 }
 
-class VeView extends StatelessWidget {
-  VeView();
+// to do bookmrks
 
+class VerticalView extends StatelessWidget {
+  VerticalView(this.use);
+  final bool use;
   @override
   Widget build(BuildContext context) {
     return new SizedBox(
-      height: 300.0,
+      height: 500.0,
       child: ListView.builder(
         scrollDirection: Axis.vertical,
         itemCount: _cards.length,
-        itemExtent: 100.0,
+        //itemExtent: 100.0,
         itemBuilder: (context, index) {
           var item = _cards[index];
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 4.0),
             child: GestureDetector(
               onTap: () => Navigator.of(context).pushNamed(
-                '/second',
+                '/MV',
                 arguments: _cards,
               ),
-              child: Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage(
-                      item["icon"],
-                    ),
-                    fit: BoxFit.cover,
-                    colorFilter: ColorFilter.mode(
-                      Colors.black26,
-                      BlendMode.darken,
-                    ),
-                  ),
-                  borderRadius: BorderRadius.circular(10.0),
-                  color: Colors.grey,
-                ),
+              child: Card(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        item["name"],
-                        style: TextStyle(color: Colors.white),
+                    Container(
+                      width: double.maxFinite,
+                      height: 150,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: NetworkImage(item["icon"]),
+                          fit: BoxFit.cover,
+                        ),
+                        border: Border.all(
+                          color: Colors.black,
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                    )
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(1.0),
+                      child: Center(
+                        child: Text(item["name"]),
+                      ),
+                    ),
+                    Container(
+                        child: this.use
+                            ? Center(
+                                child: Text("progress 50%"),
+                              )
+                            : null),
                   ],
                 ),
               ),
@@ -480,4 +487,50 @@ class VeView extends StatelessWidget {
   }
 }
 
-// to do bookmrks
+class MyCustomAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final double height;
+
+  const MyCustomAppBar({
+    Key key,
+    @required this.height,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Column(
+        children: [
+          Container(
+            decoration: new BoxDecoration(
+              borderRadius: new BorderRadius.horizontal(),
+              color: Colors.green[100],
+            ),
+            width: double.infinity,
+            height: 58,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                RawMaterialButton(
+                  onPressed: null,
+                  child: Icon(Icons.notifications, color: Colors.yellow),
+                  shape: new CircleBorder(),
+                  constraints:
+                      new BoxConstraints(minHeight: 50.0, minWidth: 50.0),
+                ),
+                Text("AppName"),
+                Icon(
+                  Icons.flare,
+                  color: Colors.green,
+                  size: 50,
+                )
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Size get preferredSize => Size.fromHeight(height);
+}

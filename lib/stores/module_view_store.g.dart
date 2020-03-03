@@ -43,4 +43,11 @@ mixin _$ViewStore on _ViewStore, Store {
       _$_ViewStoreActionController.endAction(_$actionInfo);
     }
   }
+
+  @override
+  String toString() {
+    final string =
+        'moduleName: ${moduleName.toString()},getName: ${getName.toString()}';
+    return '{$string}';
+  }
 }

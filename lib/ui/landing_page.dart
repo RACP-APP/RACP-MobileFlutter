@@ -136,7 +136,7 @@ class _LandingState extends State<Landing> {
                         // Use the FaIcon Widget + FontAwesomeIcons class for the IconData
                         icon: FaIcon(FontAwesomeIcons.whatsapp),
                         onPressed: () async => await launch(
-                            "https://api.whatsapp.com/send?phone=962795826532"),
+                            "https://api.whatsapp.com/send?phone=962787097853"),
                       ),
                     ],
                   ),

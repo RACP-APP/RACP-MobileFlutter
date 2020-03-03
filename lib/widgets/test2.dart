@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import './file_downloader_single.dart';
 import './video_handler.dart';
-import 'package:provider/provider.dart';
-import '../stores/video_handler_store.dart';
 
 class Testing extends StatelessWidget {
   final List contentList;
@@ -35,26 +32,21 @@ class Testing extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        Provider<VideoStore>(create: (_) => VideoStore()),
-      ],
-      child: Container(
-        color: Colors.white,
-        width: double.maxFinite,
-        height: double.maxFinite,
-        child: ListView.builder(
-            scrollDirection: Axis.vertical,
-            itemCount: contentList.length,
-            itemBuilder: (context, index) {
-              var item = contentList[index];
-              return Container(
-                padding: const EdgeInsets.only(
-                    top: 0.0, bottom: 100.0, left: 0.0, right: 0.0),
-                child: _contentItem(item['type'], item['content']),
-              );
-            }),
-      ),
+    return Container(
+      color: Colors.white,
+      width: double.maxFinite,
+      height: double.maxFinite,
+      child: ListView.builder(
+          scrollDirection: Axis.vertical,
+          itemCount: contentList.length,
+          itemBuilder: (context, index) {
+            var item = contentList[index];
+            return Container(
+              padding: const EdgeInsets.only(
+                  top: 0.0, bottom: 100.0, left: 0.0, right: 0.0),
+              child: _contentItem(item['type'], item['content']),
+            );
+          }),
     );
   }
 }
