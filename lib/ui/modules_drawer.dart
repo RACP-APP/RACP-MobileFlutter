@@ -61,7 +61,7 @@ class MyDrawer extends StatelessWidget {
               itemBuilder: (context, index) {
                 var item = itemList[index];
                 return ExpansionTile(
-                  title: Text("loool"),
+                  title: Text(item["name"]),
                   children: item["articles"]
                       .map<Widget>((item) => articles(item, context))
                       .toList(),
