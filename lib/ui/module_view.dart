@@ -19,15 +19,15 @@ List foo() {
 var x = foo();
 
 class ModulesView extends StatelessWidget {
-  ModulesView(this.dataList);
-  final List dataList;
+  ModulesView(this.args);
+  final args;
 
   @override
   Widget build(BuildContext context) {
     var storeP = Provider.of<PageStore>(context);
     return SafeArea(
       child: Scaffold(
-        drawer: MyDrawer(dataList),
+        drawer: MyDrawer(this.args["items"], this.args["icon"]),
         appBar: MyCustomAppBar(
           height: 60,
         ),

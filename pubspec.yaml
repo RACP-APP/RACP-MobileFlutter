@@ -21,6 +21,9 @@ dependencies:
   flutter_downloader: ^1.4.1
   url_launcher: ^5.4.2
   font_awesome_flutter: ^8.7.0
+  flutter_markdown: ^0.3.4
+  flutter_localizations:
+    sdk: flutter
 
   cupertino_icons: ^0.1.2
 

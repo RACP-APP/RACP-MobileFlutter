@@ -15,14 +15,14 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => ModulesList());
       case '/MV':
         // Validation of correct data type
-        if (args is List) {
-          return MaterialPageRoute(
-            builder: (_) => ModulesView(args),
-          );
-        }
-        // If args is not of the correct type, return an error page.
-        // You can also throw an exception while in development.
-        return _errorRoute();
+
+        return MaterialPageRoute(
+          builder: (_) => ModulesView(args),
+        );
+
+      // If args is not of the correct type, return an error page.
+      // You can also throw an exception while in development.
+      //return _errorRoute();
       default:
         // If there is no such named route in the switch statement, e.g. /third
         return _errorRoute();
