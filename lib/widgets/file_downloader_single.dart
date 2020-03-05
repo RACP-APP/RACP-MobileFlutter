@@ -124,7 +124,7 @@ class _DownloaderSingleState extends State<DownloaderSingle> {
                               children: <Widget>[
                                 new Container(
                                   width:
-                                      MediaQuery.of(context).size.width / 1.07,
+                                      MediaQuery.of(context).size.width / 1.08,
                                   height: 100,
                                   child: new Row(
                                     crossAxisAlignment:
@@ -178,7 +178,7 @@ class _DownloaderSingleState extends State<DownloaderSingle> {
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 24.0),
                             child: Text(
-                              'Please grant accessing storage permission to continue -_-',
+                              'Please grant accessing storage permission to continue ',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   color: Colors.blueGrey, fontSize: 18.0),

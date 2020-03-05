@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import './file_downloader_single.dart';
 import './video_handler.dart';
-import 'package:provider/provider.dart';
-import '../stores/video_handler_store.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 
 class Testing extends StatelessWidget {
   final List contentList;
-  const Testing({Key key, this.contentList}) : super(key: key);
+  Testing({Key key, this.contentList}) : super(key: key);
+  final controller = ScrollController();
 
-  Widget _contentItem(type, cont) {
+  Widget _contentItem(type, cont, context) {
     if (type == "video") {
       return Container(
         height: 265,
@@ -16,11 +15,21 @@ class Testing extends StatelessWidget {
       );
     } else if (type == "text") {
       return Container(
-        height: double.maxFinite,
-        child: Text(
-          cont,
-          textAlign: TextAlign.justify,
+        padding: EdgeInsets.only(bottom: 15),
+        height: MediaQuery.of(context).size.height / 1.1,
+        child: Directionality(
           textDirection: TextDirection.rtl,
+          child:
+              /*Text(
+          hmm,
+          textDirection: TextDirection.rtl,
+        ),*/
+
+              Markdown(
+            controller: controller,
+            selectable: true,
+            data: cont,
+          ),
         ),
       );
     } else if (type == "image") {
@@ -35,26 +44,21 @@ class Testing extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        Provider<VideoStore>(create: (_) => VideoStore()),
-      ],
-      child: Container(
-        color: Colors.white,
-        width: double.maxFinite,
-        height: double.maxFinite,
-        child: ListView.builder(
-            scrollDirection: Axis.vertical,
-            itemCount: contentList.length,
-            itemBuilder: (context, index) {
-              var item = contentList[index];
-              return Container(
-                padding: const EdgeInsets.only(
-                    top: 0.0, bottom: 100.0, left: 0.0, right: 0.0),
-                child: _contentItem(item['type'], item['content']),
-              );
-            }),
-      ),
+    return Container(
+      color: Colors.white,
+      width: double.maxFinite,
+      height: double.maxFinite,
+      child: ListView.builder(
+          scrollDirection: Axis.vertical,
+          itemCount: contentList.length,
+          itemBuilder: (context, index) {
+            var item = contentList[index];
+            return Container(
+              padding: const EdgeInsets.only(
+                  top: 0.0, bottom: 100.0, left: 0.0, right: 0.0),
+              child: _contentItem(item['type'], item['source'], context),
+            );
+          }),
     );
   }
 }

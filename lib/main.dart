@@ -1,22 +1,15 @@
 import 'package:flutter/material.dart';
 import 'utils/route_generator.dart';
-import 'ui/module_list.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
-import './widgets/file_downloader.dart';
-import './widgets/file_downloader_single.dart';
-import './widgets/test_widget.dart';
-//import 'widgets/video_handler.dart';
-import './widgets/test2.dart';
 
-import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
+
 import 'package:provider/provider.dart';
 import './stores/module_view_store.dart';
 import './stores/drawer_store.dart';
-import './ui/modules_drawer.dart';
-import './ui/module_page.dart';
+
 import './stores/module_page_store.dart';
-import 'ui/welcome.dart';
-import 'ui/landingPage.dart';
+
+import './ui/landing_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,7 +32,12 @@ class MyApp extends StatelessWidget {
         theme: new ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: Welcome(),
+        home: Scaffold(
+          backgroundColor: Colors.white,
+          body: Center(
+            child: Landing(),
+          ),
+        ),
         initialRoute: '/',
         onGenerateRoute: RouteGenerator.generateRoute,
       ),

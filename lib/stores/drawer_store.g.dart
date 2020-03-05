@@ -108,4 +108,11 @@ mixin _$DrawerStore on _DrawerStore, Store {
       _$_DrawerStoreActionController.endAction(_$actionInfo);
     }
   }
+
+  @override
+  String toString() {
+    final string =
+        'current: ${current.toString()},options: ${options.toString()},completed: ${completed.toString()},getCurrent: ${getCurrent.toString()},getOptions: ${getOptions.toString()},getCompletion: ${getCompletion.toString()}';
+    return '{$string}';
+  }
 }

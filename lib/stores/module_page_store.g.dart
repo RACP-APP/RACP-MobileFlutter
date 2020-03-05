@@ -173,4 +173,11 @@ mixin _$PageStore on _PageStore, Store {
       _$_PageStoreActionController.endAction(_$actionInfo);
     }
   }
+
+  @override
+  String toString() {
+    final string =
+        'completed: ${completed.toString()},options: ${options.toString()},pageNum: ${pageNum.toString()},last: ${last.toString()},next: ${next.toString()},getOptions: ${getOptions.toString()},getCompletion: ${getCompletion.toString()},getPage: ${getPage.toString()},getLast: ${getLast.toString()},getNext: ${getNext.toString()}';
+    return '{$string}';
+  }
 }

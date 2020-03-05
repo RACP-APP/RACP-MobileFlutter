@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import '../ui/module_view.dart';
 import '../ui/module_list.dart';
-import '../ui/welcome.dart';
-import '../ui/landingPage.dart';
+import '../ui/landing_page.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
@@ -11,22 +10,19 @@ class RouteGenerator {
 
     switch (settings.name) {
       case '/':
-        return MaterialPageRoute(builder: (_) => Welcome());
-        
-        case '/first':
-        return MaterialPageRoute(builder: (_) => LandingPage());
-      case '/second':
+        return MaterialPageRoute(builder: (_) => Landing());
+      case '/ML':
         return MaterialPageRoute(builder: (_) => ModulesList());
-      case '/third':
+      case '/MV':
         // Validation of correct data type
-        if (args is List) {
-          return MaterialPageRoute(
-            builder: (_) => ModulesView(args),
-          );
-        }
-        // If args is not of the correct type, return an error page.
-        // You can also throw an exception while in development.
-        return _errorRoute();
+
+        return MaterialPageRoute(
+          builder: (_) => ModulesView(args),
+        );
+
+      // If args is not of the correct type, return an error page.
+      // You can also throw an exception while in development.
+      //return _errorRoute();
       default:
         // If there is no such named route in the switch statement, e.g. /third
         return _errorRoute();

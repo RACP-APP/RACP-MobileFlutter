@@ -1,17 +1,15 @@
-import 'package:RACR/stores/drawer_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 import '../stores/module_view_store.dart';
-import '../stores/drawer_store.dart';
 import './modules_drawer.dart';
-import './module_page.dart';
+
 import '../stores/module_page_store.dart';
 import '../widgets/test2.dart';
 
 List foo() {
   List<Map> data = List();
-  data.add({"name": "Positive Parenting ", "content": "hmm"});
+  data.add({"name": "me", "content": "hmm"});
   data.add({"name": "You", "content": "github"});
   data.add({"name": "We", "content": "calcium"});
   data.add({"name": "who", "content": "google"});
@@ -21,17 +19,17 @@ List foo() {
 var x = foo();
 
 class ModulesView extends StatelessWidget {
-  ModulesView(this.dataList);
-  List dataList = [];
+  ModulesView(this.args);
+  final args;
 
   @override
   Widget build(BuildContext context) {
     var storeP = Provider.of<PageStore>(context);
     return SafeArea(
       child: Scaffold(
-        drawer: MyDrawer(dataList),
+        drawer: MyDrawer(this.args["items"], this.args["icon"]),
         appBar: MyCustomAppBar(
-          height: 58,
+          height: 60,
         ),
         body: Center(
           child: Observer(
@@ -60,27 +58,34 @@ class MyCustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     return Column(
       children: [
         Container(
-          child: Container(
-            color: Colors.grey,
-            padding: EdgeInsets.all(5),
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.menu),
-                    onPressed: () {
-                      Scaffold.of(context).openDrawer();
-                    },
-                  ),
-                  Observer(
-                    builder: (_) => Text(
-                      "${barStore.getName}",
-                    ),
-                  ),
-                  Text("home"),
-                  Text("notification"),
-                ]),
-          ),
+          color: Colors.green[100],
+          padding: EdgeInsets.all(5),
+          child:
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+            IconButton(
+              icon: Icon(Icons.menu),
+              onPressed: () {
+                Scaffold.of(context).openDrawer();
+              },
+            ),
+            Observer(
+              builder: (_) => Text(
+                "${barStore.getName}",
+              ),
+            ),
+            RawMaterialButton(
+              onPressed: () => Navigator.of(context).pushNamed('/'),
+              child: Icon(Icons.home, color: Colors.yellow),
+              shape: new CircleBorder(),
+              constraints: new BoxConstraints(minHeight: 50.0, minWidth: 50.0),
+            ),
+            RawMaterialButton(
+              onPressed: null,
+              child: Icon(Icons.notifications, color: Colors.yellow),
+              shape: new CircleBorder(),
+              constraints: new BoxConstraints(minHeight: 50.0, minWidth: 50.0),
+            ),
+          ]),
         ),
       ],
     );

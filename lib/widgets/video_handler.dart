@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
-import '../stores/video_handler_store.dart';
-import 'package:provider/provider.dart';
+
 import './file_downloader_single.dart';
 import './video_p.dart';
 import 'package:video_player/video_player.dart';
@@ -36,7 +34,6 @@ class _VideohandlerState extends State<Videohandler> {
 
   @override
   Widget build(BuildContext context) {
-    var handlerStore = Provider.of<VideoStore>(context);
     final platform = Theme.of(context).platform;
     return Container(
       decoration: BoxDecoration(border: Border.all(color: Colors.blueAccent)),
