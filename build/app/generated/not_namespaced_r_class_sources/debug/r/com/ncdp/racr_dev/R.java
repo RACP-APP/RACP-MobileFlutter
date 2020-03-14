@@ -172,9 +172,9 @@ public final class R {
     public static final int notification_top_pad_large_text=0x7f040015;
   }
   public static final class drawable {
-    public static final int duck=0x7f050000;
-    public static final int ic_download=0x7f050001;
-    public static final int launch_background=0x7f050002;
+    public static final int ic_download=0x7f050000;
+    public static final int launch_background=0x7f050001;
+    public static final int luanchs=0x7f050002;
     public static final int notification_action_background=0x7f050003;
     public static final int notification_bg=0x7f050004;
     public static final int notification_bg_low=0x7f050005;

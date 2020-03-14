@@ -69,7 +69,7 @@ public final class R {
     public static final class drawable {
         private drawable() {}
 
-        public static final int ic_download = 0x7f050001;
+        public static final int ic_download = 0x7f050000;
         public static final int notification_action_background = 0x7f050003;
         public static final int notification_bg = 0x7f050004;
         public static final int notification_bg_low = 0x7f050005;

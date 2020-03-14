@@ -39,9 +39,9 @@ int dimen notification_small_icon_size_as_large 0x7f040012
 int dimen notification_subtext_size 0x7f040013
 int dimen notification_top_pad 0x7f040014
 int dimen notification_top_pad_large_text 0x7f040015
-int drawable duck 0x7f050000
-int drawable ic_download 0x7f050001
-int drawable launch_background 0x7f050002
+int drawable ic_download 0x7f050000
+int drawable launch_background 0x7f050001
+int drawable luanchs 0x7f050002
 int drawable notification_action_background 0x7f050003
 int drawable notification_bg 0x7f050004
 int drawable notification_bg_low 0x7f050005

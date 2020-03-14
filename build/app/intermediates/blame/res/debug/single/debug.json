@@ -20,10 +20,6 @@
         "source": "E:\\RACP-MobileFlutter\\android\\app\\src\\main\\res\\mipmap-xxxhdpi\\ic_launcher.png"
     },
     {
-        "merged": "E:\\RACP-MobileFlutter\\build\\app\\intermediates\\res\\merged\\debug\\drawable_duck.png.flat",
-        "source": "E:\\RACP-MobileFlutter\\android\\app\\src\\main\\res\\drawable\\duck.png"
-    },
-    {
         "merged": "E:\\RACP-MobileFlutter\\build\\app\\intermediates\\res\\merged\\debug\\drawable-hdpi-v4_notify_panel_notification_icon_bg.png.flat",
         "source": "C:\\Users\\zaroqi\\.gradle\\caches\\transforms-2\\files-2.1\\a528b13ac93e64cafa3d0480e2c93207\\core-1.1.0\\res\\drawable-hdpi-v4\\notify_panel_notification_icon_bg.png"
     },
@@ -106,6 +102,10 @@
     {
         "merged": "E:\\RACP-MobileFlutter\\build\\app\\intermediates\\res\\merged\\debug\\drawable-mdpi-v4_notification_bg_normal_pressed.9.png.flat",
         "source": "C:\\Users\\zaroqi\\.gradle\\caches\\transforms-2\\files-2.1\\a528b13ac93e64cafa3d0480e2c93207\\core-1.1.0\\res\\drawable-mdpi-v4\\notification_bg_normal_pressed.9.png"
+    },
+    {
+        "merged": "E:\\RACP-MobileFlutter\\build\\app\\intermediates\\res\\merged\\debug\\drawable_luanchs.png.flat",
+        "source": "E:\\RACP-MobileFlutter\\android\\app\\src\\main\\res\\drawable\\luanchs.png"
     },
     {
         "merged": "E:\\RACP-MobileFlutter\\build\\app\\intermediates\\res\\merged\\debug\\layout-v21_notification_action_tombstone.xml.flat",
