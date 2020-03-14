@@ -1,0 +1,291 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.ncdp.racr_dev"
+4    android:versionCode="1"
+5    android:versionName="1.0.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="16"
+8-->E:\RACP-MobileFlutter\android\app\src\main\AndroidManifest.xml
+9        android:targetSdkVersion="28" />
+9-->E:\RACP-MobileFlutter\android\app\src\main\AndroidManifest.xml
+10    <!--
+11         io.flutter.app.FlutterApplication is an android.app.Application that
+12         calls FlutterMain.startInitialization(this); in its onCreate method.
+13         In most cases you can leave this as-is, but you if you want to provide
+14         additional functionality it is fine to subclass or reimplement
+15         FlutterApplication and put your custom class here.
+16    -->
+17
+18    <uses-permission android:name="android.permission.INTERNET" />
+18-->E:\RACP-MobileFlutter\android\app\src\main\AndroidManifest.xml:9:5-66
+18-->E:\RACP-MobileFlutter\android\app\src\main\AndroidManifest.xml:9:22-64
+19    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+19-->E:\RACP-MobileFlutter\android\app\src\main\AndroidManifest.xml:10:5-79
+19-->E:\RACP-MobileFlutter\android\app\src\main\AndroidManifest.xml:10:22-77
+20    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+20-->E:\RACP-MobileFlutter\android\app\src\main\AndroidManifest.xml:11:5-80
+20-->E:\RACP-MobileFlutter\android\app\src\main\AndroidManifest.xml:11:22-78
+21    <uses-permission android:name="android.permission.WAKE_LOCK" />
+21-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:25:5-68
+21-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:25:22-65
+22    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+22-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:26:5-79
+22-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:26:22-76
+23    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+23-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:27:5-81
+23-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:27:22-78
+24
+25    <application
+25-->E:\RACP-MobileFlutter\android\app\src\main\AndroidManifest.xml:12:5-59:19
+26        android:name="io.flutter.app.FlutterApplication"
+26-->E:\RACP-MobileFlutter\android\app\src\main\AndroidManifest.xml:14:9-57
+27        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+27-->[androidx.core:core:1.1.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\a528b13ac93e64cafa3d0480e2c93207\core-1.1.0\AndroidManifest.xml:24:18-86
+28        android:debuggable="true"
+29        android:icon="@mipmap/ic_launcher"
+29-->E:\RACP-MobileFlutter\android\app\src\main\AndroidManifest.xml:16:9-43
+30        android:label="racr_dev"
+30-->E:\RACP-MobileFlutter\android\app\src\main\AndroidManifest.xml:15:9-33
+31        android:usesCleartextTraffic="true" >
+31-->E:\RACP-MobileFlutter\android\app\src\main\AndroidManifest.xml:13:9-44
+32        <activity
+32-->E:\RACP-MobileFlutter\android\app\src\main\AndroidManifest.xml:17:9-28:20
+33            android:name="com.ncdp.racr_dev.MainActivity"
+33-->E:\RACP-MobileFlutter\android\app\src\main\AndroidManifest.xml:18:13-41
+34            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+34-->E:\RACP-MobileFlutter\android\app\src\main\AndroidManifest.xml:21:13-163
+35            android:hardwareAccelerated="true"
+35-->E:\RACP-MobileFlutter\android\app\src\main\AndroidManifest.xml:22:13-47
+36            android:launchMode="singleTop"
+36-->E:\RACP-MobileFlutter\android\app\src\main\AndroidManifest.xml:19:13-43
+37            android:theme="@style/LaunchTheme"
+37-->E:\RACP-MobileFlutter\android\app\src\main\AndroidManifest.xml:20:13-47
+38            android:windowSoftInputMode="adjustResize" >
+38-->E:\RACP-MobileFlutter\android\app\src\main\AndroidManifest.xml:23:13-55
+39            <intent-filter>
+39-->E:\RACP-MobileFlutter\android\app\src\main\AndroidManifest.xml:24:13-27:29
+40                <action android:name="android.intent.action.MAIN" />
+40-->E:\RACP-MobileFlutter\android\app\src\main\AndroidManifest.xml:25:17-68
+40-->E:\RACP-MobileFlutter\android\app\src\main\AndroidManifest.xml:25:25-66
+41
+42                <category android:name="android.intent.category.LAUNCHER" />
+42-->E:\RACP-MobileFlutter\android\app\src\main\AndroidManifest.xml:26:17-76
+42-->E:\RACP-MobileFlutter\android\app\src\main\AndroidManifest.xml:26:27-74
+43            </intent-filter>
+44        </activity>
+45        <!--
+46             Don't delete the meta-data below.
+47             This is used by the Flutter tool to generate GeneratedPluginRegistrant.java
+48        -->
+49        <meta-data
+49-->E:\RACP-MobileFlutter\android\app\src\main\AndroidManifest.xml:31:9-33:33
+50            android:name="flutterEmbedding"
+50-->E:\RACP-MobileFlutter\android\app\src\main\AndroidManifest.xml:32:13-44
+51            android:value="2" />
+51-->E:\RACP-MobileFlutter\android\app\src\main\AndroidManifest.xml:33:13-30
+52
+53        <provider
+54            android:name="vn.hunghd.flutterdownloader.DownloadedFileProvider"
+54-->E:\RACP-MobileFlutter\android\app\src\main\AndroidManifest.xml:36:13-78
+55            android:authorities="com.ncdp.racr_dev.flutter_downloader.provider"
+55-->E:\RACP-MobileFlutter\android\app\src\main\AndroidManifest.xml:37:13-79
+56            android:exported="false"
+56-->E:\RACP-MobileFlutter\android\app\src\main\AndroidManifest.xml:38:13-37
+57            android:grantUriPermissions="true" >
+57-->E:\RACP-MobileFlutter\android\app\src\main\AndroidManifest.xml:39:13-47
+58            <meta-data
+58-->E:\RACP-MobileFlutter\android\app\src\main\AndroidManifest.xml:40:13-42:57
+59                android:name="android.support.FILE_PROVIDER_PATHS"
+59-->E:\RACP-MobileFlutter\android\app\src\main\AndroidManifest.xml:41:17-67
+60                android:resource="@xml/provider_paths" />
+60-->E:\RACP-MobileFlutter\android\app\src\main\AndroidManifest.xml:42:17-55
+61        </provider>
+62        <provider
+63            android:name="androidx.work.impl.WorkManagerInitializer"
+63-->E:\RACP-MobileFlutter\android\app\src\main\AndroidManifest.xml:46:13-69
+64            android:authorities="com.ncdp.racr_dev.workmanager-init"
+64-->E:\RACP-MobileFlutter\android\app\src\main\AndroidManifest.xml:47:13-68
+65            android:directBootAware="false"
+65-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:33:13-44
+66            android:enabled="false"
+66-->E:\RACP-MobileFlutter\android\app\src\main\AndroidManifest.xml:48:13-36
+67            android:exported="false"
+67-->E:\RACP-MobileFlutter\android\app\src\main\AndroidManifest.xml:49:13-37
+68            android:multiprocess="true" />
+68-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:35:13-40
+69        <provider
+70            android:name="vn.hunghd.flutterdownloader.FlutterDownloaderInitializer"
+70-->E:\RACP-MobileFlutter\android\app\src\main\AndroidManifest.xml:52:13-84
+71            android:authorities="com.ncdp.racr_dev.flutter-downloader-init"
+71-->E:\RACP-MobileFlutter\android\app\src\main\AndroidManifest.xml:53:13-75
+72            android:exported="false" >
+72-->E:\RACP-MobileFlutter\android\app\src\main\AndroidManifest.xml:54:13-37
+73            <meta-data
+73-->E:\RACP-MobileFlutter\android\app\src\main\AndroidManifest.xml:55:13-57:37
+74                android:name="vn.hunghd.flutterdownloader.MAX_CONCURRENT_TASKS"
+74-->E:\RACP-MobileFlutter\android\app\src\main\AndroidManifest.xml:56:17-80
+75                android:value="5" />
+75-->E:\RACP-MobileFlutter\android\app\src\main\AndroidManifest.xml:57:17-34
+76        </provider>
+77
+78        <service
+78-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:38:9-43:35
+79            android:name="androidx.work.impl.background.systemalarm.SystemAlarmService"
+79-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:39:13-88
+80            android:directBootAware="false"
+80-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:40:13-44
+81            android:enabled="@bool/enable_system_alarm_service_default"
+81-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:41:13-72
+82            android:exported="false" />
+82-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:42:13-37
+83        <service
+83-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:44:9-50:35
+84            android:name="androidx.work.impl.background.systemjob.SystemJobService"
+84-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:45:13-84
+85            android:directBootAware="false"
+85-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:46:13-44
+86            android:enabled="@bool/enable_system_job_service_default"
+86-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:47:13-70
+87            android:exported="true"
+87-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:48:13-36
+88            android:permission="android.permission.BIND_JOB_SERVICE" />
+88-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:49:13-69
+89
+90        <receiver
+90-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:52:9-57:35
+91            android:name="androidx.work.impl.utils.ForceStopRunnable$BroadcastReceiver"
+91-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:53:13-88
+92            android:directBootAware="false"
+92-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:54:13-44
+93            android:enabled="true"
+93-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:55:13-35
+94            android:exported="false" />
+94-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:56:13-37
+95        <receiver
+95-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:58:9-68:20
+96            android:name="androidx.work.impl.background.systemalarm.ConstraintProxy$BatteryChargingProxy"
+96-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:59:13-106
+97            android:directBootAware="false"
+97-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:60:13-44
+98            android:enabled="false"
+98-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:61:13-36
+99            android:exported="false" >
+99-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:62:13-37
+100            <intent-filter>
+100-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:64:13-67:29
+101                <action android:name="android.intent.action.ACTION_POWER_CONNECTED" />
+101-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:65:17-87
+101-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:65:25-84
+102                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED" />
+102-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:66:17-90
+102-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:66:25-87
+103            </intent-filter>
+104        </receiver>
+105        <receiver
+105-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:69:9-79:20
+106            android:name="androidx.work.impl.background.systemalarm.ConstraintProxy$BatteryNotLowProxy"
+106-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:70:13-104
+107            android:directBootAware="false"
+107-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:71:13-44
+108            android:enabled="false"
+108-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:72:13-36
+109            android:exported="false" >
+109-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:73:13-37
+110            <intent-filter>
+110-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:75:13-78:29
+111                <action android:name="android.intent.action.BATTERY_OKAY" />
+111-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:76:17-77
+111-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:76:25-74
+112                <action android:name="android.intent.action.BATTERY_LOW" />
+112-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:77:17-76
+112-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:77:25-73
+113            </intent-filter>
+114        </receiver>
+115        <receiver
+115-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:80:9-90:20
+116            android:name="androidx.work.impl.background.systemalarm.ConstraintProxy$StorageNotLowProxy"
+116-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:81:13-104
+117            android:directBootAware="false"
+117-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:82:13-44
+118            android:enabled="false"
+118-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:83:13-36
+119            android:exported="false" >
+119-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:84:13-37
+120            <intent-filter>
+120-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:86:13-89:29
+121                <action android:name="android.intent.action.DEVICE_STORAGE_LOW" />
+121-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:87:17-83
+121-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:87:25-80
+122                <action android:name="android.intent.action.DEVICE_STORAGE_OK" />
+122-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:88:17-82
+122-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:88:25-79
+123            </intent-filter>
+124        </receiver>
+125        <receiver
+125-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:91:9-100:20
+126            android:name="androidx.work.impl.background.systemalarm.ConstraintProxy$NetworkStateProxy"
+126-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:92:13-103
+127            android:directBootAware="false"
+127-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:93:13-44
+128            android:enabled="false"
+128-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:94:13-36
+129            android:exported="false" >
+129-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:95:13-37
+130            <intent-filter>
+130-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:97:13-99:29
+131                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+131-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:98:17-79
+131-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:98:25-76
+132            </intent-filter>
+133        </receiver>
+134        <receiver
+134-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:101:9-112:20
+135            android:name="androidx.work.impl.background.systemalarm.RescheduleReceiver"
+135-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:102:13-88
+136            android:directBootAware="false"
+136-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:103:13-44
+137            android:enabled="false"
+137-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:104:13-36
+138            android:exported="false" >
+138-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:105:13-37
+139            <intent-filter>
+139-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:107:13-111:29
+140                <action android:name="android.intent.action.BOOT_COMPLETED" />
+140-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:108:17-79
+140-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:108:25-76
+141                <action android:name="android.intent.action.TIME_SET" />
+141-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:109:17-73
+141-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:109:25-70
+142                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+142-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:110:17-81
+142-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:110:25-78
+143            </intent-filter>
+144        </receiver>
+145        <receiver
+145-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:113:9-122:20
+146            android:name="androidx.work.impl.background.systemalarm.ConstraintProxyUpdateReceiver"
+146-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:114:13-99
+147            android:directBootAware="false"
+147-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:115:13-44
+148            android:enabled="@bool/enable_system_alarm_service_default"
+148-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:116:13-72
+149            android:exported="false" >
+149-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:117:13-37
+150            <intent-filter>
+150-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:119:13-121:29
+151                <action android:name="androidx.work.impl.background.systemalarm.UpdateProxies" />
+151-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:120:17-98
+151-->[androidx.work:work-runtime:2.2.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\66a225bc6d60d474383c0296887598e5\work-runtime-2.2.0\AndroidManifest.xml:120:25-95
+152            </intent-filter>
+153        </receiver>
+154
+155        <service
+155-->[androidx.room:room-runtime:2.1.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\6755ddc25dac8aaf072873c1ca3399d9\room-runtime-2.1.0\AndroidManifest.xml:25:9-27:40
+156            android:name="androidx.room.MultiInstanceInvalidationService"
+156-->[androidx.room:room-runtime:2.1.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\6755ddc25dac8aaf072873c1ca3399d9\room-runtime-2.1.0\AndroidManifest.xml:26:13-74
+157            android:exported="false" />
+157-->[androidx.room:room-runtime:2.1.0] C:\Users\zaroqi\.gradle\caches\transforms-2\files-2.1\6755ddc25dac8aaf072873c1ca3399d9\room-runtime-2.1.0\AndroidManifest.xml:27:13-37
+158    </application>
+159
+160</manifest>
