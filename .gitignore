@@ -103,5 +103,5 @@ dist
 # TernJS port file
 .tern-port
 
-build/
-.dart_tool/
+build
+.dart_tool

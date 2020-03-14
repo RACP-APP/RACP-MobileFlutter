@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
         Provider<PageStore>(create: (_) => PageStore()),
       ],
       child: new MaterialApp(
-        title: 'Flutter Demo',
+        title: 'الحياة والطفل',
         theme: new ThemeData(
           primarySwatch: Colors.blue,
         ),
