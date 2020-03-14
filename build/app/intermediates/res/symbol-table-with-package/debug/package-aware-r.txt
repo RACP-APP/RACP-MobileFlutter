@@ -40,6 +40,7 @@ dimen notification_small_icon_size_as_large
 dimen notification_subtext_size
 dimen notification_top_pad
 dimen notification_top_pad_large_text
+drawable duck
 drawable ic_download
 drawable launch_background
 drawable notification_action_background
