@@ -19,6 +19,8 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
+  final myDarkGrey = Color(0xff605E5E);
+  final myDarkBlue = Color(0xff085576);
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -33,10 +35,9 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.blue,
         ),
         home: Scaffold(
-          backgroundColor: Colors.white,
-          body: Center(
-            child: Landing(),
-          ),
+          backgroundColor: myDarkBlue,
+          body:Landing(),
+         
         ),
         initialRoute: '/',
         onGenerateRoute: RouteGenerator.generateRoute,

@@ -104,4 +104,7 @@ dist
 .tern-port
 
 build
+build/
 .dart_tool
+.dart_tool/
+
