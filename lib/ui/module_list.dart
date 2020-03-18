@@ -1,24 +1,149 @@
 import 'package:flutter/material.dart';
-
 import 'package:expandable/expandable.dart';
-import "package:percent_indicator/circular_percent_indicator.dart";
+import "package:percent_indicator/linear_percent_indicator.dart";
+import 'package:feather_icons_flutter/feather_icons_flutter.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class ModulesList extends StatelessWidget {
   ModulesList();
+  final myDarkGrey = Color(0xff605E5E);
+  final myDarkBlue = Color(0xff085576);
+  final mylightBlue = Color(0xff8AD0EE);
+  final myLightGrey = Color(0xffC4C4C4);
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+        child: Scaffold(
+      appBar: MyCustomAppBar(height: 50),
+      body: ListView(
+        reverse: true,
+        physics: const BouncingScrollPhysics(),
+        scrollDirection: Axis.horizontal,
+        children: <Widget>[
+          Container(
+              height: double.maxFinite,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                Module(
+                    "ايجاد حياة طبيعية",
+                    "https://images.unsplash.com/photo-1484100356142-db6ab6244067?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max&ixid=eyJhcHBfaWQiOjM4Mjk1fQ",
+                    0.8),
+                Module(
+                    "صحة طفلي",
+                    "https://images.unsplash.com/photo-1484100356142-db6ab6244067?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max&ixid=eyJhcHBfaWQiOjM4Mjk1fQ",
+                    0.6)
+              ])),
+               Container(
+              height: double.maxFinite,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                Module(
+                    "ايجاد حياة طبيعية",
+                    "https://images.unsplash.com/photo-1484100356142-db6ab6244067?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max&ixid=eyJhcHBfaWQiOjM4Mjk1fQ",
+                    0.8),
+                Module(
+                    "صحة طفلي",
+                    "https://images.unsplash.com/photo-1484100356142-db6ab6244067?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max&ixid=eyJhcHBfaWQiOjM4Mjk1fQ",
+                    0.6)
+              ])),
+               Container(
+              height: double.maxFinite,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                Module(
+                    "ايجاد حياة طبيعية",
+                    "https://images.unsplash.com/photo-1484100356142-db6ab6244067?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max&ixid=eyJhcHBfaWQiOjM4Mjk1fQ",
+                    0.8)
+                
+              ]))
+        ],
+      ),
+      bottomNavigationBar: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Transform.rotate(
+                angle: 1.0,
+                child: RawMaterialButton(
+                  onPressed: null,
+                  child: Icon(Icons.play_arrow, color: myLightGrey, size: 40),
+                  shape: new CircleBorder(),
+                  constraints:
+                      new BoxConstraints(minHeight: 40.0, minWidth: 40.0),
+                )),
+            Transform.rotate(
+                angle: 0,
+                child: RawMaterialButton(
+                  onPressed: null,
+                  child: Icon(Icons.play_arrow, color: myDarkGrey, size: 40),
+                  shape: new CircleBorder(),
+                  constraints:
+                      new BoxConstraints(minHeight: 40.0, minWidth: 40.0),
+                )),
+          ]),
+    ));
+  }
+}
+
+class Module extends StatelessWidget {
+  final myDarkGrey = Color(0xff605E5E);
+  final myDarkBlue = Color(0xff085576);
+  final mylightBlue = Color(0xff8AD0EE);
+
+  final String name;
+  final String img;
+  final double percent;
+
+  Module(this.name, this.img, this.percent) : super();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: MyCustomAppBar(height: 58),
-      body: ExpandableTheme(
-        data:
-            const ExpandableThemeData(iconColor: Colors.blue, useInkWell: true),
-        child: ListView(
-          physics: const BouncingScrollPhysics(),
-          children: <Widget>[Card1(), Card2()],
+    return Column(children: <Widget>[
+      Container(
+        margin: EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 0),
+        width: 250,
+        height: 150,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: NetworkImage(img),
+            fit: BoxFit.cover,
+          ),
+          border: Border.all(
+            color: myDarkBlue,
+            width: 1,
+          ),
         ),
       ),
-    );
+      Container(
+          margin: EdgeInsets.fromLTRB(30.0, 0, 30.0, 0.0),
+          width: 250,
+          child: new LinearPercentIndicator(
+              width: 250,
+              lineHeight: 50.0,
+              padding: EdgeInsets.all(0),
+              center: Text(
+                name,
+                style: GoogleFonts.lateef(
+                    textStyle: TextStyle(
+                        fontSize: 28.0, color: Colors.white, height: 1)),
+              ),
+              linearStrokeCap: LinearStrokeCap.butt,
+              backgroundColor: mylightBlue,
+              progressColor: myDarkBlue,
+              percent: percent)),
+      Container(
+          margin: EdgeInsets.all(5),
+          width: 250,
+          child: Center(
+              child: Text(
+            (percent * 100).toString() + "%",
+            style: GoogleFonts.lateef(
+                textStyle:
+                    TextStyle(fontSize: 20.0, color: myDarkGrey, height: 1)),
+          )))
+    ]);
   }
 }
 
@@ -84,25 +209,25 @@ class Card1 extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              new CircularPercentIndicator(
-                radius: 120.0,
-                lineWidth: 13.0,
-                animation: true,
-                animationDuration: 1200,
-                percent: 0.3,
-                center: new Text(
-                  "30.0%",
-                  style: new TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 20.0),
-                ),
-                footer: new Text(
-                  "Over All Prpgress",
-                  style: new TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: 17.0),
-                ),
-                circularStrokeCap: CircularStrokeCap.round,
-                progressColor: Colors.lightBlue,
-              ),
+              // new CircularPercentIndicator(
+              //   radius: 120.0,
+              //   lineWidth: 13.0,
+              //   animation: true,
+              //   animationDuration: 1200,
+              //   percent: 0.3,
+              //   center: new Text(
+              //     "30.0%",
+              //     style: new TextStyle(
+              //         fontWeight: FontWeight.bold, fontSize: 20.0),
+              //   ),
+              //   footer: new Text(
+              //     "Over All Prpgress",
+              //     style: new TextStyle(
+              //         fontWeight: FontWeight.bold, fontSize: 17.0),
+              //   ),
+              //   circularStrokeCap: CircularStrokeCap.round,
+              //   progressColor: Colors.lightBlue,
+              // ),
             ],
           ),
         ],
@@ -213,7 +338,7 @@ class Card2 extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Padding(
-              padding: EdgeInsets.all(10),
+              padding: EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 10.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -516,42 +641,68 @@ class VerticalView extends StatelessWidget {
 class MyCustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final double height;
 
-  const MyCustomAppBar({
+  MyCustomAppBar({
     Key key,
     @required this.height,
   }) : super(key: key);
 
+  final myDarkGrey = Color(0xff605E5E);
+  final myDarkBlue = Color(0xff085576);
+  final mylightBlue = Color(0xff8AD0EE);
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Column(
-        children: [
+    return Container(
+      decoration: new BoxDecoration(
+        color: myDarkBlue,
+      ),
+      width: 130,
+      height: 50,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
           Container(
-            decoration: new BoxDecoration(
-              borderRadius: new BorderRadius.horizontal(),
-              color: Colors.green[100],
-            ),
-            width: double.infinity,
-            height: 58,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: <Widget>[
-                RawMaterialButton(
-                  onPressed: null,
-                  child: Icon(Icons.notifications, color: Colors.yellow),
-                  shape: new CircleBorder(),
-                  constraints:
-                      new BoxConstraints(minHeight: 50.0, minWidth: 50.0),
-                ),
-                Text("AppName"),
-                Icon(
-                  Icons.flare,
-                  color: Colors.green,
-                  size: 50,
-                )
-              ],
-            ),
-          ),
+              child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Padding(
+                            padding: EdgeInsets.only(bottom: 3.0),
+                            child: RawMaterialButton(
+                              onPressed: () =>
+                                  Navigator.of(context).pushNamed('/'),
+                              child: new Icon(FeatherIcons.home,
+                                  color: Colors.white, size: 20),
+                              shape: new CircleBorder(),
+                              constraints: new BoxConstraints(
+                                  minHeight: 10.0, minWidth: 10.0),
+                            )),
+                        RawMaterialButton(
+                          onPressed: null,
+                          child: Icon(Icons.notifications_none,
+                              color: Colors.white, size: 24),
+                          shape: new CircleBorder(),
+                          constraints: new BoxConstraints(
+                              minHeight: 24.0, minWidth: 24.0),
+                        )
+                      ]))),
+          Container(
+              child: Center(
+                  child: Text(
+            "المواضيع",
+            style: GoogleFonts.lateef(
+                textStyle:
+                    TextStyle(fontSize: 25.0, color: Colors.white, height: 1)),
+          ))),
+          Align(
+              alignment: Alignment.centerRight,
+              child: Padding(
+                  padding: EdgeInsets.all(10.0),
+                  child: Icon(
+                    Icons.flare,
+                    color: Colors.white,
+                    size: 30,
+                  )))
         ],
       ),
     );
