@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import './file_downloader_single.dart';
 import './video_p.dart';
 import 'package:video_player/video_player.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class Videohandler extends StatefulWidget {
   Videohandler({Key key, this.url, this.name}) : super(key: key);
@@ -16,6 +17,9 @@ class _VideohandlerState extends State<Videohandler> {
   bool _done;
   bool _stream;
   String _localpath;
+  final myDarkGrey = Color(0xff605E5E);
+  final myDarkBlue = Color(0xff085576);
+  final mylightBlue = Color(0xff8AD0EE);
 
   @override
   void initState() {
@@ -36,7 +40,7 @@ class _VideohandlerState extends State<Videohandler> {
   Widget build(BuildContext context) {
     final platform = Theme.of(context).platform;
     return Container(
-      decoration: BoxDecoration(border: Border.all(color: Colors.blueAccent)),
+      decoration: BoxDecoration(border: Border.all(color: myDarkBlue)),
       child: new Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -57,31 +61,33 @@ class _VideohandlerState extends State<Videohandler> {
                         ),
                       ),
                     )
-                  : Expanded(
-                      flex: 1,
+                  : Container(
+                      width: 250,
+                      margin: EdgeInsets.only(top:20),
                       child: RaisedButton(
                         onPressed: () {
                           setState(() {
                             _stream = true;
                           });
                         },
-                        textColor: Colors.white,
-                        padding: const EdgeInsets.all(0.0),
+                        textColor: myDarkGrey,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.circular(20.0),
+                        ),
+                        color: mylightBlue,
                         child: Container(
                           width: double.maxFinite,
-                          decoration: const BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: <Color>[
-                                Color(0xFF0D47A1),
-                                Color(0xFF1976D2),
-                                Color(0xFF42A5F5),
-                              ],
-                            ),
-                          ),
-                          padding: const EdgeInsets.all(10.0),
-                          child: const Text('watch online!',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 20)),
+                          decoration: BoxDecoration(color: mylightBlue),
+                          padding: const EdgeInsets.fromLTRB(10.0,10.0,10,10),
+                          child: Padding(
+                              padding: EdgeInsets.only(right: 8.0),
+                              child: Text('شاهد الفيديو الآن...',
+                              textDirection: TextDirection.rtl,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontSize: 25.0,
+                                      color: myDarkGrey,
+                                      height: 1))),
                         ),
                       ),
                     ),

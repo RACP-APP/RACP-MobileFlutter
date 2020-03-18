@@ -27,7 +27,9 @@ class _DownloaderListState extends State<DownloaderList> {
   bool _permissionReady;
   String _localPath;
   ReceivePort _port = ReceivePort();
-
+  final myDarkGrey = Color(0xff605E5E);
+  final myDarkBlue = Color(0xff085576);
+  final mylightBlue = Color(0xff8AD0EE);
   @override
   void initState() {
     super.initState();
@@ -106,7 +108,7 @@ class _DownloaderListState extends State<DownloaderList> {
                                     item.name,
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.blue,
+                                        color: myDarkBlue,
                                         fontSize: 18.0),
                                   ),
                                 )
@@ -123,7 +125,7 @@ class _DownloaderListState extends State<DownloaderList> {
                                                 Scaffold.of(context)
                                                     .showSnackBar(SnackBar(
                                                         content: Text(
-                                                            'Cannot open this file')));
+                                                            'لا نستطيع فتح الملف')));
                                               }
                                             });
                                           }
@@ -193,7 +195,7 @@ class _DownloaderListState extends State<DownloaderList> {
                               'Please grant accessing storage permission to continue -_-',
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                  color: Colors.blueGrey, fontSize: 18.0),
+                                  color: myDarkBlue, fontSize: 18.0),
                             ),
                           ),
                           SizedBox(
@@ -208,9 +210,9 @@ class _DownloaderListState extends State<DownloaderList> {
                                 });
                               },
                               child: Text(
-                                'Retry',
+                                'أعد المحالوة',
                                 style: TextStyle(
-                                    color: Colors.blue,
+                                    color: myDarkBlue,
                                     fontWeight: FontWeight.bold,
                                     fontSize: 20.0),
                               ))
@@ -259,7 +261,7 @@ class _DownloaderListState extends State<DownloaderList> {
               },
               child: new Icon(
                 Icons.play_arrow,
-                color: Colors.green,
+                color: myDarkBlue,
               ),
               shape: new CircleBorder(),
               constraints: new BoxConstraints(minHeight: 32.0, minWidth: 32.0),
@@ -284,7 +286,7 @@ class _DownloaderListState extends State<DownloaderList> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           new Text(
-            'have you deleted it ?',
+            'هل قمت بحذفه ?',
             style: new TextStyle(color: Colors.red),
           ),
           RawMaterialButton(
@@ -306,8 +308,8 @@ class _DownloaderListState extends State<DownloaderList> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           new Text(
-            'Ready',
-            style: new TextStyle(color: Colors.green),
+            'جاهز',
+            style: new TextStyle(color: myDarkBlue),
           ),
           RawMaterialButton(
             onPressed: () {
@@ -327,14 +329,14 @@ class _DownloaderListState extends State<DownloaderList> {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          new Text('Cancled', style: new TextStyle(color: Colors.red)),
+          new Text('تم الالغاء', style: new TextStyle(color: Colors.red)),
           RawMaterialButton(
             onPressed: () {
               _retryDownload(task);
             },
             child: Icon(
               Icons.refresh,
-              color: Colors.green,
+              color:myDarkBlue,
             ),
             shape: new CircleBorder(),
             constraints: new BoxConstraints(minHeight: 32.0, minWidth: 32.0),
@@ -346,7 +348,7 @@ class _DownloaderListState extends State<DownloaderList> {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          new Text('Failed', style: new TextStyle(color: Colors.red)),
+          new Text('فشل', style: new TextStyle(color: Colors.red)),
           RawMaterialButton(
             onPressed: () {
               _retryDownload(task);

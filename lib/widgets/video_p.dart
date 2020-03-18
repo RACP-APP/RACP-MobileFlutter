@@ -19,7 +19,9 @@ class ChewieListItem extends StatefulWidget {
 
 class _ChewieListItemState extends State<ChewieListItem> {
   ChewieController _chewieController;
-
+ final myDarkGrey = Color(0xff605E5E);
+  final myDarkBlue = Color(0xff085576);
+  final mylightBlue = Color(0xff8AD0EE);
   @override
   void initState() {
     super.initState();
@@ -40,7 +42,7 @@ class _ChewieListItemState extends State<ChewieListItem> {
                   resizeToAvoidBottomPadding: false,
                   body: Container(
                     alignment: Alignment.center,
-                    color: Colors.black,
+                    color: myDarkGrey,
                     child: provider,
                   ),
                
