@@ -22,7 +22,8 @@ class MyDrawer extends StatelessWidget {
 
     Widget articles(item, context) {
       return Observer(
-        builder: (_) => ListTile(
+        builder: (_) => Container( height: 50, child: ListTile(
+          
           contentPadding: EdgeInsets.fromLTRB(30.0, 5.0, 5.0, 10.0),
           leading: Icon(
             Icons.done,
@@ -41,7 +42,7 @@ class MyDrawer extends StatelessWidget {
             pageStore.setPage(item["content"]);
           },
           selected: itemStore.current == item["name"] ? true : false,
-        ),
+        )),
       );
     }
 

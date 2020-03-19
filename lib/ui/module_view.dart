@@ -31,9 +31,7 @@ class ModulesView extends StatelessWidget {
       child: Scaffold(
           drawer: MyDrawer(this.args["items"], this.args["img"]),
           appBar: MyCustomAppBar(50, this.args["name"]),
-          body: Container(
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
+          body: ListView(
                   children: <Widget>[
                 TopicBar(50, this.args["percent"]),
                 Center(
@@ -41,7 +39,7 @@ class ModulesView extends StatelessWidget {
                     builder: (_) => Testing(contentList: storeP.pageNum),
                   ),
                 ),
-              ]))),
+              ])),
     );
   }
 }
