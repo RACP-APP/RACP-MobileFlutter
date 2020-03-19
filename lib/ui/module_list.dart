@@ -10,6 +10,24 @@ class ModulesList extends StatelessWidget {
   final myDarkBlue = Color(0xff085576);
   final mylightBlue = Color(0xff8AD0EE);
   final myLightGrey = Color(0xffC4C4C4);
+
+  List<Widget> modules() {
+    List<Widget> containers=new List();
+    var mods = _cards.map<Widget>((card) {
+      return Module(card["name"], card["img"], card["percent"], card["topics"]);
+    }).toList();
+
+    for(var i = 0; i <= mods.length; i+=2){
+      if(i == mods.length - 1){
+        containers.add(Container(child:Column(crossAxisAlignment: CrossAxisAlignment.center, mainAxisAlignment: MainAxisAlignment.center,children: <Widget>[mods[i]],)));
+        continue;
+      }
+      containers.add(Container(child:Column(crossAxisAlignment: CrossAxisAlignment.center, mainAxisAlignment: MainAxisAlignment.start,children: <Widget>[mods[i],mods[i+1]],)));
+    }
+    print(containers);
+    return containers;
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -19,16 +37,7 @@ class ModulesList extends StatelessWidget {
           reverse: true,
           physics: const BouncingScrollPhysics(),
           scrollDirection: Axis.horizontal,
-          children: <Widget>[
-            Container(
-                height: double.maxFinite,
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: _cards.map((card) {
-                      return Module(card["name"], card["img"], card["percent"],
-                          card["topics"]);
-                    }).toList())),
-          ]),
+          children:  modules()),
       // bottomNavigationBar: Row(
       //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
       //     children: <Widget>[
@@ -417,10 +426,13 @@ List foo() {
       "name": "ايجاد حياة طبيعية",
       "percent": 0.8,
       "topics": [
-         {"name": "المقدمة", "articles": [{"name": "الحياة بنظري?",
-              "content": []}]},
         {
-         
+          "name": "المقدمة",
+          "articles": [
+            {"name": "الحياة بنظري?", "content": []}
+          ]
+        },
+        {
           "name": "الحياة ومصاعبها",
           "articles": [
             {
