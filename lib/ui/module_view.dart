@@ -15,7 +15,7 @@ class ModulesView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var storeP = Provider.of<PageStore>(context);
-    bool check = storeP.pageNum != null;
+
     return SafeArea(
       child: Scaffold(
           drawer: MyDrawer(this.args["items"], this.args["icon"]),
