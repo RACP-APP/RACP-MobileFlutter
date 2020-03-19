@@ -97,8 +97,8 @@ class _DownloaderSingleState extends State<DownloaderSingle> {
               )
             : _permissionReady
                 ? new Container(
-                    height: MediaQuery.of(context).size.height,
-                    width: MediaQuery.of(context).size.width,
+                    // height: MediaQuery.of(context).size.height,
+                    // width: MediaQuery.of(context).size.width,
                     child: new Row(
                       children: <Widget>[
                         new Container(
@@ -124,8 +124,8 @@ class _DownloaderSingleState extends State<DownloaderSingle> {
                               children: <Widget>[
                                 new Container(
                                   width:
-                                      MediaQuery.of(context).size.width / 1.07,
-                                  height: 100,
+                                      MediaQuery.of(context).size.width / 1.18,
+                                  height: 50,
                                   child: new Row(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,
@@ -178,7 +178,7 @@ class _DownloaderSingleState extends State<DownloaderSingle> {
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 24.0),
                             child: Text(
-                              'Please grant accessing storage permission to continue -_-',
+                              'Please grant accessing storage permission to continue ',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   color: Colors.blueGrey, fontSize: 18.0),

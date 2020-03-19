@@ -19,7 +19,9 @@ class ChewieListItem extends StatefulWidget {
 
 class _ChewieListItemState extends State<ChewieListItem> {
   ChewieController _chewieController;
-
+  final myDarkGrey = Color(0xff605E5E);
+  final myDarkBlue = Color(0xff085576);
+  final mylightBlue = Color(0xff8AD0EE);
   @override
   void initState() {
     super.initState();
@@ -30,6 +32,22 @@ class _ChewieListItemState extends State<ChewieListItem> {
       // Prepare the video to be played and display the first frame
       autoInitialize: true,
       looping: widget.looping,
+      routePageBuilder: (BuildContext context, Animation<double> animation,
+          Animation<double> secondAnimation, provider) {
+        return AnimatedBuilder(
+          animation: animation,
+          builder: (BuildContext context, Widget child) {
+            return Scaffold(
+              resizeToAvoidBottomPadding: false,
+              body: Container(
+                alignment: Alignment.center,
+                color: myDarkGrey,
+                child: provider,
+              ),
+            );
+          },
+        );
+      },
       // Errors can occur for example when trying to play a video
       // from a non-existent URL
       errorBuilder: (context, errorMessage) {
@@ -45,12 +63,9 @@ class _ChewieListItemState extends State<ChewieListItem> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Container(
-        child: Chewie(
-          controller: _chewieController,
-        ),
+    return Container(
+      child: Chewie(
+        controller: _chewieController,
       ),
     );
   }

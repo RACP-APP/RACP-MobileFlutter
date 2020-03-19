@@ -12,7 +12,7 @@ class RouteGenerator {
       case '/':
         return MaterialPageRoute(builder: (_) => Landing());
       case '/ML':
-        return MaterialPageRoute(builder: (_) => ModulesList());
+        return MaterialPageRoute(builder: (_) => ModulesList(args));
       case '/MV':
         // Validation of correct data type
 
