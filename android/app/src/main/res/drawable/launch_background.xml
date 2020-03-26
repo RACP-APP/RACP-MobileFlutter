@@ -4,16 +4,11 @@
     <item android:drawable="@android:color/white" />
     
     <!-- You can insert your own image assets here -->
-<<<<<<< HEAD
-     <item>    
-        <bitmap       
-=======
      <item>
 
      
         <bitmap
             
->>>>>>> 066c32a9b10f34f101bf14f5ada3b5a52d2b54a0
             android:src="@drawable/luanchs" />
     </item> 
 </layer-list>
