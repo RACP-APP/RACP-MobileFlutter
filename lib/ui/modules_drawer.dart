@@ -20,35 +20,33 @@ class MyDrawer extends StatelessWidget {
     var _barStore = Provider.of<ViewStore>(context);
     var pageStore = Provider.of<PageStore>(context);
 
-    Widget articles(item, context) {
+    Widget articles(item, context, content) {
       return Observer(
-        builder: (_) => Container( height: 50, child: ListTile(
-          
+        builder: (_) => ListTile(
           contentPadding: EdgeInsets.fromLTRB(30.0, 5.0, 5.0, 10.0),
           leading: Icon(
             Icons.done,
             color: mylightBlue,
             size: 20,
           ),
-          title: Text("${item["name"]}",
+          title: Text("${item["Title"]}",
               style: GoogleFonts.lateef(
                   textStyle: TextStyle(
                       fontSize: 18.0, color: Colors.white, height: 1.1))),
           trailing: Icon(Icons.keyboard_arrow_right, color: mylightBlue),
           onTap: () {
             //todo
-            itemStore.setCurrent(item["name"]);
+            itemStore.setCurrent(item["Title"]);
             _barStore.setCurrentName(itemStore.getCurrent);
-            pageStore.setPage(item["content"]);
+            pageStore.setPage(content);
           },
-          selected: itemStore.current == item["name"] ? true : false,
-        )),
+          selected: itemStore.current == item["Title"] ? true : false,
+        ),
       );
     }
 
     return Drawer(
       child: Column(
-        
         children: <Widget>[
           Expanded(
             flex: 20,
@@ -72,37 +70,38 @@ class MyDrawer extends StatelessWidget {
             flex: 85,
             child: Container(
               color: myDarkBlue,
-              child:ListView.builder(
-              padding: EdgeInsets.all(0),
-              scrollDirection: Axis.vertical,
-              itemCount: itemList.length,
-              //itemExtent: 100.0,
-              itemBuilder: (context, index) {
-                var item = itemList[index];
-                return Container(
-                    margin: EdgeInsets.all(0),
-                    decoration: BoxDecoration(color: myDarkBlue),
-                    child: ExpansionTile(
-                      leading:
-                          Icon(Icons.done_all, color: mylightBlue, size: 20),
-                      title: Container(
-                          padding: EdgeInsets.only(left: 0),
-                          decoration: BoxDecoration(color: myDarkBlue),
-                          child: Text(
-                            item["name"],
-                            style: GoogleFonts.lateef(
-                                textStyle: TextStyle(
-                                    fontSize: 20.0,
-                                    color: Colors.white,
-                                    height: 1.1)),
-                          )),
-                      children: item["articles"]
-                          .map<Widget>((item) => articles(item, context))
-                          .toList(),
-                    ));
-              },
+              child: ListView.builder(
+                padding: EdgeInsets.all(0),
+                scrollDirection: Axis.vertical,
+                itemCount: itemList.length,
+                //itemExtent: 100.0,
+                itemBuilder: (context, index) {
+                  var item = itemList[index];
+                  return Container(
+                      margin: EdgeInsets.all(0),
+                      decoration: BoxDecoration(color: myDarkBlue),
+                      child: ExpansionTile(
+                        leading:
+                            Icon(Icons.done_all, color: mylightBlue, size: 20),
+                        title: Container(
+                            padding: EdgeInsets.only(left: 0),
+                            decoration: BoxDecoration(color: myDarkBlue),
+                            child: Text(
+                              item["Title"],
+                              style: GoogleFonts.lateef(
+                                  textStyle: TextStyle(
+                                      fontSize: 20.0,
+                                      color: Colors.white,
+                                      height: 1.1)),
+                            )),
+                        children: item["Article"]
+                            .map<Widget>((item) =>
+                                articles(item, context, item["content"]))
+                            .toList(),
+                      ));
+                },
+              ),
             ),
-          ),
           )
         ],
       ),

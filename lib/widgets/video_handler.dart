@@ -45,53 +45,58 @@ class _VideohandlerState extends State<Videohandler> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          this._done
-              ? Container(
-                  child: ChewieListItem(
-                    videoPlayerController: VideoPlayerController.asset(
-                      _localpath,
-                    ),
-                  ),
-                )
-              : this._stream
+          Expanded(
+              child: this._done
                   ? Container(
                       child: ChewieListItem(
-                        videoPlayerController: VideoPlayerController.network(
-                          this.widget.url,
+                        videoPlayerController: VideoPlayerController.asset(
+                          _localpath,
                         ),
                       ),
                     )
-                  : Container(
-                      width: 250,
-                      margin: EdgeInsets.only(top:20),
-                      child: RaisedButton(
-                        onPressed: () {
-                          setState(() {
-                            _stream = true;
-                          });
-                        },
-                        textColor: myDarkGrey,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(20.0),
+                  : this._stream
+                      ? Container(
+                          child: ChewieListItem(
+                            videoPlayerController:
+                                VideoPlayerController.network(
+                              this.widget.url,
+                            ),
+                          ),
+                        )
+                      : Container(
+                          width: 230,
+                          margin: EdgeInsets.only(top: 20),
+                          child: RaisedButton(
+                            onPressed: () {
+                              setState(() {
+                                _stream = true;
+                              });
+                            },
+                            textColor: myDarkGrey,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(20.0),
+                            ),
+                            color: mylightBlue,
+                            child: Container(
+                              width: double.maxFinite,
+                              decoration: BoxDecoration(color: mylightBlue),
+                              padding:
+                                  const EdgeInsets.fromLTRB(10.0, 10.0, 10, 10),
+                              child: Padding(
+                                  padding: EdgeInsets.only(right: 8.0),
+                                  child: Text('شاهد الفيديو الآن...',
+                                      textDirection: TextDirection.rtl,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: 20.0,
+                                          color: myDarkGrey,
+                                          height: 1))),
+                            ),
+                          ),
                         ),
-                        color: mylightBlue,
-                        child: Container(
-                          width: double.maxFinite,
-                          decoration: BoxDecoration(color: mylightBlue),
-                          padding: const EdgeInsets.fromLTRB(10.0,10.0,10,10),
-                          child: Padding(
-                              padding: EdgeInsets.only(right: 8.0),
-                              child: Text('شاهد الفيديو الآن...',
-                              textDirection: TextDirection.rtl,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontSize: 25.0,
-                                      color: myDarkGrey,
-                                      height: 1))),
-                        ),
-                      ),
-                    ),
+              flex: 4),
           Expanded(
+            //nu
             flex: 1,
             child: DownloaderSingle(
               callback: _donedown,

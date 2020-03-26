@@ -12,7 +12,14 @@ abstract class _PageStore with Store {
   bool options = false;
 
   @observable
-  List pageNum = [];
+  List pageNum = [
+    {
+      "text": [
+        {"ContentText": "Introduction", "MediaType": "Text"}
+      ],
+      "Media": []
+    }
+  ];
 
   @observable
   bool last = false;
