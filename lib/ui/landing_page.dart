@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import '../widgets/video_p.dart';
 import 'package:video_player/video_player.dart';
+
 import 'package:google_fonts/google_fonts.dart';
+import '../utils/content_fetch.dart';
 
 class Landing extends StatefulWidget {
   Landing({Key key}) : super(key: key);
@@ -82,63 +84,69 @@ class _LandingState extends State<Landing> {
               ),
             ),
             Container(
-                height:240,
+                height: 240,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-              Container(
-                padding: EdgeInsets.symmetric(vertical:20.0),
-                  child: Center(
-                      child: Text(
-                    "يتضمن هذا التطبيق العديد  من \n المواضيع التي تهم الأمهات ",
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.lateef(
-                        textStyle: TextStyle(
-                            fontSize: 28.0, color: Colors.white, height: 1)),
-                  )),
-                
-              ),
-              Container(
-                padding: EdgeInsets.only(bottom: 20.0),
-                child: Center(
-                  child: RaisedButton(
-                    padding: EdgeInsets.all(4.0),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: new BorderRadius.circular(20.0),
-                    ),
-                    color: mylightBlue,
-                    onPressed: () => Navigator.of(context).pushNamed('/ML'),
-                    child: Container(
-                        width: 200,
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Transform.rotate(
-                                  angle: 1.0,
-                                  child: RawMaterialButton(
-                                    onPressed: null,
-                                    child: Icon(Icons.play_arrow,
-                                        color: myDarkGrey, size: 40),
-                                    shape: new CircleBorder(),
-                                    constraints: new BoxConstraints(
-                                        minHeight: 40.0, minWidth: 40.0),
-                                  )),
-                              Padding(
-                                  padding: EdgeInsets.only(right: 8.0),
-                                  child: Text(
-                                    "ابدأ التعلم",
-                                    textAlign: TextAlign.start,
-                                    style: GoogleFonts.lateef(
-                                        textStyle: TextStyle(
-                                            fontSize: 28.0,
-                                            color: myDarkGrey,
-                                            height: 1)),
-                                  ))
-                            ])),
-                  ),
-                ),
-              ),
-            ])),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        padding: EdgeInsets.symmetric(vertical: 20.0),
+                        child: Center(
+                            child: Text(
+                          "يتضمن هذا التطبيق العديد  من \n المواضيع التي تهم الأمهات ",
+                          textAlign: TextAlign.center,
+                          style: GoogleFonts.lateef(
+                              textStyle: TextStyle(
+                                  fontSize: 28.0,
+                                  color: Colors.white,
+                                  height: 1)),
+                        )),
+                      ),
+                      Container(
+                        padding: EdgeInsets.only(bottom: 20.0),
+                        child: Center(
+                          child: RaisedButton(
+                            padding: EdgeInsets.all(4.0),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(20.0),
+                            ),
+                            color: mylightBlue,
+                            onPressed: () async =>
+                                Navigator.of(context).pushNamed(
+                              '/ML',
+                              arguments: await stream(),
+                            ),
+                            child: Container(
+                                width: 200,
+                                child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Transform.rotate(
+                                          angle: 1.0,
+                                          child: RawMaterialButton(
+                                            onPressed: null,
+                                            child: Icon(Icons.play_arrow,
+                                                color: myDarkGrey, size: 40),
+                                            shape: new CircleBorder(),
+                                            constraints: new BoxConstraints(
+                                                minHeight: 40.0,
+                                                minWidth: 40.0),
+                                          )),
+                                      Padding(
+                                          padding: EdgeInsets.only(right: 8.0),
+                                          child: Text(
+                                            "ابدأ التعلم",
+                                            textAlign: TextAlign.start,
+                                            style: GoogleFonts.lateef(
+                                                textStyle: TextStyle(
+                                                    fontSize: 28.0,
+                                                    color: myDarkGrey,
+                                                    height: 1)),
+                                          ))
+                                    ])),
+                          ),
+                        ),
+                      ),
+                    ])),
           ],
         ),
       ),

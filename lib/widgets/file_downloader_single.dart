@@ -97,8 +97,8 @@ class _DownloaderSingleState extends State<DownloaderSingle> {
               )
             : _permissionReady
                 ? new Container(
-                    height: MediaQuery.of(context).size.height,
-                    width: MediaQuery.of(context).size.width,
+                    // height: MediaQuery.of(context).size.height,
+                    // width: MediaQuery.of(context).size.width,
                     child: new Row(
                       children: <Widget>[
                         new Container(

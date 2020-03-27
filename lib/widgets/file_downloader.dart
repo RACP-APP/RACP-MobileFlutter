@@ -210,7 +210,7 @@ class _DownloaderListState extends State<DownloaderList> {
                                 });
                               },
                               child: Text(
-                                'أعد المحالوة',
+                                'أعد المحاولة',
                                 style: TextStyle(
                                     color: myDarkBlue,
                                     fontWeight: FontWeight.bold,
