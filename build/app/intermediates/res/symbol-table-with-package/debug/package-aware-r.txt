@@ -139,6 +139,7 @@ string flutter_downloader_notification_paused
 string flutter_downloader_notification_started
 string status_bar_notification_info_overflow
 style LaunchTheme
+style NormalTheme
 style TextAppearance_Compat_Notification
 style TextAppearance_Compat_Notification_Info
 style TextAppearance_Compat_Notification_Line2
