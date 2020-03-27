@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'utils/route_generator.dart';
-
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
