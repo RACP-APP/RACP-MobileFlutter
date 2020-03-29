@@ -14,8 +14,9 @@ class ModulesView extends StatelessWidget {
   final args;
   @override
   Widget build(BuildContext context) {
-    var storeP = Provider.of<PageStore>(context);
 
+    var storeP = Provider.of<PageStore>(context);
+    
     return SafeArea(
       child: Scaffold(
           drawer: MyDrawer(this.args["items"], this.args["icon"]),

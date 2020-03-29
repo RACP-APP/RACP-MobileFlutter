@@ -57,6 +57,8 @@ class Module extends StatelessWidget {
           width: 250,
           child: new LinearPercentIndicator(
               width: 250,
+              animation: true,
+              animationDuration: 2000,
               lineHeight: 50.0,
               padding: EdgeInsets.all(0),
               center: Text(
@@ -86,7 +88,9 @@ class Module extends StatelessWidget {
 class VerticalView extends StatelessWidget {
   VerticalView(this.stuff);
   final stuff;
-
+  final myDarkGrey = Color(0xff605E5E);
+  final myDarkBlue = Color(0xff085576);
+  final mylightBlue = Color(0xff8AD0EE);
   @override
   Widget build(BuildContext context) {
     print(stuff);
@@ -100,10 +104,13 @@ class VerticalView extends StatelessWidget {
             animation: true,
             lineHeight: 30.0,
             animationDuration: 2000,
-            percent: 0.9,
-            center: Text("مدى التقدم الكامل"),
-            linearStrokeCap: LinearStrokeCap.butt,
-            progressColor: Colors.greenAccent,
+            percent: 0.5,
+            center: Text("مدى التقدم الكامل",style: GoogleFonts.lateef(
+                    textStyle: TextStyle(
+                        fontSize: 20.0, color: Colors.white, height: 1))),
+            linearStrokeCap: LinearStrokeCap.roundAll,
+            backgroundColor: mylightBlue,
+            progressColor: myDarkBlue,
           ),
         ),
         new Expanded(
