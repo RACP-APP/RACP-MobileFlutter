@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../widgets/video_p.dart';
 import 'package:video_player/video_player.dart';
-
 import 'package:google_fonts/google_fonts.dart';
+import '../widgets/video_p.dart';
 import '../utils/content_fetch.dart';
+import '../ui/app_notification.dart';
 
 class Landing extends StatefulWidget {
   Landing({Key key}) : super(key: key);
@@ -16,6 +16,8 @@ class _LandingState extends State<Landing> {
   final myDarkGrey = Color(0xff605E5E);
   final myDarkBlue = Color(0xff085576);
   final mylightBlue = Color(0xff8AD0EE);
+  int counter = 0;
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -38,15 +40,8 @@ class _LandingState extends State<Landing> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Align(
-                    alignment: Alignment.centerLeft,
-                    child: RawMaterialButton(
-                      onPressed: null,
-                      child: Icon(Icons.notifications_none, color: myDarkGrey),
-                      shape: new CircleBorder(),
-                      constraints:
-                          new BoxConstraints(minHeight: 24.0, minWidth: 24.0),
-                    ),
-                  ),
+                      alignment: Alignment.centerLeft,
+                      child: NotificationWidget(Color(0xff605E5E))),
                   Align(
                       alignment: Alignment.centerRight,
                       child: Padding(

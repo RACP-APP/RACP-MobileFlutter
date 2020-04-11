@@ -29,6 +29,7 @@ dependencies:
   cupertino_icons: ^0.1.2
   google_fonts: ^0.3.9
   feather_icons_flutter: ">=4.7.4"
+  firebase_messaging: ^6.0.13
 
 dev_dependencies:
   flutter_test:
