@@ -4,13 +4,11 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:feather_icons_flutter/feather_icons_flutter.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import './utils/content_fetch.dart';
 import 'utils/route_generator.dart';
 import './stores/module_view_store.dart';
 import './stores/drawer_store.dart';
 import './stores/module_page_store.dart';
-import './stores/notification_store.dart';
 import './ui/landing_page.dart';
 
 void main() async {
@@ -21,40 +19,11 @@ void main() async {
   runApp(new MyApp());
 }
 
-// checkNotification(BuildContext context) {
-//   final FirebaseMessaging firebaseMessaging = FirebaseMessaging();
-//   final appNotification = Provider.of<AppNotification>(context);
 
-//   firebaseMessaging.configure(
-//     onMessage: (Map<String, dynamic> message) async {
-//       // make the notification icon orange ???
-//       print(message);
-//       appNotification.changeNotificationState();
-//     },
-//   );
-// }
 
 class MyApp extends StatelessWidget {
   final myDarkGrey = Color(0xff605E5E);
   final myDarkBlue = Color(0xff085576);
-
-  
-  // var tokenId;
-
-//   Future<String> getUserToken() async {
-
-//     await firebaseMessaging.getToken().then((token) {
-//       print('***********************************************************************************');
-//       print(token);
-//       return token;
-//     });
-//   }
-
-//   Future<void> getToken() async {
-//     tokenId = await getUserToken();
-//   }
-//  await getToken();
-// print("token " + tokenId);
 
   @override
   Widget build(BuildContext context) {
@@ -64,10 +33,7 @@ class MyApp extends StatelessWidget {
         Provider<ViewStore>(create: (_) => ViewStore()),
         Provider<DrawerStore>(create: (_) => DrawerStore()),
         Provider<PageStore>(create: (_) => PageStore()),
-        ChangeNotifierProvider<AppNotification>(
-            create: (_) => AppNotification()),
-        // FutureProvider<bool>(create:(_) =>  AppNotification().checkNotification() , catchError: (context,error){print(error.toString())} )
-      ],
+             ],
       child: new MaterialApp(
         title: 'الحياة والطفل',
         theme: new ThemeData(

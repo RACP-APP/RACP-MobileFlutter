@@ -183,7 +183,7 @@ class MyCustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                               constraints: new BoxConstraints(
                                   minHeight: 10.0, minWidth: 10.0),
                             )),
-                       NotificationWidget(Colors.white)
+                       new NotificationWidget(Colors.white)
                       ]))),
           Container(
               child: Center(

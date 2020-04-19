@@ -41,7 +41,9 @@ class _LandingState extends State<Landing> {
                 children: <Widget>[
                   Align(
                       alignment: Alignment.centerLeft,
-                      child: NotificationWidget(Color(0xff605E5E))),
+                      child: Padding(
+                          padding: EdgeInsets.all(10.0),
+                          child: new NotificationWidget(myDarkGrey))),
                   Align(
                       alignment: Alignment.centerRight,
                       child: Padding(
