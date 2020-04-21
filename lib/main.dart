@@ -10,12 +10,14 @@ import './stores/module_view_store.dart';
 import './stores/drawer_store.dart';
 import './stores/module_page_store.dart';
 import './ui/landing_page.dart';
+import './utils/progress.dart';
 
 void main() async {
 //   
   WidgetsFlutterBinding.ensureInitialized();
   await FlutterDownloader.initialize();
   await fetchContent();
+  await checkProgressFile();
   runApp(new MyApp());
 }
 
