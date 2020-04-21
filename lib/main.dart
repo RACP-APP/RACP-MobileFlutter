@@ -1,34 +1,39 @@
 import 'package:flutter/material.dart';
-import 'utils/route_generator.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:feather_icons_flutter/feather_icons_flutter.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import './utils/content_fetch.dart';
+import 'utils/route_generator.dart';
 import './stores/module_view_store.dart';
 import './stores/drawer_store.dart';
 import './stores/module_page_store.dart';
 import './ui/landing_page.dart';
 
 void main() async {
+//   
   WidgetsFlutterBinding.ensureInitialized();
   await FlutterDownloader.initialize();
   await fetchContent();
   runApp(new MyApp());
 }
 
+
+
 class MyApp extends StatelessWidget {
   final myDarkGrey = Color(0xff605E5E);
   final myDarkBlue = Color(0xff085576);
+
   @override
   Widget build(BuildContext context) {
+   
     return MultiProvider(
       providers: [
         Provider<ViewStore>(create: (_) => ViewStore()),
         Provider<DrawerStore>(create: (_) => DrawerStore()),
         Provider<PageStore>(create: (_) => PageStore()),
-      ],
+             ],
       child: new MaterialApp(
         title: 'الحياة والطفل',
         theme: new ThemeData(

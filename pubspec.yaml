@@ -17,7 +17,7 @@ dependencies:
   flutter_html: ^0.11.1
   percent_indicator: ^2.1.1+1
   chewie: ^0.9.8+1
-  path_provider: ^1.6.0
+  path_provider: ^1.6.5
   permission_handler: ^4.2.0+hotfix.3
   flutter_downloader: ^1.4.1
   url_launcher: ^5.4.2
@@ -25,16 +25,20 @@ dependencies:
   flutter_markdown: ^0.3.4
   flutter_localizations:
     sdk: flutter
-
+  rflutter_alert: ^1.0.3
+  disk_space: ^0.0.3
   cupertino_icons: ^0.1.2
   google_fonts: ^0.3.9
   feather_icons_flutter: ">=4.7.4"
-
+  firebase_messaging: ^6.0.13
+  dio: ^3.0.9
+  open_file: ^3.0.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner: ^1.7.3
   mobx_codegen: ^1.0.1
+  
 
 
 

@@ -25,7 +25,7 @@ class MyDrawer extends StatelessWidget {
         builder: (_) => ListTile(
           contentPadding: EdgeInsets.fromLTRB(30.0, 5.0, 5.0, 10.0),
           leading: Icon(
-            Icons.done,
+            pageStore.getCompletion?Icons.done:Icons.remove,
             color: mylightBlue,
             size: 20,
           ),
@@ -36,9 +36,11 @@ class MyDrawer extends StatelessWidget {
           trailing: Icon(Icons.keyboard_arrow_right, color: mylightBlue),
           onTap: () {
             //todo
+            //TODO: SET THE ICON TO DONE 
             itemStore.setCurrent(item["Title"]);
             _barStore.setCurrentName(itemStore.getCurrent);
             pageStore.setPage(content);
+            pageStore.setCompletion(true);
           },
           selected: itemStore.current == item["Title"] ? true : false,
         ),

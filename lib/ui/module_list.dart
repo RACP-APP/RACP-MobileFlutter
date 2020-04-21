@@ -3,6 +3,8 @@ import "package:percent_indicator/linear_percent_indicator.dart";
 import 'package:feather_icons_flutter/feather_icons_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'app_notification.dart';
+
 class ModulesList extends StatefulWidget {
   ModulesList(this.stuff);
   final stuff;
@@ -181,14 +183,7 @@ class MyCustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                               constraints: new BoxConstraints(
                                   minHeight: 10.0, minWidth: 10.0),
                             )),
-                        RawMaterialButton(
-                          onPressed: null,
-                          child: Icon(Icons.notifications_none,
-                              color: Colors.white, size: 24),
-                          shape: new CircleBorder(),
-                          constraints: new BoxConstraints(
-                              minHeight: 24.0, minWidth: 24.0),
-                        )
+                       new NotificationWidget(Colors.white)
                       ]))),
           Container(
               child: Center(
