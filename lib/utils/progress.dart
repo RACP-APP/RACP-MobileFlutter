@@ -5,6 +5,114 @@ import 'package:path_provider/path_provider.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/services.dart';
 
+// TODO get the progress info fot the modules
+getOverallProgressPercent() async {
+  double overallProgress = 1;
+  final directory = await getApplicationDocumentsDirectory();
+  final path = directory.path;
+  final progressFile = File('$path/progress.json');
+  String progressFileContent = await progressFile.readAsString();
+  Map<String, dynamic> progressFileContentMap = jsonDecode(progressFileContent);
+
+  progressFileContentMap["models"].forEach((model) {
+    double modelProgress = getModelProgressPercent(model["ModelID"]);
+    overallProgress *= modelProgress;
+  });
+
+  return overallProgress;
+}
+
+getModelProgressPercent(modelId) async {
+  double modelProgress = 1;
+  final directory = await getApplicationDocumentsDirectory();
+  final path = directory.path;
+  final progressFile = File('$path/progress.json');
+  String progressFileContent = await progressFile.readAsString();
+  Map<String, dynamic> progressFileContentMap = jsonDecode(progressFileContent);
+
+  progressFileContentMap["models"].forEach((model) {
+    if (model["ModelID"] == modelId) {
+      if (model["Topics"] != null) {
+        List topics = model["Topics"];
+        topics.forEach((topic) {
+          double topicProgress =
+              getTopicProgressPercent(modelId, topic["TopicID"]);
+          modelProgress *= topicProgress;
+        });
+      }
+    }
+  });
+
+  return modelProgress;
+}
+
+// TODO get the progress info fot the topics
+getTopicProgressPercent(modelId, topciId) async {
+  int noOfArticles;
+  int noOfArticlesViewd = 0;
+  final directory = await getApplicationDocumentsDirectory();
+  final path = directory.path;
+  final progressFile = File('$path/progress.json');
+  String progressFileContent = await progressFile.readAsString();
+  Map<String, dynamic> progressFileContentMap = jsonDecode(progressFileContent);
+
+  progressFileContentMap["models"].forEach((model) {
+    if (model["ModelID"] == modelId) {
+      if (model["Topics"] != null) {
+        List topics = model["Topics"];
+        topics.forEach((topic) {
+          if (topic["TopicID"] == topciId) {
+            if (topic["Article"] != null) {
+              List articles = topic["Article"];
+              articles.forEach((article) {
+                var viewed =
+                    getIfArticleViewed(modelId, topciId, article["ArticleID"]);
+                if (viewed) {
+                  noOfArticlesViewd++;
+                }
+              });
+            }
+          }
+        });
+      }
+    }
+  });
+
+  return noOfArticlesViewd / noOfArticles;
+}
+
+//TODO get the progress info for the article
+getIfArticleViewed(modelId, topciId, articleId) async {
+  final directory = await getApplicationDocumentsDirectory();
+  final path = directory.path;
+  final progressFile = File('$path/progress.json');
+  String progressFileContent = await progressFile.readAsString();
+  Map<String, dynamic> progressFileContentMap = jsonDecode(progressFileContent);
+
+  progressFileContentMap["models"].forEach((model) {
+    if (model["ModelID"] == modelId) {
+      if (model["Topics"] != null) {
+        List topics = model["Topics"];
+        topics.forEach((topic) {
+          if (topic["TopicID"] == topciId) {
+            if (topic["Article"] != null) {
+              List articles = topic["Article"];
+              articles.forEach((article) {
+                if (article["ArticleID"] == articleId) {
+                  return article["TimesViewed"] > 0;
+                }
+              });
+            }
+          }
+        });
+      }
+    }
+  });
+
+  return false;
+}
+
+// get the device info
 Future<List<String>> getDeviceDetails() async {
   String deviceName;
   String deviceVersion;
@@ -30,6 +138,7 @@ Future<List<String>> getDeviceDetails() async {
   return [deviceName, deviceVersion, identifier];
 }
 
+// check if the progress file exists
 Future<void> checkProgressFile() async {
   try {
     final directory = await getApplicationDocumentsDirectory();
@@ -80,7 +189,7 @@ Future<void> checkProgressFile() async {
       });
     } else {
       print('file exists=================================================');
-      await progressFile.delete();
+      // await progressFile.delete();
     }
   } catch (error) {
     print('=============================');

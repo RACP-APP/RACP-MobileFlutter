@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import "package:percent_indicator/linear_percent_indicator.dart";
 import 'package:feather_icons_flutter/feather_icons_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import '../utils/progress.dart';
 import 'app_notification.dart';
 
 class ModulesList extends StatefulWidget {
@@ -96,6 +96,9 @@ class VerticalView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print(stuff);
+    var overallProgress = getOverallProgressPercent();
+    print('overall ****************************');
+    print(overallProgress);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -106,7 +109,7 @@ class VerticalView extends StatelessWidget {
             animation: true,
             lineHeight: 30.0,
             animationDuration: 2000,
-            percent: 0.5,
+            percent: overallProgress,
             center: Text("مدى التقدم الكامل",style: GoogleFonts.lateef(
                     textStyle: TextStyle(
                         fontSize: 20.0, color: Colors.white, height: 1))),
