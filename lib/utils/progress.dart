@@ -5,24 +5,55 @@ import 'package:path_provider/path_provider.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/services.dart';
 
+// TODO set the article as completed
+setArticleCompleted(modelId, topicId, articleId) async {
+  final directory = await getApplicationDocumentsDirectory();
+  final path = directory.path;
+  final progressFile = File('$path/progress.json');
+  String progressFileContent = await progressFile.readAsString();
+  Map<String, dynamic> modelsList = jsonDecode(progressFileContent);
+  modelsList["models"].forEach((model) {
+    if (model["ModelID"] == modelId) {
+      List topics = model["Topics"];
+      topics.forEach((topic) {
+        if (topic["TopicID"] == topicId) {
+          List articles = topic["Article"];
+          articles.forEach((article) {
+            if (article["ArticleID"] == articleId) {
+              article["TimesViewed"]++;
+              print('555555555555555555555555555555555555555555555555');
+              print('article {$article["ArticleID"]} is viewed {$article["TimesViewed"]}');
+            }
+          });
+        }
+      });
+    }
+  });
+  
+  await progressFile.writeAsString(jsonEncode(progressFileContent));
+}
+
 // TODO get the progress info fot the modules
-getOverallProgressPercent() async {
-  double overallProgress = 1;
+Future<double> getOverallProgressPercent() async {
+  double overallProgress = 1.0;
   final directory = await getApplicationDocumentsDirectory();
   final path = directory.path;
   final progressFile = File('$path/progress.json');
   String progressFileContent = await progressFile.readAsString();
   Map<String, dynamic> progressFileContentMap = jsonDecode(progressFileContent);
-
-  progressFileContentMap["models"].forEach((model) {
-    double modelProgress = getModelProgressPercent(model["ModelID"]);
+  double modelProgress;
+  await progressFileContentMap["models"].forEach((model) async {
+    modelProgress = await getModelProgressPercent(model["ModelID"]);
+    print('mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm');
+    print(modelProgress);
     overallProgress *= modelProgress;
+    print('oooooooooooooooooooooooooooooooooooooo');
+    print(overallProgress);
   });
-
   return overallProgress;
 }
 
-getModelProgressPercent(modelId) async {
+Future<double> getModelProgressPercent(modelId) async {
   double modelProgress = 1;
   final directory = await getApplicationDocumentsDirectory();
   final path = directory.path;
@@ -30,25 +61,30 @@ getModelProgressPercent(modelId) async {
   String progressFileContent = await progressFile.readAsString();
   Map<String, dynamic> progressFileContentMap = jsonDecode(progressFileContent);
 
-  progressFileContentMap["models"].forEach((model) {
+  await progressFileContentMap["models"].forEach((model) {
     if (model["ModelID"] == modelId) {
       if (model["Topics"] != null) {
         List topics = model["Topics"];
-        topics.forEach((topic) {
+        topics.forEach((topic) async {
           double topicProgress =
-              getTopicProgressPercent(modelId, topic["TopicID"]);
+              await getTopicProgressPercent(modelId, topic["TopicID"]);
           modelProgress *= topicProgress;
+          print('================topic progress============');
+          print(topicProgress);
+          print('================modelProgress progress============');
+
+          print(modelProgress);
         });
       }
     }
   });
-
   return modelProgress;
 }
 
 // TODO get the progress info fot the topics
-getTopicProgressPercent(modelId, topciId) async {
-  int noOfArticles;
+Future<double> getTopicProgressPercent(modelId, topciId) async {
+  //TODO PROVIDE THE FILE CONTENT(OPTIONAL) IF NOT GET IT
+  int noOfArticles = 0;
   int noOfArticlesViewd = 0;
   final directory = await getApplicationDocumentsDirectory();
   final path = directory.path;
@@ -56,17 +92,20 @@ getTopicProgressPercent(modelId, topciId) async {
   String progressFileContent = await progressFile.readAsString();
   Map<String, dynamic> progressFileContentMap = jsonDecode(progressFileContent);
 
-  progressFileContentMap["models"].forEach((model) {
+  await progressFileContentMap["models"].forEach((model) {
     if (model["ModelID"] == modelId) {
       if (model["Topics"] != null) {
         List topics = model["Topics"];
         topics.forEach((topic) {
           if (topic["TopicID"] == topciId) {
             if (topic["Article"] != null) {
+              noOfArticles = topic["Article"].length;
+              print('=========no of articles=====================');
+              print(noOfArticles);
               List articles = topic["Article"];
-              articles.forEach((article) {
-                var viewed =
-                    getIfArticleViewed(modelId, topciId, article["ArticleID"]);
+              articles.forEach((article) async {
+                bool viewed = await getIfArticleViewed(
+                    modelId, topciId, article["ArticleID"]);
                 if (viewed) {
                   noOfArticlesViewd++;
                 }
@@ -77,19 +116,21 @@ getTopicProgressPercent(modelId, topciId) async {
       }
     }
   });
-
+  print('=========no of articles viewd=====================');
+  print(noOfArticlesViewd);
+  print(noOfArticlesViewd / noOfArticles);
   return noOfArticlesViewd / noOfArticles;
 }
 
 //TODO get the progress info for the article
-getIfArticleViewed(modelId, topciId, articleId) async {
+Future<bool> getIfArticleViewed(modelId, topciId, articleId) async {
   final directory = await getApplicationDocumentsDirectory();
   final path = directory.path;
   final progressFile = File('$path/progress.json');
   String progressFileContent = await progressFile.readAsString();
   Map<String, dynamic> progressFileContentMap = jsonDecode(progressFileContent);
 
-  progressFileContentMap["models"].forEach((model) {
+  await progressFileContentMap["models"].forEach((model) {
     if (model["ModelID"] == modelId) {
       if (model["Topics"] != null) {
         List topics = model["Topics"];
@@ -110,6 +151,35 @@ getIfArticleViewed(modelId, topciId, articleId) async {
   });
 
   return false;
+}
+
+Future<bool> getIfAllArticlesViewed(modelId, topicId) async {
+  final directory = await getApplicationDocumentsDirectory();
+  final path = directory.path;
+  final progressFile = File('$path/progress.json');
+  String progressFileContent = await progressFile.readAsString();
+  Map<String, dynamic> progressFileContentMap = jsonDecode(progressFileContent);
+  bool allArticlesViewed = false;
+  await progressFileContentMap["models"].forEach((model) {
+    if (model["ModelID"] == modelId) {
+      if (model["Topics"] != null) {
+        List topics = model["Topics"];
+        topics.forEach((topic) {
+          if (topic["TopicID"] == topicId) {
+            if (topic["Article"] != null) {
+              List articles = topic["Article"];
+              articles.forEach((article) {
+                allArticlesViewed =
+                    allArticlesViewed && article["TimesViewed"] > 0;
+              });
+            }
+          }
+        });
+      }
+    }
+  });
+
+  return allArticlesViewed;
 }
 
 // get the device info
@@ -140,6 +210,7 @@ Future<List<String>> getDeviceDetails() async {
 
 // check if the progress file exists
 Future<void> checkProgressFile() async {
+  print('helllllllllllllllllllllllllllllllllllllo');
   try {
     final directory = await getApplicationDocumentsDirectory();
     final path = directory.path;
@@ -163,28 +234,6 @@ Future<void> checkProgressFile() async {
           String deviceId = (await getDeviceDetails())[2].toString();
           await file.writeAsString(
               jsonEncode(progressFileContent.toJson(false, deviceId)));
-          // to change a value in a json file
-          // String dd = await file.readAsString();
-
-          // Map<String,dynamic> cc = jsonDecode(dd);
-          // print(cc);
-          // cc["models"].forEach((x){
-          //   if(x["ModelID"]==9){
-          //     List d= x["Topics"];
-          //     d.forEach((f){
-          //       if(f["TopicID"] == 16){
-          //         List a = f["Article"];
-          //         a.forEach((m){
-          //           if(m["ArticleID"]== 17){
-          //             m["TimesViewed"]++;
-          //           }
-          //         });
-          //       }
-          //     });
-          //   }
-          // });
-
-          // await file.writeAsString(jsonEncode(cc));
         }
       });
     } else {

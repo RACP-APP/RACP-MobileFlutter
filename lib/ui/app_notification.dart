@@ -321,7 +321,7 @@ class _NotificationState extends State<NotificationWidget>
       setState(() {
         downloading = false;
         //TODO UNCOMMENT AFTER FINISHING THIS CLASS
-        // hasNotification = false;
+        hasNotification = false;
       });
 
       Alert(

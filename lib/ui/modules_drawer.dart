@@ -5,12 +5,13 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import '../stores/module_view_store.dart';
 import '../stores/module_page_store.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:feather_icons_flutter/feather_icons_flutter.dart';
+import '../utils/progress.dart';
 
 class MyDrawer extends StatelessWidget {
-  MyDrawer(this.itemList, this.img);
+  MyDrawer(this.itemList, this.img, this.id);
   final List itemList;
   final String img;
+  final int id;
   final myDarkGrey = Color(0xff605E5E);
   final myDarkBlue = Color(0xff085576);
   final mylightBlue = Color(0xff8AD0EE);
@@ -19,16 +20,27 @@ class MyDrawer extends StatelessWidget {
     var itemStore = Provider.of<DrawerStore>(context);
     var _barStore = Provider.of<ViewStore>(context);
     var pageStore = Provider.of<PageStore>(context);
-
-    Widget articles(item, context, content) {
+    bool viewed = false;
+    bool allArticlesViewed = false;
+    Widget articles(item, context, content, modelId, topicId) {
       return Observer(
         builder: (_) => ListTile(
           contentPadding: EdgeInsets.fromLTRB(30.0, 5.0, 5.0, 10.0),
-          leading: Icon(
-            pageStore.getCompletion?Icons.done:Icons.remove,
-            color: mylightBlue,
-            size: 20,
-          ),
+          leading: FutureBuilder<bool>(
+              future: getIfArticleViewed(modelId, topicId, item["ArticleID"]),
+              builder: (context, AsyncSnapshot<bool> snapshot) {
+                if (snapshot.hasData) {
+                  viewed = snapshot.data;
+                  print(
+                      '***************************article viewed***************************');
+                  print(viewed);
+                }
+                return Icon(
+                  viewed ? Icons.done : Icons.remove,
+                  color: mylightBlue,
+                  size: 20,
+                );
+              }),
           title: Text("${item["Title"]}",
               style: GoogleFonts.lateef(
                   textStyle: TextStyle(
@@ -36,11 +48,12 @@ class MyDrawer extends StatelessWidget {
           trailing: Icon(Icons.keyboard_arrow_right, color: mylightBlue),
           onTap: () {
             //todo
-            //TODO: SET THE ICON TO DONE 
+            //TODO: SET THE ICON TO DONE
             itemStore.setCurrent(item["Title"]);
             _barStore.setCurrentName(itemStore.getCurrent);
             pageStore.setPage(content);
-            pageStore.setCompletion(true);
+            // pageStore.setCompletion(true);
+            setArticleCompleted(modelId, topicId, item["ArticleID"]);
           },
           selected: itemStore.current == item["Title"] ? true : false,
         ),
@@ -83,8 +96,22 @@ class MyDrawer extends StatelessWidget {
                       margin: EdgeInsets.all(0),
                       decoration: BoxDecoration(color: myDarkBlue),
                       child: ExpansionTile(
-                        leading:
-                            Icon(Icons.done_all, color: mylightBlue, size: 20),
+                        leading: FutureBuilder<bool>(
+                            future: getIfAllArticlesViewed(
+                                this.id, item['TopicID']),
+                            builder: (context, AsyncSnapshot<bool> snapshot) {
+                              if (snapshot.hasData) {
+                                allArticlesViewed = snapshot.data;
+                                print(
+                                    '***************************all article viewed***************************');
+                                print(allArticlesViewed);
+                              }
+                              return Icon(
+                                allArticlesViewed ? Icons.done_all : Icons.remove,
+                                color: mylightBlue,
+                                size: 20,
+                              );
+                            }),
                         title: Container(
                             padding: EdgeInsets.only(left: 0),
                             decoration: BoxDecoration(color: myDarkBlue),
@@ -97,8 +124,8 @@ class MyDrawer extends StatelessWidget {
                                       height: 1.1)),
                             )),
                         children: item["Article"]
-                            .map<Widget>((item) =>
-                                articles(item, context, item["content"]))
+                            .map<Widget>((item) => articles(item, context,
+                                item["content"], this.id, item['TopicID']))
                             .toList(),
                       ));
                 },

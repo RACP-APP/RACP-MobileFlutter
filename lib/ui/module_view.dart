@@ -20,14 +20,14 @@ class ModulesView extends StatelessWidget {
     
     return SafeArea(
       child: Scaffold(
-          drawer: MyDrawer(this.args["items"], this.args["icon"]),
+          drawer: MyDrawer(this.args["items"], this.args["icon"],this.args['id']),
           appBar: MyCustomAppBar(50, this.args["name"]),
           body: Container(
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                TopicBar(50, 0.8
-                    //this.args["percent"],
+                TopicBar(50, 
+                    this.args["progress"],
                     ),
                 Expanded(
                   child: Center(
