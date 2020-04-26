@@ -33,10 +33,12 @@ class MyDrawer extends StatelessWidget {
                   viewed = snapshot.data;
                   print(
                       '***************************article viewed***************************');
+                      print(item["ArticleID"]);
                   print(viewed);
                 }
+                var state = itemStore.getArticleState(item["ArticleID"]) == null ? false: itemStore.getArticleState(item["ArticleID"]); 
                 return Icon(
-                  viewed ? Icons.done : Icons.remove,
+                  viewed || state ? Icons.done : Icons.remove,
                   color: mylightBlue,
                   size: 20,
                 );
@@ -46,13 +48,14 @@ class MyDrawer extends StatelessWidget {
                   textStyle: TextStyle(
                       fontSize: 18.0, color: Colors.white, height: 1.1))),
           trailing: Icon(Icons.keyboard_arrow_right, color: mylightBlue),
-          onTap: () {
+          onTap: () async {
             //todo
             //TODO: SET THE ICON TO DONE
             itemStore.setCurrent(item["Title"]);
             _barStore.setCurrentName(itemStore.getCurrent);
             pageStore.setPage(content);
-            setArticleCompleted(modelId, topicId, item["ArticleID"]);
+            itemStore.setArticleState(item["ArticleID"],true);
+            await setArticleCompleted(modelId, topicId, item["ArticleID"]);
             
           },
           selected: itemStore.current == item["Title"] ? true : false,

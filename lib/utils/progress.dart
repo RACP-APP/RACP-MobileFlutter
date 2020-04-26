@@ -21,6 +21,8 @@ Future<void> setArticleCompleted(modelId, topicId, articleId) async {
             if (article["ArticleID"] == articleId) {
               print('===============article is viewd ======================');
               article["TimesViewed"]++;
+              print(article["ArticleID"]);
+              print(article["TimesViewed"]);
             }
           });
         }
@@ -138,7 +140,6 @@ Future<bool> getIfArticleViewed(modelId, topciId, articleId) async {
       }
     }
   }
-  return viewed;
 }
 
 Future<bool> getIfAllArticlesViewed(modelId, topicId) async {
@@ -170,9 +171,7 @@ Future<bool> getIfAllArticlesViewed(modelId, topicId) async {
       }
     }
   }
-  ;
 
-  return allArticlesViewed;
 }
 
 // get the device info

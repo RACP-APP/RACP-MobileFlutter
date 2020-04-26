@@ -13,7 +13,11 @@ abstract class _DrawerStore with Store {
 
   @observable
   bool completed = false;
-
+  @observable
+  Map articles = new Map<int,bool>();
+  @observable
+  Map topics = new Map<String,bool>();
+   
   @computed
   String get getCurrent => current;
 
@@ -23,9 +27,17 @@ abstract class _DrawerStore with Store {
   @computed
   bool get getCompletion => completed;
 
+  @computed
+  bool  getArticleState(articleId) => articles[articleId];
+
   @action
   void setCurrent(String v) {
     current = v;
+  }
+
+  @action
+  void setArticleState(int articleId,bool v) {
+    articles[articleId] = v;
   }
 
   @action
