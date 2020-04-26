@@ -8,6 +8,7 @@ import "package:percent_indicator/linear_percent_indicator.dart";
 import './modules_drawer.dart';
 import '../stores/module_page_store.dart';
 import '../widgets/test2.dart';
+import '../utils/progress.dart';
 //import '../stores/module_view_store.dart';
 
 class ModulesView extends StatelessWidget {
@@ -17,18 +18,26 @@ class ModulesView extends StatelessWidget {
   Widget build(BuildContext context) {
 
     var storeP = Provider.of<PageStore>(context);
-    
+    double progress = 0.0;
     return SafeArea(
       child: Scaffold(
-          drawer: MyDrawer(this.args["items"], this.args["icon"]),
+          drawer: MyDrawer(this.args["items"], this.args["icon"],this.args['id']),
           appBar: MyCustomAppBar(50, this.args["name"]),
           body: Container(
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                TopicBar(50, 0.8
-                    //this.args["percent"],
-                    ),
+                 Observer(
+                      builder: (_) =>
+                       FutureBuilder<double>(
+              future: getModelProgressPercent(this.args['id']),
+              builder: (context, AsyncSnapshot<double> snapshot) {
+                if (snapshot.hasData) {
+                  progress = snapshot.data;
+                }
+                return TopicBar(50, 
+                    progress,
+                    );})),
                 Expanded(
                   child: Center(
                     child: Observer(

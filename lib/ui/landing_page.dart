@@ -81,7 +81,6 @@ class _LandingState extends State<Landing> {
               ),
             ),
             Container(
-                height: 240,
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[

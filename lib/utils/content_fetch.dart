@@ -30,14 +30,16 @@ Future<File> writeContent(String content) async {
 }
 
 Future fetchContent() async {
-  final response = await http.get('http://ncdp-dash.herokuapp.com/JSONFile');
+    final response = await http.get('http://162.247.76.211:3000/JSONFile');
+
+  // final response = await http.get('http://ncdp-dash.herokuapp.com/JSONFile');
 
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
     // then parse the JSON.
     //return Content.fromJson(json.decode(response.body));
     //writeContent(response)
-
+    
     writeContent(response.body);
   } else {
     // If the server did not return a 200 OK response,
