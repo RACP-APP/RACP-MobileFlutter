@@ -7,9 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:open_file/open_file.dart';
+import 'package:device_info/device_info.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'dart:async';
-
+import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:disk_space/disk_space.dart';
@@ -41,6 +42,7 @@ class _NotificationState extends State<NotificationWidget>
   _NotificationState(this.customColor);
 
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+
   // Animation
   AnimationController _controller;
   Tween<double> _tween = Tween(begin: 0.2, end: 1);
@@ -136,11 +138,50 @@ class _NotificationState extends State<NotificationWidget>
         .listen((IosNotificationSettings settings) {
       print("Settings registered: $settings");
     });
+
+    String deviceId;
+    getDeviceDetails().then((details) {
+      deviceId = details[2].toString();
+    });
+
     _firebaseMessaging.getToken().then((String token) {
       assert(token != null);
+      // save to db
+      http.post(
+        'http://162.247.76.211:3000/Articles/Registration',
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{'id': deviceId, 'token': token}),
+      );
       print('*****************token**************************');
       print(token);
     });
+  }
+
+  Future<List<String>> getDeviceDetails() async {
+    String deviceName;
+    String deviceVersion;
+    String identifier;
+    final DeviceInfoPlugin deviceInfoPlugin = new DeviceInfoPlugin();
+    try {
+      if (Platform.isAndroid) {
+        var build = await deviceInfoPlugin.androidInfo;
+        deviceName = build.model;
+        deviceVersion = build.version.toString();
+        identifier = build.androidId; //UUID for Android
+      } else if (Platform.isIOS) {
+        var data = await deviceInfoPlugin.iosInfo;
+        deviceName = data.name;
+        deviceVersion = data.systemVersion;
+        identifier = data.identifierForVendor; //UUID for iOS
+      }
+    } on PlatformException {
+      print('Failed to get platform version');
+    }
+
+//if (!mounted) return;
+    return [deviceName, deviceVersion, identifier];
   }
 
   @override
@@ -280,9 +321,8 @@ class _NotificationState extends State<NotificationWidget>
     var dio = Dio();
     dio.interceptors.add(LogInterceptor());
     try {
-      var dir = await getExternalStorageDirectory();
-      print('*************************************');
-      print(dir.path);
+      var dir = await getApplicationDocumentsDirectory();
+
       OverlayState overlayState = Overlay.of(context);
       OverlayEntry progressBarForFile = OverlayEntry(
           builder: (context) => Container(
@@ -305,7 +345,7 @@ class _NotificationState extends State<NotificationWidget>
                   progressColor: myDarkBlue,
                   percent: progressValue)));
       overlayState.insert(progressBarForFile);
-      await dio.download(fileUrl, "${dir.path}/x.json",
+      await dio.download(fileUrl, "${dir.path}/content.json",
           onReceiveProgress: (rec, total) {
         print("Rec: $rec , Total: $total");
 
@@ -320,7 +360,6 @@ class _NotificationState extends State<NotificationWidget>
       //TODO Delete the original file
       setState(() {
         downloading = false;
-        //TODO UNCOMMENT AFTER FINISHING THIS CLASS
         hasNotification = false;
       });
 

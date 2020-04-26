@@ -45,7 +45,7 @@ class Module extends StatelessWidget {
         height: 150,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: NetworkImage(img),
+            image: NetworkImage("https://firebasestorage.googleapis.com/v0/b/ncdp-270519.appspot.com/o/images%2Fexpress-js-png-5.png?alt=media&token=a746268e-1deb-4165-90de-f8692c9d5a38"),
             fit: BoxFit.cover,
           ),
           border: Border.all(
@@ -109,6 +109,7 @@ class VerticalView extends StatelessWidget {
                 builder: (context, AsyncSnapshot<double> snapshot) {
                   if (snapshot.hasData) {
                     overallProgress = snapshot.data;
+                  
                   }
                     return new LinearPercentIndicator(
                       width: MediaQuery.of(context).size.width / 1.07,
@@ -140,8 +141,7 @@ class VerticalView extends StatelessWidget {
                 builder: (context, AsyncSnapshot<double> snapshot) {
                   if (snapshot.hasData) {
                     modelProgress = snapshot.data;
-                    print('******************************************************');
-                    print(modelProgress);
+                  
                   }
                   return 
                   Padding(

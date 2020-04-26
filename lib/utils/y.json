@@ -1,0 +1,24 @@
+{"savedToDb": false, "deviceId": "7e7903f24583c36f", "models": [
+        {"ModelID": 9, "Topics": [
+                {"TopicID": 16, "ModelID": 9, "Article": [
+                        {"ArticleID": 17, "TopicID": 16, "TimesViewed": 0, "DurationViewd": 0, "DateViewd": "2020-04-25 10: 50: 41.592426"
+                        },
+                        {"ArticleID": 18, "TopicID": 16, "TimesViewed": 0, "DurationViewd": 0, "DateViewd": "2020-04-25 10: 50: 41.598072"
+                        }
+                    ]
+                },
+                {"TopicID": 17, "ModelID": 9, "Article": [
+                        {"ArticleID": 19, "TopicID": 17, "TimesViewed": 0, "DurationViewd": 0, "DateViewd": "2020-04-25 10: 50: 41.598176"
+                        },
+                        {"ArticleID": 20, "TopicID": 17, "TimesViewed": 0, "DurationViewd": 0, "DateViewd": "2020-04-25 10: 50: 41.598567"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
+
+
+{savedToDb: false, deviceId: 7e7903f24583c36f, models: [{ModelID: 8, Topics: [{TopicID: 10, ModelID: 8, Article:
+    []}, {TopicID: 11, ModelID: 8, Article: [{ArticleID: 20, TopicID: 11, TimesViewed: 0, DurationViewd: 0, DateViewd: 2020-04-26 13:35:26.213005}, {ArticleID: 21, TopicID: 11, TimesViewed: 0, DurationViewd: 0, DateViewd: 2020-04-26 13:35:26.225431}, {ArticleID: 22, TopicID: 11, TimesViewed: 0, DurationViewd: 0, DateViewd: 2020-04-26 13:35:26.225525}]}, {TopicID: 12, ModelID: 8, Article: []}, {TopicID: 13, ModelID: 8, Article: []}]}, {ModelID: 9, Topics: [{TopicID: 14, ModelID: 9, Article: []}]}, {ModelID: 10, Topics: [{TopicID: 15, ModelID: 10, Article: [{ArticleID: 23, TopicID: 15, TimesViewed: 0, DurationViewd: 0, DateViewd: 2020-04-26 13:35:26.225753}]}]}]}

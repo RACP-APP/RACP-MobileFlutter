@@ -52,8 +52,8 @@ class MyDrawer extends StatelessWidget {
             itemStore.setCurrent(item["Title"]);
             _barStore.setCurrentName(itemStore.getCurrent);
             pageStore.setPage(content);
-            // pageStore.setCompletion(true);
             setArticleCompleted(modelId, topicId, item["ArticleID"]);
+            
           },
           selected: itemStore.current == item["Title"] ? true : false,
         ),
@@ -82,56 +82,64 @@ class MyDrawer extends StatelessWidget {
             ),
           ),
           Expanded(
-            flex: 85,
-            child: Container(
-              color: myDarkBlue,
-              child: ListView.builder(
-                padding: EdgeInsets.all(0),
-                scrollDirection: Axis.vertical,
-                itemCount: itemList.length,
-                //itemExtent: 100.0,
-                itemBuilder: (context, index) {
-                  var item = itemList[index];
-                  return Container(
-                      margin: EdgeInsets.all(0),
-                      decoration: BoxDecoration(color: myDarkBlue),
-                      child: ExpansionTile(
-                        leading: FutureBuilder<bool>(
-                            future: getIfAllArticlesViewed(
-                                this.id, item['TopicID']),
-                            builder: (context, AsyncSnapshot<bool> snapshot) {
-                              if (snapshot.hasData) {
-                                allArticlesViewed = snapshot.data;
-                                print(
-                                    '***************************all article viewed***************************');
-                                print(allArticlesViewed);
-                              }
-                              return Icon(
-                                allArticlesViewed ? Icons.done_all : Icons.remove,
-                                color: mylightBlue,
-                                size: 20,
-                              );
-                            }),
-                        title: Container(
-                            padding: EdgeInsets.only(left: 0),
-                            decoration: BoxDecoration(color: myDarkBlue),
-                            child: Text(
-                              item["Title"],
-                              style: GoogleFonts.lateef(
-                                  textStyle: TextStyle(
-                                      fontSize: 20.0,
-                                      color: Colors.white,
-                                      height: 1.1)),
-                            )),
-                        children: item["Article"]
-                            .map<Widget>((item) => articles(item, context,
-                                item["content"], this.id, item['TopicID']))
-                            .toList(),
-                      ));
-                },
-              ),
-            ),
-          )
+                    flex: 85,
+                    child: Container(
+                      color: myDarkBlue,
+                      child: ListView.builder(
+                        padding: EdgeInsets.all(0),
+                        scrollDirection: Axis.vertical,
+                        itemCount: itemList.length,
+                        //itemExtent: 100.0,
+                        itemBuilder: (context, index) {
+                          var item = itemList[index];
+                          return Container(
+                              margin: EdgeInsets.all(0),
+                              decoration: BoxDecoration(color: myDarkBlue),
+                              child: ExpansionTile(
+                                leading: FutureBuilder<bool>(
+                                    future: getIfAllArticlesViewed(
+                                        this.id, item['TopicID']),
+                                    builder: (context,
+                                        AsyncSnapshot<bool> snapshot) {
+                                      if (snapshot.hasData) {
+                                        allArticlesViewed = snapshot.data;
+                                        print(
+                                            '***************************all article viewed***************************');
+                                        print(allArticlesViewed);
+                                      }
+                                      return Icon(
+                                        allArticlesViewed
+                                            ? Icons.done_all
+                                            : Icons.remove,
+                                        color: mylightBlue,
+                                        size: 20,
+                                      );
+                                    }),
+                                title: Container(
+                                    padding: EdgeInsets.only(left: 0),
+                                    decoration:
+                                        BoxDecoration(color: myDarkBlue),
+                                    child: Text(
+                                      item["Title"],
+                                      style: GoogleFonts.lateef(
+                                          textStyle: TextStyle(
+                                              fontSize: 20.0,
+                                              color: Colors.white,
+                                              height: 1.1)),
+                                    )),
+                                children: item["Article"]
+                                    .map<Widget>((item) => articles(
+                                        item,
+                                        context,
+                                        item["content"],
+                                        this.id,
+                                        item['TopicID']))
+                                    .toList(),
+                              ));
+                        },
+                      ),
+                    ),
+                  )
         ],
       ),
     );
