@@ -146,6 +146,9 @@ class _NotificationState extends State<NotificationWidget>
 
     _firebaseMessaging.getToken().then((String token) {
       assert(token != null);
+      //TODO CHECKI IF IT EXISTS IN THE PREFERENCES IF NOT THEN SAVE TO DB 
+      // IF IT EXISTS THEN COMPARE IF THE SAME TOKEN OR A NEW ONE IF A NEW ONE THEN UPDATE IN DB USING THE 
+      // DEVIE ID AS AN IDENTIFIER.
       // save to db
       http.post(
         'http://162.247.76.211:3000/Articles/Registration',

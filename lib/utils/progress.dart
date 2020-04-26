@@ -234,7 +234,7 @@ Future<void> checkProgressFile() async {
       });
     } else {
       print('file exists=================================================');
-      // await progressFile.delete();
+      await progressFile.delete();
     }
   } catch (error) {
     print('=============================');
