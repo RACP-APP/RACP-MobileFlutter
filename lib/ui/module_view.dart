@@ -155,7 +155,7 @@ class TopicBar extends StatelessWidget implements PreferredSizeWidget {
                   lineHeight: 20.0,
                   padding: EdgeInsets.all(0),
                   center: Text(
-                    (percent * 100).toString() + "%",
+                    (percent * 100).toStringAsFixed(2) + "%",
                     style: GoogleFonts.lateef(
                         textStyle: TextStyle(
                             fontSize: 20.0, color: Colors.white, height: 1.1)),
