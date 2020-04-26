@@ -2,12 +2,6 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
-<<<<<<< HEAD
-import 'package:provider/provider.dart';
-import 'content_fetch.dart';
-
-Future<File> get checkProgressFile async {
-=======
 import 'package:device_info/device_info.dart';
 import 'package:flutter/services.dart';
 
@@ -209,7 +203,6 @@ Future<List<String>> getDeviceDetails() async {
 
 // check if the progress file exists
 Future<void> checkProgressFile() async {
->>>>>>> progress
   try {
     final directory = await getApplicationDocumentsDirectory();
     final path = directory.path;
@@ -228,11 +221,6 @@ Future<void> checkProgressFile() async {
         bool contentFileExists = await contentFile.exists();
         if (contentFileExists) {
           contentFileContent = await contentFile.readAsString();
-<<<<<<< HEAD
-          await progressFile.writeAsString(progressFileContent);
-        }
-      });
-=======
           List<dynamic> modelsList = jsonDecode(contentFileContent);
           print('conten file ------------------------------');
           print(modelsList);
@@ -247,14 +235,11 @@ Future<void> checkProgressFile() async {
     } else {
       print('file exists=================================================');
       // await progressFile.delete();
->>>>>>> progress
     }
   } catch (error) {
     print('=============================');
     print(error);
   }
-<<<<<<< HEAD
-=======
   return;
 }
 
@@ -484,5 +469,4 @@ class Article {
 
     return data;
   }
->>>>>>> progress
 }
