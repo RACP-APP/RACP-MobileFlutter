@@ -5,7 +5,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/services.dart';
 
-Future<void> setArticleCompleted(modelId, topicId, articleId) async {
+Future<bool> setArticleCompleted(modelId, topicId, articleId) async {
+  var myTopic;
   final directory = await getApplicationDocumentsDirectory();
   final path = directory.path;
   final progressFile = File('$path/progress.json');
@@ -14,24 +15,27 @@ Future<void> setArticleCompleted(modelId, topicId, articleId) async {
   modelsList["models"].forEach((model) {
     if (model["ModelID"] == modelId) {
       List topics = model["Topics"];
-      topics.forEach((topic) {
+      for (final topic in topics) {
+        myTopic = topic;
         if (topic["TopicID"] == topicId) {
           List articles = topic["Article"];
-          articles.forEach((article) {
+          for (final article in articles) {
             if (article["ArticleID"] == articleId) {
               print('===============article is viewd ======================');
               article["TimesViewed"]++;
               print(article["ArticleID"]);
               print(article["TimesViewed"]);
             }
-          });
+          }
         }
-      });
+      }
+      ;
     }
   });
 
   var progressModelsJson = ProgressModels.fromJson(modelsList);
   await progressFile.writeAsString(jsonEncode(progressModelsJson.toJson()));
+  return getIfAllArticlesViewedSync(myTopic);
 }
 
 Future<double> getOverallProgressPercent() async {
@@ -67,7 +71,7 @@ Future<double> getModelProgressPercent(modelId) async {
         for (final topic in topics) {
           var topicProgress;
           topicProgress = getTopicProgressPercent(topic);
-          modelProgress += topicProgress;         
+          modelProgress += topicProgress;
         }
         return modelProgress / noOfTopics;
       }
@@ -128,17 +132,30 @@ Future<bool> getIfArticleViewed(modelId, topciId, articleId) async {
                   print('********article no ************');
                   print(article["ArticleID"]);
                   viewed = article["TimesViewed"] > 0;
-                                    print(article["TimesViewed"] > 0);
+                  print(article["TimesViewed"] > 0);
 
                   return viewed;
                 }
               }
-          
             }
           }
         }
       }
     }
+  }
+}
+
+bool getIfAllArticlesViewedSync(topic) {
+  bool allArticlesViewed = true;
+
+  if (topic["Article"] != null && topic["Article"].length != 0) {
+    List articles = topic["Article"];
+    for (final article in articles) {
+      allArticlesViewed = allArticlesViewed && article["TimesViewed"] > 0;
+    }
+    return allArticlesViewed;
+  } else {
+    return false;
   }
 }
 
@@ -171,7 +188,6 @@ Future<bool> getIfAllArticlesViewed(modelId, topicId) async {
       }
     }
   }
-
 }
 
 // get the device info
@@ -233,7 +249,7 @@ Future<void> checkProgressFile() async {
       });
     } else {
       print('file exists=================================================');
-      // await progressFile.delete();
+      await progressFile.delete();
     }
   } catch (error) {
     print('=============================');
