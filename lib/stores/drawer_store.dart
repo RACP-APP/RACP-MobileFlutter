@@ -30,6 +30,12 @@ abstract class _DrawerStore with Store {
   bool get getCompletion => completed;
 
   @computed
+  Map get getTopics => topics;
+
+  @computed
+  Map get getArticles => articles;
+
+  @action
   bool getArticleState(topicId, articleId) {
     var articleState = false;
     if (articles[topicId] == null) {
@@ -46,7 +52,7 @@ abstract class _DrawerStore with Store {
     }
   }
 
-  @computed
+  @action
   bool getTopicState(topicId) {
     var topicState = true;
     if (articles[topicId] == null) {
@@ -59,24 +65,25 @@ abstract class _DrawerStore with Store {
           print('ehlllllllllllllllllllllllllllllllllll');
           print(value);
           topicState = topicState && value;
-       
+
           print(topicState);
         });
       });
-       topics[topicId] = topicState;
+      topics[topicId] = topicState;
       return topics[topicId];
     }
   }
 
-  @computed
+  @action
   bool getIfArticlesExist(topicId) {
     print('-----getting if articles of a topic exists ---------------');
-    if (articles[topicId] == null || articles[topicId] == [] ) {
+    if (articles[topicId] == null || articles[topicId] == []) {
       return false;
     } else {
       return true;
     }
   }
+
   @action
   void setCurrent(String v) {
     current = v;
@@ -120,6 +127,11 @@ abstract class _DrawerStore with Store {
   @action
   void setOptions(bool v) {
     options = v;
+  }
+
+ @action
+  void setArticles(Map v) {
+    articles = v;
   }
 
   @action
