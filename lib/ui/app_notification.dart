@@ -255,7 +255,10 @@ class _NotificationState extends State<NotificationWidget>
         )).show();
   }
 
-  void handleNewContent() {
+  void handleNewContent() async{
+     var connectivityResult = await (Connectivity().checkConnectivity());
+      if (connectivityResult == ConnectivityResult.wifi ||
+          connectivityResult == ConnectivityResult.mobile) {
     Alert(
         context: context,
         title: "هل ترغب بتنزيل المحتوى الجديد؟",
@@ -287,6 +290,31 @@ class _NotificationState extends State<NotificationWidget>
           ),
           overlayColor: myDarkBlueOverlay,
         )).show();
+          } else {
+Alert(
+        context: context,
+        title: "لا يوجد اتصال بالانترنت",
+        buttons: [],
+        style: AlertStyle(
+          animationType: AnimationType.grow,
+          descStyle: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+          animationDuration: Duration(milliseconds: 400),
+          backgroundColor: myDarkBlue,
+          alertBorder: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+            side: BorderSide(
+              color: myDarkBlue,
+            ),
+          ),
+          titleStyle: TextStyle(
+            color: Colors.white,
+          ),
+          overlayColor: myDarkBlueOverlay,
+        )).show();
+          }
   }
 
   void checkDownload() async {
@@ -326,6 +354,7 @@ class _NotificationState extends State<NotificationWidget>
   }
 
   Future<double> checkFileSizeBeforeDownload() async {
+    
     var fileUrl = 'http://162.247.76.211:3000/JSONFile';
     http.Response response = await http.head(fileUrl);
     double size;
@@ -351,6 +380,11 @@ class _NotificationState extends State<NotificationWidget>
       var dir = await getApplicationDocumentsDirectory();
 
       OverlayState overlayState = Overlay.of(context);
+      OverlayEntry overlayForProgress = OverlayEntry(
+          builder: (context) => SizedBox.expand(
+                  child: Container(
+                color: myDarkBlueOverlay,
+              )));
       OverlayEntry progressBarForFile = OverlayEntry(
           builder: (context) => Container(
               margin: EdgeInsets.fromLTRB(30.0, 0, 30.0, 0.0),
@@ -371,6 +405,7 @@ class _NotificationState extends State<NotificationWidget>
                   backgroundColor: mylightBlue,
                   progressColor: myDarkBlue,
                   percent: progressValue)));
+      overlayState.insert(overlayForProgress);
       overlayState.insert(progressBarForFile);
       await dio.download(fileUrl, "${dir.path}/content.json",
           onReceiveProgress: (rec, total) {
@@ -379,12 +414,12 @@ class _NotificationState extends State<NotificationWidget>
         setState(() {
           downloading = true;
           progressValue = (rec / total);
-          progressString = (progressValue * 100).toStringAsFixed(0) + "%";
+          progressString = (progressValue * 100).toStringAsFixed(2) + "%";
         });
       });
       progressBarForFile.remove();
+      overlayForProgress.remove();
 
-      //TODO Delete the original file
       setState(() {
         downloading = false;
         hasNotification = false;
