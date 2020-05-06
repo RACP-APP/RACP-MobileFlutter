@@ -25,18 +25,6 @@ mixin _$DrawerStore on _DrawerStore, Store {
   bool get getCompletion =>
       (_$getCompletionComputed ??= Computed<bool>(() => super.getCompletion))
           .value;
-  Computed<Map<dynamic, dynamic>> _$getTopicsComputed;
-
-  @override
-  Map<dynamic, dynamic> get getTopics => (_$getTopicsComputed ??=
-          Computed<Map<dynamic, dynamic>>(() => super.getTopics))
-      .value;
-  Computed<Map<dynamic, dynamic>> _$getArticlesComputed;
-
-  @override
-  Map<dynamic, dynamic> get getArticles => (_$getArticlesComputed ??=
-          Computed<Map<dynamic, dynamic>>(() => super.getArticles))
-      .value;
 
   final _$currentAtom = Atom(name: '_DrawerStore.current');
 
@@ -89,23 +77,6 @@ mixin _$DrawerStore on _DrawerStore, Store {
     }, _$completedAtom, name: '${_$completedAtom.name}_set');
   }
 
-  final _$articlesAtom = Atom(name: '_DrawerStore.articles');
-
-  @override
-  Map<dynamic, dynamic> get articles {
-    _$articlesAtom.context.enforceReadPolicy(_$articlesAtom);
-    _$articlesAtom.reportObserved();
-    return super.articles;
-  }
-
-  @override
-  set articles(Map<dynamic, dynamic> value) {
-    _$articlesAtom.context.conditionallyRunInAction(() {
-      super.articles = value;
-      _$articlesAtom.reportChanged();
-    }, _$articlesAtom, name: '${_$articlesAtom.name}_set');
-  }
-
   final _$topicsAtom = Atom(name: '_DrawerStore.topics');
 
   @override
@@ -126,36 +97,6 @@ mixin _$DrawerStore on _DrawerStore, Store {
   final _$_DrawerStoreActionController = ActionController(name: '_DrawerStore');
 
   @override
-  bool getArticleState(dynamic topicId, dynamic articleId) {
-    final _$actionInfo = _$_DrawerStoreActionController.startAction();
-    try {
-      return super.getArticleState(topicId, articleId);
-    } finally {
-      _$_DrawerStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  bool getTopicState(dynamic topicId) {
-    final _$actionInfo = _$_DrawerStoreActionController.startAction();
-    try {
-      return super.getTopicState(topicId);
-    } finally {
-      _$_DrawerStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  bool getIfArticlesExist(dynamic topicId) {
-    final _$actionInfo = _$_DrawerStoreActionController.startAction();
-    try {
-      return super.getIfArticlesExist(topicId);
-    } finally {
-      _$_DrawerStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   void setCurrent(String v) {
     final _$actionInfo = _$_DrawerStoreActionController.startAction();
     try {
@@ -166,40 +107,10 @@ mixin _$DrawerStore on _DrawerStore, Store {
   }
 
   @override
-  void setArticleState(int topicId, int articleId, bool v) {
-    final _$actionInfo = _$_DrawerStoreActionController.startAction();
-    try {
-      return super.setArticleState(topicId, articleId, v);
-    } finally {
-      _$_DrawerStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void setTopicState(int topicId) {
-    final _$actionInfo = _$_DrawerStoreActionController.startAction();
-    try {
-      return super.setTopicState(topicId);
-    } finally {
-      _$_DrawerStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   void setOptions(bool v) {
     final _$actionInfo = _$_DrawerStoreActionController.startAction();
     try {
       return super.setOptions(v);
-    } finally {
-      _$_DrawerStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void setArticles(Map<dynamic, dynamic> v) {
-    final _$actionInfo = _$_DrawerStoreActionController.startAction();
-    try {
-      return super.setArticles(v);
     } finally {
       _$_DrawerStoreActionController.endAction(_$actionInfo);
     }
@@ -218,7 +129,7 @@ mixin _$DrawerStore on _DrawerStore, Store {
   @override
   String toString() {
     final string =
-        'current: ${current.toString()},options: ${options.toString()},completed: ${completed.toString()},articles: ${articles.toString()},topics: ${topics.toString()},getCurrent: ${getCurrent.toString()},getOptions: ${getOptions.toString()},getCompletion: ${getCompletion.toString()},getTopics: ${getTopics.toString()},getArticles: ${getArticles.toString()}';
+        'current: ${current.toString()},options: ${options.toString()},completed: ${completed.toString()},topics: ${topics.toString()},getCurrent: ${getCurrent.toString()},getOptions: ${getOptions.toString()},getCompletion: ${getCompletion.toString()}';
     return '{$string}';
   }
 }
