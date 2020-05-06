@@ -17,6 +17,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:connectivity/connectivity.dart';
 
 class NotificationWidget extends StatefulWidget {
   final Color color;
@@ -144,21 +145,44 @@ class _NotificationState extends State<NotificationWidget>
       deviceId = details[2].toString();
     });
 
-    _firebaseMessaging.getToken().then((String token) {
+    _firebaseMessaging.getToken().then((String token) async {
       assert(token != null);
-      //TODO CHECKI IF IT EXISTS IN THE PREFERENCES IF NOT THEN SAVE TO DB 
-      // IF IT EXISTS THEN COMPARE IF THE SAME TOKEN OR A NEW ONE IF A NEW ONE THEN UPDATE IN DB USING THE 
-      // DEVIE ID AS AN IDENTIFIER.
-      // save to db
-      http.post(
-        'http://162.247.76.211:3000/Articles/Registration',
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(<String, String>{'id': deviceId, 'token': token,'regDate': DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now())}),
-      );
-      print('*****************token**************************');
-      print(token);
+      var connectivityResult = await (Connectivity().checkConnectivity());
+      if (connectivityResult == ConnectivityResult.wifi ||
+          connectivityResult == ConnectivityResult.mobile) {
+        print('connected');
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        if (prefs.getString('NCDPDeviceToken') == null) {
+          http.post(
+            'http://162.247.76.211:3000/Articles/Registration',
+            headers: <String, String>{
+              'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body: jsonEncode(<String, String>{
+              'id': deviceId,
+              'token': token,
+              'regDate':
+                  DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now())
+            }),
+          );
+          print('*****************token**************************');
+          print(token);
+          prefs.setString('NCDPDeviceToken', token);
+        } else {
+          if (prefs.getString('NCDPDeviceToken') != token) {
+            // TODO update in db
+            http.post(
+              'http://162.247.76.211:3000/Articles/Registration', // CHANGE THIS LINE
+              headers: <String, String>{
+                'Content-Type': 'application/json; charset=UTF-8',
+              },
+              body:
+                  jsonEncode(<String, String>{'id': deviceId, 'token': token}),
+            );
+            prefs.setString('NCDPDeviceToken', token);
+          }
+        }
+      }
     });
   }
 
