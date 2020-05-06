@@ -63,10 +63,11 @@ Future<double> getModelProgressPercent(modelId) async {
   String progressFileContent = await progressFile.readAsString();
   Map<String, dynamic> progressFileContentMap = jsonDecode(progressFileContent);
 
-  for (final model in progressFileContentMap["models"]) {
+  for (var model in progressFileContentMap["models"]) {
     if (model["ModelID"] == modelId) {
       if (model["Topics"] != null && model["Topics"].length != 0) {
         List topics = model["Topics"];
+        print(topics);
         noOfTopics = model["Topics"].length;
         for (final topic in topics) {
           var topicProgress;
@@ -77,6 +78,7 @@ Future<double> getModelProgressPercent(modelId) async {
       }
     }
   }
+  return modelProgress / noOfTopics;
 }
 
 double getModelProgressPercentSync(model) {
@@ -249,7 +251,7 @@ Future<void> checkProgressFile() async {
       });
     } else {
       print('file exists=================================================');
-      await progressFile.delete();
+      // await progressFile.delete();
     }
   } catch (error) {
     print('=============================');

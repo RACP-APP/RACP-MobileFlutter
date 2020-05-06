@@ -12,6 +12,9 @@ abstract class _PageStore with Store {
   bool options = false;
 
   @observable
+  double progress = 0.0;
+
+  @observable
   List pageNum = [
     {
       "text": [
@@ -31,6 +34,9 @@ abstract class _PageStore with Store {
   bool get getOptions => options;
 
   @computed
+  double get getProgress => progress;
+
+  @computed
   bool get getCompletion => completed;
 
   @computed
@@ -46,6 +52,10 @@ abstract class _PageStore with Store {
     completed = v;
   }
 
+  @action
+  void setProgress(double p) {
+    progress = p ;
+  }
   @action
   void setOptions(bool v) {
     options = v;

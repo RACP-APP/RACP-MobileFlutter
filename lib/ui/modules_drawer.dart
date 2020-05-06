@@ -44,22 +44,20 @@ class _MyDrawer extends State<MyDrawer> {
   }
 
   setTopicAndArticleState(topicId, articleId) {
-    print('*************setting****************');
     setState(() {
-        topics[topicId].forEach((article) {
-       article.forEach((key, value) {
-            if (key == articleId) {
-              article[articleId] = true;
-            }
-          });
+      topics[topicId].forEach((article) {
+        article.forEach((key, value) {
+          if (key == articleId) {
+            article[articleId] = true;
+          }
         });
+      });
     });
   }
 
   bool getTopicState(topicId) {
     bool topicState = true;
-    print('3333333333333333333333333333333');
-    print(topics[topicId]);
+
     if (topics[topicId] != null) {
       topics[topicId].forEach((article) {
         print(article);
@@ -75,8 +73,6 @@ class _MyDrawer extends State<MyDrawer> {
 
   bool getArticleState(topicId, articleId) {
     bool state = false;
-    print('3333333333333333333333333333333');
-    print(topics[topicId]);
     topics[topicId].forEach((article) {
       print(article);
       article.forEach((key, value) {
@@ -85,7 +81,6 @@ class _MyDrawer extends State<MyDrawer> {
         }
       });
     });
-
     return state;
   }
 
@@ -106,8 +101,8 @@ class _MyDrawer extends State<MyDrawer> {
                 if (snapshot.hasData) {
                   viewed = snapshot.data;
                 }
-                var state = getArticleState (topicId,item["ArticleID"]);
-                   
+                var state = getArticleState(topicId, item["ArticleID"]);
+
                 return Icon(
                   viewed || state ? Icons.done : Icons.remove,
                   color: mylightBlue,
@@ -124,17 +119,23 @@ class _MyDrawer extends State<MyDrawer> {
             itemStore.setCurrent(item["Title"]);
             _barStore.setCurrentName('hello');
             pageStore.setPage(content);
+
             // itemStore.setArticleState(topicId, item["ArticleID"], true);
             setTopicAndArticleState(topicId, item["ArticleID"]);
-            print('44444444444444444 topic State set 44444444444444444444 ');
-            await setArticleCompleted(modelId, topicId, item["ArticleID"]);
+
+            setArticleCompleted(modelId, topicId, item["ArticleID"]).then((x) {
+              getModelProgressPercent(modelId)
+                  .then((value) {
+                    print('heloo from thennnnnnnnnnnnnnnnnnnnnnnnnnn');
+                    print(value);
+                    pageStore.setProgress(value);});
+            });
           },
           selected: itemStore.current == item["Title"] ? true : false,
         ),
       );
     }
 
-    print('rebuilddddddddddddddddddddddddddddddddddddddd');
     return Drawer(
       child: Column(
         children: <Widget>[
@@ -180,7 +181,6 @@ class _MyDrawer extends State<MyDrawer> {
                                       if (snapshot.hasData) {
                                         allArticlesViewed = snapshot.data;
                                       }
-                                      // TODO update this line
                                       var topicState =
                                           getTopicState(item['TopicID']);
 

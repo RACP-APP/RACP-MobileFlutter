@@ -14,6 +14,12 @@ mixin _$PageStore on _PageStore, Store {
   @override
   bool get getOptions =>
       (_$getOptionsComputed ??= Computed<bool>(() => super.getOptions)).value;
+  Computed<double> _$getProgressComputed;
+
+  @override
+  double get getProgress =>
+      (_$getProgressComputed ??= Computed<double>(() => super.getProgress))
+          .value;
   Computed<bool> _$getCompletionComputed;
 
   @override
@@ -69,6 +75,23 @@ mixin _$PageStore on _PageStore, Store {
       super.options = value;
       _$optionsAtom.reportChanged();
     }, _$optionsAtom, name: '${_$optionsAtom.name}_set');
+  }
+
+  final _$progressAtom = Atom(name: '_PageStore.progress');
+
+  @override
+  double get progress {
+    _$progressAtom.context.enforceReadPolicy(_$progressAtom);
+    _$progressAtom.reportObserved();
+    return super.progress;
+  }
+
+  @override
+  set progress(double value) {
+    _$progressAtom.context.conditionallyRunInAction(() {
+      super.progress = value;
+      _$progressAtom.reportChanged();
+    }, _$progressAtom, name: '${_$progressAtom.name}_set');
   }
 
   final _$pageNumAtom = Atom(name: '_PageStore.pageNum');
@@ -135,6 +158,16 @@ mixin _$PageStore on _PageStore, Store {
   }
 
   @override
+  void setProgress(double p) {
+    final _$actionInfo = _$_PageStoreActionController.startAction();
+    try {
+      return super.setProgress(p);
+    } finally {
+      _$_PageStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void setOptions(bool v) {
     final _$actionInfo = _$_PageStoreActionController.startAction();
     try {
@@ -177,7 +210,7 @@ mixin _$PageStore on _PageStore, Store {
   @override
   String toString() {
     final string =
-        'completed: ${completed.toString()},options: ${options.toString()},pageNum: ${pageNum.toString()},last: ${last.toString()},next: ${next.toString()},getOptions: ${getOptions.toString()},getCompletion: ${getCompletion.toString()},getPage: ${getPage.toString()},getLast: ${getLast.toString()},getNext: ${getNext.toString()}';
+        'completed: ${completed.toString()},options: ${options.toString()},progress: ${progress.toString()},pageNum: ${pageNum.toString()},last: ${last.toString()},next: ${next.toString()},getOptions: ${getOptions.toString()},getProgress: ${getProgress.toString()},getCompletion: ${getCompletion.toString()},getPage: ${getPage.toString()},getLast: ${getLast.toString()},getNext: ${getNext.toString()}';
     return '{$string}';
   }
 }

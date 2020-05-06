@@ -6,7 +6,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:open_file/open_file.dart';
 import 'package:device_info/device_info.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'dart:async';
@@ -17,6 +16,7 @@ import 'package:disk_space/disk_space.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class NotificationWidget extends StatefulWidget {
   final Color color;
@@ -155,7 +155,7 @@ class _NotificationState extends State<NotificationWidget>
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: jsonEncode(<String, String>{'id': deviceId, 'token': token}),
+        body: jsonEncode(<String, String>{'id': deviceId, 'token': token,'regDate': DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now())}),
       );
       print('*****************token**************************');
       print(token);

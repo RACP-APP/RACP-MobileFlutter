@@ -1,0 +1,73 @@
+{
+    "savedToDb": false,
+    "deviceId": "7e7903f24583c36f",
+    "models": [
+        {
+            "ModelID": 8,
+            "Topics": [
+                {
+                    "TopicID": 11,
+                    "ModelID": 8,
+                    "Article": [
+                        {
+                            "ArticleID": 20,
+                            "TopicID": 11,
+                            "TimesViewed": 0,
+                            "DurationViewd": 0,
+                            "DateViewd": "2020-05-05 10:25:44.311345"
+                        },
+                        {
+                            "ArticleID": 21,
+                            "TopicID": 11,
+                            "TimesViewed": 0,
+                            "DurationViewd": 0,
+                            "DateViewd": "2020-05-05 10:25:44.311408"
+                        },
+                        {
+                            "ArticleID": 22,
+                            "TopicID": 11,
+                            "TimesViewed": 0,
+                            "DurationViewd": 0,
+                            "DateViewd": "2020-05-05 10:25:44.311519"
+                        },
+                        {
+                            "ArticleID": 24,
+                            "TopicID": 11,
+                            "TimesViewed": 0,
+                            "DurationViewd": 0,
+                            "DateViewd": "2020-05-05 10:25:44.311616"
+                        }
+                    ]
+                },
+                {
+                    "TopicID": 12,
+                    "ModelID": 8,
+                    "Article": []
+                },
+                {
+                    "TopicID": 17,
+                    "ModelID": 8,
+                    "Article": []
+                }
+            ]
+        },
+        {
+            "ModelID": 12,
+            "Topics": [
+                {
+                    "TopicID": 19,
+                    "ModelID": 12,
+                    "Article": [
+                        {
+                            "ArticleID": 25,
+                            "TopicID": 19,
+                            "TimesViewed": 0,
+                            "DurationViewd": 0,
+                            "DateViewd": "2020-05-05 10:25:44.311713"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -11,13 +11,16 @@ import './stores/drawer_store.dart';
 import './stores/module_page_store.dart';
 import './ui/landing_page.dart';
 import './utils/progress.dart';
+import './utils/anlaytics.dart';
 
 void main() async {
 //   
   WidgetsFlutterBinding.ensureInitialized();
+  // await saveAnalyticsToServer();
   await FlutterDownloader.initialize();
   await fetchContent();
   await checkProgressFile();
+
   runApp(new MyApp());
 }
 

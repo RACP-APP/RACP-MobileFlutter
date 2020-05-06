@@ -16,28 +16,29 @@ class ModulesView extends StatelessWidget {
   final args;
   @override
   Widget build(BuildContext context) {
-
     var storeP = Provider.of<PageStore>(context);
     double progress = 0.0;
     return SafeArea(
       child: Scaffold(
-          drawer: MyDrawer(this.args["items"], this.args["icon"],this.args['id']),
+          drawer:
+              MyDrawer(this.args["items"], this.args["icon"], this.args['id']),
           appBar: MyCustomAppBar(50, this.args["name"]),
           body: Container(
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
-                 Observer(
-                      builder: (_) =>
-                       FutureBuilder<double>(
-              future: getModelProgressPercent(this.args['id']),
-              builder: (context, AsyncSnapshot<double> snapshot) {
-                if (snapshot.hasData) {
-                  progress = snapshot.data;
-                }
-                return TopicBar(50, 
-                    progress,
-                    );})),
+                Observer(
+                    builder: (_) => FutureBuilder<double>(
+                        future: getModelProgressPercent(this.args['id']),
+                        builder: (context, AsyncSnapshot<double> snapshot) {
+                          if (snapshot.hasData) {
+                            progress = snapshot.data;
+                          }
+                          return TopicBar(
+                            50,
+                            progress,
+                          );
+                        })),
                 Expanded(
                   child: Center(
                     child: Observer(
@@ -126,56 +127,64 @@ class TopicBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     // final barStore = Provider.of<ViewStore>(context);
-
-    return Container(
-      decoration: new BoxDecoration(
-        color: Colors.white,
-      ),
-      width: double.maxFinite,
-      height: 50,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Container(
-            child: Padding(
-                padding: EdgeInsets.only(bottom: 3.0),
-                child: RawMaterialButton(
-                  onPressed: () => Scaffold.of(context).openDrawer(),
-                  child:
-                      new Icon(FeatherIcons.menu, color: myDarkBlue, size: 20),
-                  shape: new CircleBorder(),
-                  constraints:
-                      new BoxConstraints(minHeight: 10.0, minWidth: 10.0),
-                )),
-          ),
-          Container(
-              width: 250,
-              child: new LinearPercentIndicator(
-                  width: 250,
-                  lineHeight: 20.0,
-                  padding: EdgeInsets.all(0),
-                  center: Text(
-                    (percent * 100).toStringAsFixed(2) + "%",
-                    style: GoogleFonts.lateef(
-                        textStyle: TextStyle(
-                            fontSize: 20.0, color: Colors.white, height: 1.1)),
-                  ),
-                  linearStrokeCap: LinearStrokeCap.roundAll,
-                  backgroundColor: mylightBlue,
-                  progressColor: myDarkBlue,
-                  percent: percent)),
-          Align(
-            alignment: Alignment.centerRight,
-            child: RawMaterialButton(
-              onPressed: null,
-              child: Icon(FeatherIcons.volume2, color: myDarkBlue, size: 24),
-              shape: new CircleBorder(),
-              constraints: new BoxConstraints(minHeight: 20.0, minWidth: 20.0),
+    var pageStore = Provider.of<PageStore>(context);
+    print('rebuilding agggggggggggggggggggggggggggggggggggg');
+    return Observer(builder: (_) {
+      var progress =
+          pageStore.getProgress > percent ? pageStore.getProgress : percent;
+      return Container(
+        decoration: new BoxDecoration(
+          color: Colors.white,
+        ),
+        width: double.maxFinite,
+        height: 50,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Container(
+              child: Padding(
+                  padding: EdgeInsets.only(bottom: 3.0),
+                  child: RawMaterialButton(
+                    onPressed: () => Scaffold.of(context).openDrawer(),
+                    child: new Icon(FeatherIcons.menu,
+                        color: myDarkBlue, size: 20),
+                    shape: new CircleBorder(),
+                    constraints:
+                        new BoxConstraints(minHeight: 10.0, minWidth: 10.0),
+                  )),
             ),
-          )
-        ],
-      ),
-    );
+            Container(
+                width: 250,
+                child: new LinearPercentIndicator(
+                    width: 250,
+                    lineHeight: 20.0,
+                    padding: EdgeInsets.all(0),
+                    center: Text(
+                      (progress * 100).toStringAsFixed(2) + "%",
+                      style: GoogleFonts.lateef(
+                          textStyle: TextStyle(
+                              fontSize: 20.0,
+                              color: Colors.white,
+                              height: 1.1)),
+                    ),
+                    linearStrokeCap: LinearStrokeCap.roundAll,
+                    backgroundColor: mylightBlue,
+                    progressColor: myDarkBlue,
+                    percent: progress)),
+            Align(
+              alignment: Alignment.centerRight,
+              child: RawMaterialButton(
+                onPressed: null,
+                child: Icon(FeatherIcons.volume2, color: myDarkBlue, size: 24),
+                shape: new CircleBorder(),
+                constraints:
+                    new BoxConstraints(minHeight: 20.0, minWidth: 20.0),
+              ),
+            )
+          ],
+        ),
+      );
+    });
   }
 
   @override

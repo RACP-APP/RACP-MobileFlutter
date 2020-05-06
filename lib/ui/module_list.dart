@@ -1,7 +1,9 @@
+import 'package:RACR/stores/module_page_store.dart';
 import 'package:flutter/material.dart';
 import "package:percent_indicator/linear_percent_indicator.dart";
 import 'package:feather_icons_flutter/feather_icons_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import '../utils/progress.dart';
 import 'app_notification.dart';
 
@@ -45,7 +47,8 @@ class Module extends StatelessWidget {
         height: 150,
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: NetworkImage("https://firebasestorage.googleapis.com/v0/b/ncdp-270519.appspot.com/o/images%2Fexpress-js-png-5.png?alt=media&token=a746268e-1deb-4165-90de-f8692c9d5a38"),
+            image: NetworkImage(
+                "https://firebasestorage.googleapis.com/v0/b/ncdp-270519.appspot.com/o/images%2Fexpress-js-png-5.png?alt=media&token=a746268e-1deb-4165-90de-f8692c9d5a38"),
             fit: BoxFit.cover,
           ),
           border: Border.all(
@@ -78,7 +81,7 @@ class Module extends StatelessWidget {
           width: 250,
           child: Center(
               child: Text(
-            (percent * 100).toStringAsFixed(2)+ "%",
+            (percent * 100).toStringAsFixed(2) + "%",
             style: GoogleFonts.lateef(
                 textStyle:
                     TextStyle(fontSize: 20.0, color: myDarkGrey, height: 1)),
@@ -93,11 +96,12 @@ class VerticalView extends StatelessWidget {
   final myDarkGrey = Color(0xff605E5E);
   final myDarkBlue = Color(0xff085576);
   final mylightBlue = Color(0xff8AD0EE);
-   double overallProgress = 0;
-   double modelProgress = 0;
+  double overallProgress = 0;
+  double modelProgress = 0;
   @override
   Widget build(BuildContext context) {
     print(stuff);
+    var pageStore = Provider.of<PageStore>(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -109,59 +113,58 @@ class VerticalView extends StatelessWidget {
                 builder: (context, AsyncSnapshot<double> snapshot) {
                   if (snapshot.hasData) {
                     overallProgress = snapshot.data;
-                  
                   }
-                    return new LinearPercentIndicator(
-                      width: MediaQuery.of(context).size.width / 1.07,
-                      animation: true,
-                      lineHeight: 30.0,
-                      animationDuration: 2000,
-                      percent: overallProgress,
-                      center: Text("مدى التقدم الكامل",
-                          style: GoogleFonts.lateef(
-                              textStyle: TextStyle(
-                                  fontSize: 20.0,
-                                  color: Colors.white,
-                                  height: 1))),
-                      linearStrokeCap: LinearStrokeCap.roundAll,
-                      backgroundColor: mylightBlue,
-                      progressColor: myDarkBlue,
-                    );
-                 
+                  return new LinearPercentIndicator(
+                    width: MediaQuery.of(context).size.width / 1.07,
+                    animation: true,
+                    lineHeight: 30.0,
+                    animationDuration: 2000,
+                    percent: overallProgress,
+                    center: Text("مدى التقدم الكامل",
+                        style: GoogleFonts.lateef(
+                            textStyle: TextStyle(
+                                fontSize: 20.0,
+                                color: Colors.white,
+                                height: 1))),
+                    linearStrokeCap: LinearStrokeCap.roundAll,
+                    backgroundColor: mylightBlue,
+                    progressColor: myDarkBlue,
+                  );
                 })),
         new Expanded(
           child: ListView.builder(
             scrollDirection: Axis.vertical,
             itemCount: stuff.length,
             //itemExtent: 100.0,
-            itemBuilder: (context, index)  {
+            itemBuilder: (context, index) {
               var item = stuff[index];
               return FutureBuilder<double>(
-                future: getModelProgressPercent(item["ModelID"]),
-                builder: (context, AsyncSnapshot<double> snapshot) {
-                  if (snapshot.hasData) {
-                    modelProgress = snapshot.data;
-                  
-                  }
-                  return 
-                  Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 4.0, vertical: 4.0),
-                child: GestureDetector(
-                    onTap: () => Navigator.of(context).pushNamed(
-                          '/MV',
-                          arguments: {
-                            "items": item["Topics"],
-                            "icon": item["Icon"],
-                            "name": item["Title"],
-                            "progress": modelProgress,
-                            "id" :  item["ModelID"]
+                  future: getModelProgressPercent(item["ModelID"]),
+                  builder: (context, AsyncSnapshot<double> snapshot) {
+                    if (snapshot.hasData) {
+                      modelProgress = snapshot.data;
+                    }
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 4.0, vertical: 4.0),
+                      child: GestureDetector(
+                          onTap: () {
+
+                            Navigator.of(context).pushNamed(
+                              '/MV',
+                              arguments: {
+                                "items": item["Topics"],
+                                "icon": item["Icon"],
+                                "name": item["Title"],
+                                "progress": modelProgress,
+                                "id": item["ModelID"]
+                              },
+                            );
                           },
-                        ),
-                    child: Module(item["Title"], item["Icon"], modelProgress)),
-              );
-            }
-              );
+                          child: Module(
+                              item["Title"], item["Icon"], modelProgress)),
+                    );
+                  });
             },
           ),
         )
