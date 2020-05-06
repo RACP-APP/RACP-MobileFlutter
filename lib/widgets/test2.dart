@@ -9,22 +9,27 @@ class Testing extends StatelessWidget {
   final controller = ScrollController();
 
   List listing() {
-    List text = contentList[0]["text"];
-    List media = contentList[0]["Media"];
-
+    print('5555555555555content5555555555555555555555');
+    print(contentList);
     List ordered = new List();
-    for (var i = 0; i < text.length; i++) {
-      if (text != null) {
-        ordered.add(text[i]);
-      }
-    }
-    for (var i = 0; i < media.length; i++) {
-      if (media != null) {
-        ordered.add(media[i]);
-      }
-    }
 
-    print(ordered);
+    if (contentList.length != 0) {
+      List text = contentList[0]["text"];
+      List media = contentList[0]["Media"];
+
+      if (text != null) {
+        for (var i = 0; i < text.length; i++) {
+          ordered.add(text[i]);
+        }
+      }
+      if (media != null) {
+        for (var i = 0; i < media.length; i++) {
+          ordered.add(media[i]);
+        }
+      }
+
+      print(ordered);
+    }
     return ordered;
   }
 
