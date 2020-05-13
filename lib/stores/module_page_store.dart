@@ -14,6 +14,12 @@ abstract class _PageStore with Store {
   @observable
   double progress = 0.0;
 
+   @observable
+  int topicId =0;
+
+   @observable
+  int articleId = 0;
+
   @observable
   List audioFiles = new List();
 
@@ -54,6 +60,12 @@ abstract class _PageStore with Store {
   @computed
   bool get getNext => next;
 
+   @computed
+  int get getArticleId => articleId;
+
+   @computed
+  int get getTopicId => topicId;
+
   @action
   void setCompletion(bool v) {
     completed = v;
@@ -87,5 +99,15 @@ abstract class _PageStore with Store {
   @action
   void setNext(bool v) {
     next = v;
+  }
+
+   @action
+  void setArticleId(int v) {
+    articleId = v;
+  }
+
+   @action
+  void setTopicId(int v) {
+    topicId = v;
   }
 }

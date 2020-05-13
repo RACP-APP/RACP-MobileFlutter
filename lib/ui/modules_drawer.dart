@@ -138,10 +138,14 @@ class _MyDrawer extends State<MyDrawer> {
           trailing: Icon(Icons.keyboard_arrow_right, color: mylightBlue),
           onTap: () async {
             //todoS
+            print('ttttttttttttttttttttttttttttt');
+            print(topicId);
+            print(item["ArticleID"]);
             itemStore.setCurrent(item["Title"]);
             _barStore.setCurrentName('hello');
             pageStore.setPage(content);
-
+            pageStore.setTopicId(topicId);
+            pageStore.setArticleId(item["ArticleID"]);
             pageStore.setAudioFiles(getAudioFiles(item));
 
             // itemStore.setArticleState(topicId, item["ArticleID"], true);

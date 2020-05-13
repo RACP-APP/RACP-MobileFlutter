@@ -48,6 +48,17 @@ mixin _$PageStore on _PageStore, Store {
   @override
   bool get getNext =>
       (_$getNextComputed ??= Computed<bool>(() => super.getNext)).value;
+  Computed<int> _$getArticleIdComputed;
+
+  @override
+  int get getArticleId =>
+      (_$getArticleIdComputed ??= Computed<int>(() => super.getArticleId))
+          .value;
+  Computed<int> _$getTopicIdComputed;
+
+  @override
+  int get getTopicId =>
+      (_$getTopicIdComputed ??= Computed<int>(() => super.getTopicId)).value;
 
   final _$completedAtom = Atom(name: '_PageStore.completed');
 
@@ -98,6 +109,40 @@ mixin _$PageStore on _PageStore, Store {
       super.progress = value;
       _$progressAtom.reportChanged();
     }, _$progressAtom, name: '${_$progressAtom.name}_set');
+  }
+
+  final _$topicIdAtom = Atom(name: '_PageStore.topicId');
+
+  @override
+  int get topicId {
+    _$topicIdAtom.context.enforceReadPolicy(_$topicIdAtom);
+    _$topicIdAtom.reportObserved();
+    return super.topicId;
+  }
+
+  @override
+  set topicId(int value) {
+    _$topicIdAtom.context.conditionallyRunInAction(() {
+      super.topicId = value;
+      _$topicIdAtom.reportChanged();
+    }, _$topicIdAtom, name: '${_$topicIdAtom.name}_set');
+  }
+
+  final _$articleIdAtom = Atom(name: '_PageStore.articleId');
+
+  @override
+  int get articleId {
+    _$articleIdAtom.context.enforceReadPolicy(_$articleIdAtom);
+    _$articleIdAtom.reportObserved();
+    return super.articleId;
+  }
+
+  @override
+  set articleId(int value) {
+    _$articleIdAtom.context.conditionallyRunInAction(() {
+      super.articleId = value;
+      _$articleIdAtom.reportChanged();
+    }, _$articleIdAtom, name: '${_$articleIdAtom.name}_set');
   }
 
   final _$audioFilesAtom = Atom(name: '_PageStore.audioFiles');
@@ -241,9 +286,29 @@ mixin _$PageStore on _PageStore, Store {
   }
 
   @override
+  void setArticleId(int v) {
+    final _$actionInfo = _$_PageStoreActionController.startAction();
+    try {
+      return super.setArticleId(v);
+    } finally {
+      _$_PageStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setTopicId(int v) {
+    final _$actionInfo = _$_PageStoreActionController.startAction();
+    try {
+      return super.setTopicId(v);
+    } finally {
+      _$_PageStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     final string =
-        'completed: ${completed.toString()},options: ${options.toString()},progress: ${progress.toString()},audioFiles: ${audioFiles.toString()},pageNum: ${pageNum.toString()},last: ${last.toString()},next: ${next.toString()},getOptions: ${getOptions.toString()},getProgress: ${getProgress.toString()},getAudioFiles: ${getAudioFiles.toString()},getCompletion: ${getCompletion.toString()},getPage: ${getPage.toString()},getLast: ${getLast.toString()},getNext: ${getNext.toString()}';
+        'completed: ${completed.toString()},options: ${options.toString()},progress: ${progress.toString()},topicId: ${topicId.toString()},articleId: ${articleId.toString()},audioFiles: ${audioFiles.toString()},pageNum: ${pageNum.toString()},last: ${last.toString()},next: ${next.toString()},getOptions: ${getOptions.toString()},getProgress: ${getProgress.toString()},getAudioFiles: ${getAudioFiles.toString()},getCompletion: ${getCompletion.toString()},getPage: ${getPage.toString()},getLast: ${getLast.toString()},getNext: ${getNext.toString()},getArticleId: ${getArticleId.toString()},getTopicId: ${getTopicId.toString()}';
     return '{$string}';
   }
 }

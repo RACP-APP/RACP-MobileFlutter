@@ -44,7 +44,7 @@ class ModulesView extends StatelessWidget {
                 Expanded(
                   child: Center(
                     child: Observer(
-                      builder: (_) => Testing(storeP.pageNum),
+                      builder: (_) => Testing(this.args['id'],storeP.getTopicId,storeP.getArticleId,storeP.pageNum),
                     ),
                   ),
                 ),

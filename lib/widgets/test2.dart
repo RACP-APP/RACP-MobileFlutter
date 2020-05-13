@@ -2,25 +2,30 @@ import 'package:flutter/material.dart';
 import './video_handler.dart';
 //import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_html/flutter_html.dart';
-class Testing extends StatefulWidget {
-  final List contentList;
-  Testing(this.contentList);
+import '../utils/anlaytics.dart';
 
+class Testing extends StatefulWidget {
+  final int modelId;
+  final int topicId;
+  final int articleId;
+  final List contentList;
+  Testing(this.modelId, this.topicId, this.articleId, this.contentList);
 
   @override
-  _Testing createState() => _Testing(contentList);
+  _Testing createState() => _Testing(modelId, topicId, articleId, contentList);
 }
 
-class _Testing extends State<Testing>
- {
+class _Testing extends State<Testing> {
+  final int modelId;
+  final int topicId;
+  final int articleId;
   final List contentList;
-  _Testing( this.contentList);
+  _Testing(this.modelId, this.topicId, this.articleId, this.contentList);
   final controller = ScrollController();
   DateTime begining;
   DateTime end;
 
   List listing() {
-   
     List ordered = new List();
 
     if (contentList.length != 0) {
@@ -86,18 +91,20 @@ class _Testing extends State<Testing>
     }
     return null;
   }
-setDuration(articleId){
-  begining = DateTime.now();
-}
 
-@override
+  setDuration(articleId) {
+    begining = DateTime.now();
+  }
+
+  @override
   void didUpdateWidget(Testing oldWidget) {
     super.didUpdateWidget(oldWidget);
-    end= DateTime.now();
-    print('diiiiiiiiifrenceeeeeeeeeeeeeeeeeeeeeeee');
-    print(end.difference(begining));
-    print(oldWidget);
+    end = DateTime.now();
+    var duration = end.difference(begining).inMinutes;
+    saveDuration(
+        oldWidget.modelId, oldWidget.topicId, oldWidget.articleId, duration);
   }
+
   @override
   Widget build(BuildContext context) {
     setDuration(1);

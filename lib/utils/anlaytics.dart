@@ -52,8 +52,168 @@ Future<void> saveAnalyticsToServer() async {
       body: jsonEncode(jsonAnalyticData),
     );
     print('Response status: ${response.statusCode}');
-print('Response body: ${response.body}');
+    print('Response body: ${response.body}');
   } else {
     print('not connected');
+  }
+}
+
+saveDuration(modelId, topicId, articleId, duration) async {
+
+  print('ddddddddddddddddddddddddddddddddddd');
+  print(duration);
+  print(modelId);
+    print(topicId);
+  print(articleId);
+
+  
+  final directory = await getApplicationDocumentsDirectory();
+  final path = directory.path;
+  final progressFile = File('$path/progress.json');
+  String progressFileContent = await progressFile.readAsString();
+  Map<String, dynamic> modelsList = jsonDecode(progressFileContent);
+  modelsList["models"].forEach((model) {
+    if (model["ModelID"] == modelId) {
+      List topics = model["Topics"];
+      for (final topic in topics) {
+        // myTopic = topic;
+        if (topic["TopicID"] == topicId) {
+          List articles = topic["Article"];
+          for (final article in articles) {
+            if (article["ArticleID"] == articleId) {
+              print('===============article is viewed for the duration ======================');
+             
+              article["DurationViewd"] = article["DurationViewd"]+ duration;
+      
+            }
+          }
+        }
+      }
+      ;
+    }
+  });
+
+  var progressModelsJson = ProgressModels.fromJson(modelsList);
+  print('sssssssssssefwfefwefwefwefwefwefwef');
+  print(jsonEncode(progressModelsJson.toJson()));
+  await progressFile.writeAsString(jsonEncode(progressModelsJson.toJson()));
+
+
+}
+// Progress file convert to Json code
+class ProgressModels {
+  bool savedToDb;
+  String deviceId;
+  List<PModels> models;
+
+  ProgressModels({this.savedToDb, this.deviceId, this.models});
+
+  ProgressModels.fromJson(Map<String, dynamic> json) {
+    savedToDb = json['savedToDb'];
+    deviceId = json['deviceId'];
+    if (json['models'] != null) {
+      models = new List<PModels>();
+      json['models'].forEach((v) {
+        models.add(new PModels.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['savedToDb'] = this.savedToDb;
+    data['deviceId'] = this.deviceId;
+    if (this.models != null) {
+      data['models'] = this.models.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class PModels {
+  int modelID;
+  List<PTopics> topics;
+
+  PModels({this.modelID, this.topics});
+
+  PModels.fromJson(Map<String, dynamic> json) {
+    modelID = json['ModelID'];
+    if (json['Topics'] != null) {
+      topics = new List<PTopics>();
+      json['Topics'].forEach((v) {
+        topics.add(new PTopics.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['ModelID'] = this.modelID;
+    if (this.topics != null) {
+      data['Topics'] = this.topics.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class PTopics {
+  int topicID;
+  int modelID;
+  List<PArticle> article;
+
+  PTopics({this.topicID, this.modelID, this.article});
+
+  PTopics.fromJson(Map<String, dynamic> json) {
+    topicID = json['TopicID'];
+    modelID = json['ModelID'];
+    if (json['Article'] != null) {
+      article = new List<PArticle>();
+      json['Article'].forEach((v) {
+        article.add(new PArticle.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['TopicID'] = this.topicID;
+    data['ModelID'] = this.modelID;
+    if (this.article != null) {
+      data['Article'] = this.article.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class PArticle {
+  int articleID;
+  int topicID;
+  int timesViewed;
+  int durationViewd;
+  String dateViewd;
+
+  PArticle(
+      {this.articleID,
+      this.topicID,
+      this.timesViewed,
+      this.durationViewd,
+      this.dateViewd});
+
+  PArticle.fromJson(Map<String, dynamic> json) {
+    articleID = json['ArticleID'];
+    topicID = json['TopicID'];
+    timesViewed = json['TimesViewed'];
+    durationViewd = json['DurationViewd'];
+    dateViewd = json['DateViewd'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['ArticleID'] = this.articleID;
+    data['TopicID'] = this.topicID;
+    data['TimesViewed'] = this.timesViewed;
+    data['DurationViewd'] = this.durationViewd;
+    data['DateViewd'] = this.dateViewd;
+    return data;
   }
 }
