@@ -2,15 +2,25 @@ import 'package:flutter/material.dart';
 import './video_handler.dart';
 //import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_html/flutter_html.dart';
-
-class Testing extends StatelessWidget {
+class Testing extends StatefulWidget {
   final List contentList;
-  Testing({Key key, this.contentList}) : super(key: key);
+  Testing(this.contentList);
+
+
+  @override
+  _Testing createState() => _Testing(contentList);
+}
+
+class _Testing extends State<Testing>
+ {
+  final List contentList;
+  _Testing( this.contentList);
   final controller = ScrollController();
+  DateTime begining;
+  DateTime end;
 
   List listing() {
-    print('5555555555555content5555555555555555555555');
-    print(contentList);
+   
     List ordered = new List();
 
     if (contentList.length != 0) {
@@ -76,9 +86,21 @@ class Testing extends StatelessWidget {
     }
     return null;
   }
+setDuration(articleId){
+  begining = DateTime.now();
+}
 
+@override
+  void didUpdateWidget(Testing oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    end= DateTime.now();
+    print('diiiiiiiiifrenceeeeeeeeeeeeeeeeeeeeeeee');
+    print(end.difference(begining));
+    print(oldWidget);
+  }
   @override
   Widget build(BuildContext context) {
+    setDuration(1);
     var gg = listing();
     return Container(
       color: Colors.white,

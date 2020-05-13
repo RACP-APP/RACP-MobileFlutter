@@ -31,7 +31,6 @@ class _MyDrawer extends State<MyDrawer> {
   void initState() {
     super.initState();
     itemList.forEach((topic) {
-      print(topic['Article'].length);
       if (topic['Article'].length != 0) {
         topics[topic['TopicID']] = new List<dynamic>();
         topic['Article'].forEach((article) {
@@ -60,7 +59,6 @@ class _MyDrawer extends State<MyDrawer> {
 
     if (topics[topicId] != null) {
       topics[topicId].forEach((article) {
-        print(article);
         article.forEach((key, value) {
           topicState = topicState && value;
         });
@@ -74,7 +72,6 @@ class _MyDrawer extends State<MyDrawer> {
   bool getArticleState(topicId, articleId) {
     bool state = false;
     topics[topicId].forEach((article) {
-      print(article);
       article.forEach((key, value) {
         if (key == articleId) {
           state = value;
@@ -88,17 +85,25 @@ class _MyDrawer extends State<MyDrawer> {
     List audioFiles = new List();
     if (article['content'] != [] || article['content'] != null) {
       article['content'].forEach((content) {
-        // TODO Test this
         if (content['Media'] != null) {
           content['Media'].forEach((media) {
             if (media['MediaType'] == "audio") {
-              audioFiles.add(media['MediaLink'].toString());
+              audioFiles.add(media);
             }
           });
         }
       });
     }
-    return audioFiles;
+
+    audioFiles.sort((a, b) => a["MediaOrder"].compareTo(b["MediaOrder"]));
+
+    List audioFilesMediaLinks = new List();
+    audioFiles.forEach((media) {
+      audioFilesMediaLinks.add(media['MediaLink']);
+    });
+    print('order of audio files');
+    print(audioFilesMediaLinks);
+    return audioFilesMediaLinks;
   }
 
   @override

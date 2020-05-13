@@ -7,7 +7,6 @@ import 'package:feather_icons_flutter/feather_icons_flutter.dart';
 import "package:percent_indicator/linear_percent_indicator.dart";
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:audioplayers/audioplayers.dart';
-import '../widgets/audio_player.dart';
 import './modules_drawer.dart';
 import '../stores/module_page_store.dart';
 import '../widgets/test2.dart';
@@ -45,7 +44,7 @@ class ModulesView extends StatelessWidget {
                 Expanded(
                   child: Center(
                     child: Observer(
-                      builder: (_) => Testing(contentList: storeP.pageNum),
+                      builder: (_) => Testing(storeP.pageNum),
                     ),
                   ),
                 ),
@@ -139,18 +138,6 @@ class _TopicBar extends State<TopicBar> {
   String audioButtonState = 'toPlay';
   List audiofilesState = new List();
 
-  @override
-  void initState() {
-    super.initState();
-    // advancedPlayer.onPlayerCompletion.listen((event) {
-    //   print('audio file completeeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
-    //   setState(() {
-    //     audioButtonState = 'toPlay';
-    //   });
-    // });
-    
-  }
-
   playArticleAudio(BuildContext context, List audioFiles) async {
     if (audioFiles.length == audiofilesState.length) {
       var state = true;
@@ -200,9 +187,7 @@ class _TopicBar extends State<TopicBar> {
                 overlayColor: myDarkBlueOverlay,
               )).show();
         } else {
-          // TODO if there is a file then show the audio play and start playing the files serially
-          print('uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu');
-          print(audioFiles);
+        
           var currentFile = '';
           var currentFileIndex = 0;
           for (var i = 0; i < audioFiles.length; i++) {
@@ -218,8 +203,7 @@ class _TopicBar extends State<TopicBar> {
           //   setState(() {
           //     audioButtonState = 'loading';
           //   });
-          print('uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu');
-          print(currentFile);
+        
           await advancedPlayer.play(currentFile).then((result) {
             if (result == 1) {
               advancedPlayer.onPlayerStateChanged.listen((AudioPlayerState s) {
