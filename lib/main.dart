@@ -16,11 +16,10 @@ import './utils/anlaytics.dart';
 void main() async {
 //   
   WidgetsFlutterBinding.ensureInitialized();
-  // await saveAnalyticsToServer();
   await FlutterDownloader.initialize();
-  await fetchContent();
+  await fetchContent(); // TODO STOP THIS FUNCTION IF FILE EXISTS
   await checkProgressFile();
-
+  await saveAnalyticsToServer();//TODO TEST THIS FUNCTION
   runApp(new MyApp());
 }
 

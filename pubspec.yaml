@@ -34,6 +34,8 @@ dependencies:
   dio: ^3.0.9
   open_file: ^3.0.1
   connectivity: ^0.4.8+2
+  audioplayers: ^0.15.1
+
 
 dev_dependencies:
   flutter_test:

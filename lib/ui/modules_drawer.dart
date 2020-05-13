@@ -84,6 +84,23 @@ class _MyDrawer extends State<MyDrawer> {
     return state;
   }
 
+  List getAudioFiles(article) {
+    List audioFiles = new List();
+    if (article['content'] != [] || article['content'] != null) {
+      article['content'].forEach((content) {
+        // TODO Test this
+        if (content['Media'] != null) {
+          content['Media'].forEach((media) {
+            if (media['MediaType'] == "audio") {
+              audioFiles.add(media['MediaLink'].toString());
+            }
+          });
+        }
+      });
+    }
+    return audioFiles;
+  }
+
   @override
   Widget build(BuildContext context) {
     var itemStore = Provider.of<DrawerStore>(context);
@@ -120,15 +137,15 @@ class _MyDrawer extends State<MyDrawer> {
             _barStore.setCurrentName('hello');
             pageStore.setPage(content);
 
+            pageStore.setAudioFiles(getAudioFiles(item));
+
             // itemStore.setArticleState(topicId, item["ArticleID"], true);
             setTopicAndArticleState(topicId, item["ArticleID"]);
 
             setArticleCompleted(modelId, topicId, item["ArticleID"]).then((x) {
-              getModelProgressPercent(modelId)
-                  .then((value) {
-                    print('heloo from thennnnnnnnnnnnnnnnnnnnnnnnnnn');
-                    print(value);
-                    pageStore.setProgress(value);});
+              getModelProgressPercent(modelId).then((value) {
+                pageStore.setProgress(value);
+              });
             });
           },
           selected: itemStore.current == item["Title"] ? true : false,

@@ -20,6 +20,12 @@ mixin _$PageStore on _PageStore, Store {
   double get getProgress =>
       (_$getProgressComputed ??= Computed<double>(() => super.getProgress))
           .value;
+  Computed<List<dynamic>> _$getAudioFilesComputed;
+
+  @override
+  List<dynamic> get getAudioFiles => (_$getAudioFilesComputed ??=
+          Computed<List<dynamic>>(() => super.getAudioFiles))
+      .value;
   Computed<bool> _$getCompletionComputed;
 
   @override
@@ -92,6 +98,23 @@ mixin _$PageStore on _PageStore, Store {
       super.progress = value;
       _$progressAtom.reportChanged();
     }, _$progressAtom, name: '${_$progressAtom.name}_set');
+  }
+
+  final _$audioFilesAtom = Atom(name: '_PageStore.audioFiles');
+
+  @override
+  List<dynamic> get audioFiles {
+    _$audioFilesAtom.context.enforceReadPolicy(_$audioFilesAtom);
+    _$audioFilesAtom.reportObserved();
+    return super.audioFiles;
+  }
+
+  @override
+  set audioFiles(List<dynamic> value) {
+    _$audioFilesAtom.context.conditionallyRunInAction(() {
+      super.audioFiles = value;
+      _$audioFilesAtom.reportChanged();
+    }, _$audioFilesAtom, name: '${_$audioFilesAtom.name}_set');
   }
 
   final _$pageNumAtom = Atom(name: '_PageStore.pageNum');
@@ -168,6 +191,16 @@ mixin _$PageStore on _PageStore, Store {
   }
 
   @override
+  void setAudioFiles(List<dynamic> a) {
+    final _$actionInfo = _$_PageStoreActionController.startAction();
+    try {
+      return super.setAudioFiles(a);
+    } finally {
+      _$_PageStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void setOptions(bool v) {
     final _$actionInfo = _$_PageStoreActionController.startAction();
     try {
@@ -210,7 +243,7 @@ mixin _$PageStore on _PageStore, Store {
   @override
   String toString() {
     final string =
-        'completed: ${completed.toString()},options: ${options.toString()},progress: ${progress.toString()},pageNum: ${pageNum.toString()},last: ${last.toString()},next: ${next.toString()},getOptions: ${getOptions.toString()},getProgress: ${getProgress.toString()},getCompletion: ${getCompletion.toString()},getPage: ${getPage.toString()},getLast: ${getLast.toString()},getNext: ${getNext.toString()}';
+        'completed: ${completed.toString()},options: ${options.toString()},progress: ${progress.toString()},audioFiles: ${audioFiles.toString()},pageNum: ${pageNum.toString()},last: ${last.toString()},next: ${next.toString()},getOptions: ${getOptions.toString()},getProgress: ${getProgress.toString()},getAudioFiles: ${getAudioFiles.toString()},getCompletion: ${getCompletion.toString()},getPage: ${getPage.toString()},getLast: ${getLast.toString()},getNext: ${getNext.toString()}';
     return '{$string}';
   }
 }

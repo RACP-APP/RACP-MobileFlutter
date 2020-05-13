@@ -5,6 +5,9 @@ import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:feather_icons_flutter/feather_icons_flutter.dart';
 import "package:percent_indicator/linear_percent_indicator.dart";
+import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:audioplayers/audioplayers.dart';
+import '../widgets/audio_player.dart';
 import './modules_drawer.dart';
 import '../stores/module_page_store.dart';
 import '../widgets/test2.dart';
@@ -116,19 +119,131 @@ class MyCustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => Size.fromHeight(height);
 }
 
-class TopicBar extends StatelessWidget implements PreferredSizeWidget {
-  TopicBar(this.height, this.percent) : super();
-  final percent;
-  final double height;
-  final myDarkGrey = Color(0xff605E5E);
-  final myDarkBlue = Color(0xff085576);
-  final mylightBlue = Color(0xff8AD0EE);
+class TopicBar extends StatefulWidget {
+  double percent;
+  double height;
+  TopicBar(this.height, this.percent);
+  @override
+  _TopicBar createState() => _TopicBar(this.height, this.percent);
+}
+
+class _TopicBar extends State<TopicBar> {
+  AudioPlayer advancedPlayer = AudioPlayer();
+  _TopicBar(this.height, this.percent) : super();
+  double percent;
+  double height;
+  var myDarkGrey = Color(0xff605E5E);
+  var myDarkBlue = Color(0xff085576);
+  var mylightBlue = Color(0xff8AD0EE);
+  var myDarkBlueOverlay = Color(0x55085576);
+  String audioButtonState = 'toPlay';
+  List audiofilesState = new List();
+
+  @override
+  void initState() {
+    super.initState();
+    // advancedPlayer.onPlayerCompletion.listen((event) {
+    //   print('audio file completeeeeeeeeeeeeeeeeeeeeeeeeeeeeee');
+    //   setState(() {
+    //     audioButtonState = 'toPlay';
+    //   });
+    // });
+    
+  }
+
+  playArticleAudio(BuildContext context, List audioFiles) async {
+    if (audioFiles.length == audiofilesState.length) {
+      var state = true;
+      for (var i = 0; i < audiofilesState.length; i++) {
+        state = state && audiofilesState[i];
+      }
+      if (!state) {
+        setState(() {
+          audioButtonState = 'toPlay';
+        });
+        return;
+      }
+    } else {
+      if (audioButtonState == 'playing') {
+        await advancedPlayer.pause();
+        setState(() {
+          audioButtonState = 'paused';
+        });
+      } else if (audioButtonState == 'paused') {
+        await advancedPlayer.resume();
+        setState(() {
+          audioButtonState = 'playing';
+        });
+      } else {
+        if (audioFiles.length == 0) {
+          Alert(
+              context: context,
+              title: "لا يوجد ملف صوتي لهذه المقالة",
+              buttons: [],
+              style: AlertStyle(
+                animationType: AnimationType.grow,
+                descStyle: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+                animationDuration: Duration(milliseconds: 400),
+                backgroundColor: myDarkBlue,
+                alertBorder: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  side: BorderSide(
+                    color: myDarkBlue,
+                  ),
+                ),
+                titleStyle: TextStyle(
+                  color: Colors.white,
+                ),
+                overlayColor: myDarkBlueOverlay,
+              )).show();
+        } else {
+          // TODO if there is a file then show the audio play and start playing the files serially
+          print('uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu');
+          print(audioFiles);
+          var currentFile = '';
+          var currentFileIndex = 0;
+          for (var i = 0; i < audioFiles.length; i++) {
+            if (audiofilesState.length == 0|| audiofilesState.length <= i ) {
+              currentFile = audioFiles[i];
+              currentFileIndex = i;
+              audiofilesState.add(false);
+              break;
+            }
+          }
+
+          // if (audioButtonState == 'toPlay') {
+          //   setState(() {
+          //     audioButtonState = 'loading';
+          //   });
+          print('uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu');
+          print(currentFile);
+          await advancedPlayer.play(currentFile).then((result) {
+            if (result == 1) {
+              advancedPlayer.onPlayerStateChanged.listen((AudioPlayerState s) {
+                print('Current player state: $s');
+                if (s == AudioPlayerState.COMPLETED) {
+                  setState(() => audioButtonState = 'toPlay');
+                  audiofilesState[currentFileIndex] = true;
+                  playArticleAudio(context, audioFiles);
+                }
+              });
+              setState(() {
+                audioButtonState = 'playing';
+              });
+            }
+          });
+        }
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     // final barStore = Provider.of<ViewStore>(context);
     var pageStore = Provider.of<PageStore>(context);
-    print('rebuilding agggggggggggggggggggggggggggggggggggg');
     return Observer(builder: (_) {
       var progress =
           pageStore.getProgress > percent ? pageStore.getProgress : percent;
@@ -174,8 +289,16 @@ class TopicBar extends StatelessWidget implements PreferredSizeWidget {
             Align(
               alignment: Alignment.centerRight,
               child: RawMaterialButton(
-                onPressed: null,
-                child: Icon(FeatherIcons.volume2, color: myDarkBlue, size: 24),
+                onPressed: () =>
+                    playArticleAudio(context, pageStore.getAudioFiles),
+                child: Icon(
+                    audioButtonState == 'playing'
+                        ? Icons.pause
+                        : audioButtonState == 'loading'
+                            ? Icons.close
+                            : FeatherIcons.volume2,
+                    color: myDarkBlue,
+                    size: 24),
                 shape: new CircleBorder(),
                 constraints:
                     new BoxConstraints(minHeight: 20.0, minWidth: 20.0),
@@ -186,7 +309,4 @@ class TopicBar extends StatelessWidget implements PreferredSizeWidget {
       );
     });
   }
-
-  @override
-  Size get preferredSize => Size.fromHeight(height);
 }

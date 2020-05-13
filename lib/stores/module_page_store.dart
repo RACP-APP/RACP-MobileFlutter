@@ -15,6 +15,9 @@ abstract class _PageStore with Store {
   double progress = 0.0;
 
   @observable
+  List audioFiles = new List();
+
+  @observable
   List pageNum = [
     {
       "text": [
@@ -37,10 +40,14 @@ abstract class _PageStore with Store {
   double get getProgress => progress;
 
   @computed
+  List get getAudioFiles => audioFiles;
+
+  @computed
   bool get getCompletion => completed;
 
   @computed
   List get getPage => pageNum;
+
   @computed
   bool get getLast => last;
 
@@ -56,6 +63,12 @@ abstract class _PageStore with Store {
   void setProgress(double p) {
     progress = p ;
   }
+
+  @action
+  void setAudioFiles(List a) {
+    audioFiles = a ;
+  }
+
   @action
   void setOptions(bool v) {
     options = v;
