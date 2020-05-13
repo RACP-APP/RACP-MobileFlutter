@@ -140,15 +140,33 @@ class _TopicBar extends State<TopicBar> {
 
   playArticleAudio(BuildContext context, List audioFiles) async {
     if (audioFiles.length == audiofilesState.length) {
-      var state = true;
+      var state;
+      if (audiofilesState.length == 0) {
+        state = false;
+      } else {
+        state = true;
+      }
       for (var i = 0; i < audiofilesState.length; i++) {
         state = state && audiofilesState[i];
       }
-      if (!state) {
+
+      if (state) {
         setState(() {
           audioButtonState = 'toPlay';
         });
         return;
+      } else {
+        if (audioButtonState == 'playing') {
+          await advancedPlayer.pause();
+          setState(() {
+            audioButtonState = 'paused';
+          });
+        } else if (audioButtonState == 'paused') {
+          await advancedPlayer.resume();
+          setState(() {
+            audioButtonState = 'playing';
+          });
+        }
       }
     } else {
       if (audioButtonState == 'playing') {
@@ -187,35 +205,29 @@ class _TopicBar extends State<TopicBar> {
                 overlayColor: myDarkBlueOverlay,
               )).show();
         } else {
-        
           var currentFile = '';
           var currentFileIndex = 0;
           for (var i = 0; i < audioFiles.length; i++) {
-            if (audiofilesState.length == 0|| audiofilesState.length <= i ) {
+            if (audiofilesState.length == 0 || audiofilesState.length <= i) {
               currentFile = audioFiles[i];
               currentFileIndex = i;
               audiofilesState.add(false);
               break;
             }
           }
-
-          // if (audioButtonState == 'toPlay') {
-          //   setState(() {
-          //     audioButtonState = 'loading';
-          //   });
-        
           await advancedPlayer.play(currentFile).then((result) {
             if (result == 1) {
-              advancedPlayer.onPlayerStateChanged.listen((AudioPlayerState s) {
-                print('Current player state: $s');
-                if (s == AudioPlayerState.COMPLETED) {
-                  setState(() => audioButtonState = 'toPlay');
-                  audiofilesState[currentFileIndex] = true;
-                  playArticleAudio(context, audioFiles);
-                }
-              });
               setState(() {
                 audioButtonState = 'playing';
+              });
+              advancedPlayer.onPlayerStateChanged.listen((AudioPlayerState s) {
+                if (s == AudioPlayerState.COMPLETED) {
+                  if (currentFileIndex <= audioFiles.length - 1) {
+                    setState(() => audioButtonState = 'toPlay');
+                    audiofilesState[currentFileIndex] = true;
+                    playArticleAudio(context, audioFiles);
+                  }
+                }
               });
             }
           });
@@ -278,9 +290,7 @@ class _TopicBar extends State<TopicBar> {
                 child: Icon(
                     audioButtonState == 'playing'
                         ? Icons.pause
-                        : audioButtonState == 'loading'
-                            ? Icons.close
-                            : FeatherIcons.volume2,
+                        : FeatherIcons.volume2,
                     color: myDarkBlue,
                     size: 24),
                 shape: new CircleBorder(),
