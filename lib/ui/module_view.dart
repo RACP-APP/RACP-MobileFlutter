@@ -235,7 +235,11 @@ class _TopicBar extends State<TopicBar> {
       }
     }
   }
-
+@override void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    advancedPlayer.stop();
+  }
   @override
   Widget build(BuildContext context) {
     // final barStore = Provider.of<ViewStore>(context);
