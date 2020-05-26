@@ -9,7 +9,7 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:audioplayers/audioplayers.dart';
 import './modules_drawer.dart';
 import '../stores/module_page_store.dart';
-import '../widgets/test2.dart';
+import '../widgets/content_viewer.dart';
 import '../utils/progress.dart';
 //import '../stores/module_view_store.dart';
 
@@ -44,7 +44,7 @@ class ModulesView extends StatelessWidget {
                 Expanded(
                   child: Center(
                     child: Observer(
-                      builder: (_) => Testing(this.args['id'],storeP.getTopicId,storeP.getArticleId,storeP.pageNum),
+                      builder: (_) => Content(this.args['id'],storeP.getTopicId,storeP.getArticleId,storeP.content),
                     ),
                   ),
                 ),
@@ -236,7 +236,6 @@ class _TopicBar extends State<TopicBar> {
     }
   }
 @override void dispose() {
-    // TODO: implement dispose
     super.dispose();
     advancedPlayer.stop();
   }

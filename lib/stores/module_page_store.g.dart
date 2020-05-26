@@ -32,11 +32,11 @@ mixin _$PageStore on _PageStore, Store {
   bool get getCompletion =>
       (_$getCompletionComputed ??= Computed<bool>(() => super.getCompletion))
           .value;
-  Computed<List<dynamic>> _$getPageComputed;
+  Computed<List<dynamic>> _$getContentComputed;
 
   @override
-  List<dynamic> get getPage =>
-      (_$getPageComputed ??= Computed<List<dynamic>>(() => super.getPage))
+  List<dynamic> get getContent =>
+      (_$getContentComputed ??= Computed<List<dynamic>>(() => super.getContent))
           .value;
   Computed<bool> _$getLastComputed;
 
@@ -162,21 +162,21 @@ mixin _$PageStore on _PageStore, Store {
     }, _$audioFilesAtom, name: '${_$audioFilesAtom.name}_set');
   }
 
-  final _$pageNumAtom = Atom(name: '_PageStore.pageNum');
+  final _$contentAtom = Atom(name: '_PageStore.content');
 
   @override
-  List<dynamic> get pageNum {
-    _$pageNumAtom.context.enforceReadPolicy(_$pageNumAtom);
-    _$pageNumAtom.reportObserved();
-    return super.pageNum;
+  List<dynamic> get content {
+    _$contentAtom.context.enforceReadPolicy(_$contentAtom);
+    _$contentAtom.reportObserved();
+    return super.content;
   }
 
   @override
-  set pageNum(List<dynamic> value) {
-    _$pageNumAtom.context.conditionallyRunInAction(() {
-      super.pageNum = value;
-      _$pageNumAtom.reportChanged();
-    }, _$pageNumAtom, name: '${_$pageNumAtom.name}_set');
+  set content(List<dynamic> value) {
+    _$contentAtom.context.conditionallyRunInAction(() {
+      super.content = value;
+      _$contentAtom.reportChanged();
+    }, _$contentAtom, name: '${_$contentAtom.name}_set');
   }
 
   final _$lastAtom = Atom(name: '_PageStore.last');
@@ -256,10 +256,10 @@ mixin _$PageStore on _PageStore, Store {
   }
 
   @override
-  void setPage(List<dynamic> v) {
+  void setContent(List<dynamic> v) {
     final _$actionInfo = _$_PageStoreActionController.startAction();
     try {
-      return super.setPage(v);
+      return super.setContent(v);
     } finally {
       _$_PageStoreActionController.endAction(_$actionInfo);
     }
@@ -308,7 +308,7 @@ mixin _$PageStore on _PageStore, Store {
   @override
   String toString() {
     final string =
-        'completed: ${completed.toString()},options: ${options.toString()},progress: ${progress.toString()},topicId: ${topicId.toString()},articleId: ${articleId.toString()},audioFiles: ${audioFiles.toString()},pageNum: ${pageNum.toString()},last: ${last.toString()},next: ${next.toString()},getOptions: ${getOptions.toString()},getProgress: ${getProgress.toString()},getAudioFiles: ${getAudioFiles.toString()},getCompletion: ${getCompletion.toString()},getPage: ${getPage.toString()},getLast: ${getLast.toString()},getNext: ${getNext.toString()},getArticleId: ${getArticleId.toString()},getTopicId: ${getTopicId.toString()}';
+        'completed: ${completed.toString()},options: ${options.toString()},progress: ${progress.toString()},topicId: ${topicId.toString()},articleId: ${articleId.toString()},audioFiles: ${audioFiles.toString()},content: ${content.toString()},last: ${last.toString()},next: ${next.toString()},getOptions: ${getOptions.toString()},getProgress: ${getProgress.toString()},getAudioFiles: ${getAudioFiles.toString()},getCompletion: ${getCompletion.toString()},getContent: ${getContent.toString()},getLast: ${getLast.toString()},getNext: ${getNext.toString()},getArticleId: ${getArticleId.toString()},getTopicId: ${getTopicId.toString()}';
     return '{$string}';
   }
 }

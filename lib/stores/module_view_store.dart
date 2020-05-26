@@ -6,7 +6,7 @@ class ViewStore = _ViewStore with _$ViewStore;
 
 abstract class _ViewStore with Store {
   @observable
-  String moduleName = "Introduction";
+  String moduleName = "";
   @computed
   String get getName => moduleName;
 

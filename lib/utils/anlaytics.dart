@@ -40,10 +40,6 @@ Future<void> saveAnalyticsToServer() async {
       }
     });
 
-    print('*****************Analytics**************');
-    print(jsonAnalyticData);
-    print(jsonEncode(jsonAnalyticData));
-
     var response = await http.post(
       'http://162.247.76.211:3000/UpdateNotification',
       headers: <String, String>{
@@ -59,14 +55,6 @@ Future<void> saveAnalyticsToServer() async {
 }
 
 saveDuration(modelId, topicId, articleId, duration) async {
-
-  print('ddddddddddddddddddddddddddddddddddd');
-  print(duration);
-  print(modelId);
-    print(topicId);
-  print(articleId);
-
-  
   final directory = await getApplicationDocumentsDirectory();
   final path = directory.path;
   final progressFile = File('$path/progress.json');
@@ -81,10 +69,7 @@ saveDuration(modelId, topicId, articleId, duration) async {
           List articles = topic["Article"];
           for (final article in articles) {
             if (article["ArticleID"] == articleId) {
-              print('===============article is viewed for the duration ======================');
-             
-              article["DurationViewd"] = article["DurationViewd"]+ duration;
-      
+              article["DurationViewd"] = article["DurationViewd"] + duration;
             }
           }
         }
@@ -94,12 +79,9 @@ saveDuration(modelId, topicId, articleId, duration) async {
   });
 
   var progressModelsJson = ProgressModels.fromJson(modelsList);
-  print('sssssssssssefwfefwefwefwefwefwefwef');
-  print(jsonEncode(progressModelsJson.toJson()));
   await progressFile.writeAsString(jsonEncode(progressModelsJson.toJson()));
-
-
 }
+
 // Progress file convert to Json code
 class ProgressModels {
   bool savedToDb;

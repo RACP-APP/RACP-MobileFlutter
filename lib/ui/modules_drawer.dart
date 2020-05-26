@@ -101,8 +101,7 @@ class _MyDrawer extends State<MyDrawer> {
     audioFiles.forEach((media) {
       audioFilesMediaLinks.add(media['MediaLink']);
     });
-    print('order of audio files');
-    print(audioFilesMediaLinks);
+   
     return audioFilesMediaLinks;
   }
 
@@ -138,12 +137,10 @@ class _MyDrawer extends State<MyDrawer> {
           trailing: Icon(Icons.keyboard_arrow_right, color: mylightBlue),
           onTap: () async {
             //todoS
-            print('ttttttttttttttttttttttttttttt');
-            print(topicId);
-            print(item["ArticleID"]);
+           
             itemStore.setCurrent(item["Title"]);
             _barStore.setCurrentName('hello');
-            pageStore.setPage(content);
+            pageStore.setContent(content);
             pageStore.setTopicId(topicId);
             pageStore.setArticleId(item["ArticleID"]);
             pageStore.setAudioFiles(getAudioFiles(item));

@@ -24,10 +24,10 @@ abstract class _PageStore with Store {
   List audioFiles = new List();
 
   @observable
-  List pageNum = [
+  List content = [
     {
       "text": [
-        {"ContentText": "Introduction", "MediaType": "Text"}
+        {"ContentText": "", "MediaType": "Text"}
       ],
       "Media": []
     }
@@ -52,7 +52,7 @@ abstract class _PageStore with Store {
   bool get getCompletion => completed;
 
   @computed
-  List get getPage => pageNum;
+  List get getContent => content;
 
   @computed
   bool get getLast => last;
@@ -87,8 +87,8 @@ abstract class _PageStore with Store {
   }
 
   @action
-  void setPage(List v) {
-    pageNum = v;
+  void setContent(List v) {
+    content = v;
   }
 
   @action

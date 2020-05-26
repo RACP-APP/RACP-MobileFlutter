@@ -1,26 +1,25 @@
 import 'package:flutter/material.dart';
 import './video_handler.dart';
-//import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:flutter_html/flutter_html.dart';
 import '../utils/anlaytics.dart';
+import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 
-class Testing extends StatefulWidget {
+class Content extends StatefulWidget {
   final int modelId;
   final int topicId;
   final int articleId;
   final List contentList;
-  Testing(this.modelId, this.topicId, this.articleId, this.contentList);
+  Content(this.modelId, this.topicId, this.articleId, this.contentList);
 
   @override
-  _Testing createState() => _Testing(modelId, topicId, articleId, contentList);
+  _Content createState() => _Content(modelId, topicId, articleId, contentList);
 }
 
-class _Testing extends State<Testing> {
+class _Content extends State<Content> {
   final int modelId;
   final int topicId;
   final int articleId;
   final List contentList;
-  _Testing(this.modelId, this.topicId, this.articleId, this.contentList);
+  _Content(this.modelId, this.topicId, this.articleId, this.contentList);
   final controller = ScrollController();
   DateTime begining;
   DateTime end;
@@ -42,9 +41,9 @@ class _Testing extends State<Testing> {
           ordered.add(media[i]);
         }
       }
-
-      print(ordered);
     }
+    // order the ordered content according to the mediaOrder attribute
+    ordered.sort((a, b) => a['MediaOrder'].compareTo(b['MediaOrder']));
     return ordered;
   }
 
@@ -62,16 +61,9 @@ class _Testing extends State<Testing> {
         //height: MediaQuery.of(context).size.height / 1.1,
         child: Directionality(
           textDirection: TextDirection.rtl,
-          child: Html(
-            defaultTextStyle: TextStyle(fontFamily: 'Free Serif'),
-            data: txt,
-            padding: EdgeInsets.all(12.0),
-            customTextAlign: (node) {
-              return TextAlign.justify;
-            },
-            customTextStyle: (node, TextStyle baseStyle) {
-              return baseStyle.merge(TextStyle(height: 2, fontSize: 16));
-            },
+          child: HtmlWidget(
+            txt
+           
           ),
           /*
           Markdown(
@@ -97,7 +89,7 @@ class _Testing extends State<Testing> {
   }
 
   @override
-  void didUpdateWidget(Testing oldWidget) {
+ void didUpdateWidget(Contnet oldWidget) {
     super.didUpdateWidget(oldWidget);
     end = DateTime.now();
     var duration = end.difference(begining).inMinutes;
@@ -107,8 +99,8 @@ class _Testing extends State<Testing> {
 
   @override
   Widget build(BuildContext context) {
-    setDuration(1);
-    var gg = listing();
+    setDuration(articleId);
+    var content = listing();
     return Container(
       color: Colors.white,
       width: double.maxFinite,
@@ -117,9 +109,9 @@ class _Testing extends State<Testing> {
           physics: const PageScrollPhysics(),
           padding: EdgeInsets.symmetric(horizontal: 1.0),
           scrollDirection: Axis.vertical,
-          itemCount: gg.length,
+          itemCount: content.length,
           itemBuilder: (context, index) {
-            var item = gg[index];
+            var item = content[index];
             return Container(
               padding: const EdgeInsets.only(
                   top: 0.0, bottom: 100.0, left: 0.0, right: 0.0),

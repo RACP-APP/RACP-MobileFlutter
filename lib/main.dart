@@ -19,7 +19,7 @@ void main() async {
   await FlutterDownloader.initialize();
   await fetchContent(); // TODO STOP THIS FUNCTION IF FILE EXISTS
   await checkProgressFile();
-  await saveAnalyticsToServer();//TODO TEST THIS FUNCTION
+  //await saveAnalyticsToServer();//TODO TEST THIS FUNCTION
   runApp(new MyApp());
 }
 

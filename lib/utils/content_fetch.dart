@@ -39,7 +39,7 @@ Future fetchContent() async {
     // then parse the JSON.
     //return Content.fromJson(json.decode(response.body));
     //writeContent(response)
-    
+    print('getting new content sdfsdfdddddddddddddddddddddddddd');
     writeContent(response.body);
   } else {
     // If the server did not return a 200 OK response,

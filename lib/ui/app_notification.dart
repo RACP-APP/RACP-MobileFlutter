@@ -165,8 +165,7 @@ class _NotificationState extends State<NotificationWidget>
                   DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now())
             }),
           );
-          print('*****************token**************************');
-          print(token);
+        
           prefs.setString('NCDPDeviceToken', token);
         } else {
           if (prefs.getString('NCDPDeviceToken') != token) {

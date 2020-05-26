@@ -21,10 +21,7 @@ Future<bool> setArticleCompleted(modelId, topicId, articleId) async {
           List articles = topic["Article"];
           for (final article in articles) {
             if (article["ArticleID"] == articleId) {
-              print('===============article is viewd ======================');
               article["TimesViewed"]++;
-              print(article["ArticleID"]);
-              print(article["TimesViewed"]);
             }
           }
         }
@@ -67,7 +64,6 @@ Future<double> getModelProgressPercent(modelId) async {
     if (model["ModelID"] == modelId) {
       if (model["Topics"] != null && model["Topics"].length != 0) {
         List topics = model["Topics"];
-        print(topics);
         noOfTopics = model["Topics"].length;
         for (final topic in topics) {
           var topicProgress;
@@ -131,11 +127,7 @@ Future<bool> getIfArticleViewed(modelId, topciId, articleId) async {
               List articles = topic["Article"];
               for (final article in articles) {
                 if (article["ArticleID"] == articleId) {
-                  print('********article no ************');
-                  print(article["ArticleID"]);
                   viewed = article["TimesViewed"] > 0;
-                  print(article["TimesViewed"] > 0);
-
                   return viewed;
                 }
               }
@@ -251,10 +243,9 @@ Future<void> checkProgressFile() async {
       });
     } else {
       print('file exists=================================================');
-      // await progressFile.delete();
+      //await progressFile.delete();
     }
   } catch (error) {
-    print('=============================');
     print(error);
   }
   return;
