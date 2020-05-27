@@ -1,8 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:connectivity/connectivity.dart';
 
 Future<String> get _localPath async {
   final directory = await getApplicationDocumentsDirectory();
@@ -24,27 +27,41 @@ Future<File> writeContent(String content) async {
   final file = await _localFile;
   final exists = await _localFileCheck;
   file.createSync();
-  print(exists);
   // Write the file.
   return file.writeAsString(content);
 }
 
 Future fetchContent() async {
-    final response = await http.get('http://162.247.76.211:3000/JSONFile');
+  final exists = await _localFileCheck;
+  if (!exists) {
+    print(
+        '***************************** Getting the contnet file from the server *****************************');
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.wifi ||
+        connectivityResult == ConnectivityResult.mobile) {
+      print('connected');
+      final response = await http.get('http://162.247.76.211:3000/JSONFile');
 
-  // final response = await http.get('http://ncdp-dash.herokuapp.com/JSONFile');
+      // final response = await http.get('http://ncdp-dash.herokuapp.com/JSONFile');
 
-  if (response.statusCode == 200) {
-    // If the server did return a 200 OK response,
-    // then parse the JSON.
-    //return Content.fromJson(json.decode(response.body));
-    //writeContent(response)
-    print('getting new content sdfsdfdddddddddddddddddddddddddd');
-    writeContent(response.body);
+      if (response.statusCode == 200) {
+        // If the server did return a 200 OK response,
+        // then parse the JSON.
+        writeContent(response.body);
+      } else {
+        // If the server did not return a 200 OK response,
+        // then throw an exception.
+        print(
+            '********************* Need an Internet Connetion *********************');
+        throw Exception('Failed to load Content');
+      }
+    } else {
+      print(
+          '********************* Need an Internet Connetion *********************');
+    }
   } else {
-    // If the server did not return a 200 OK response,
-    // then throw an exception.
-    throw Exception('Failed to load Content');
+    print(
+        '************************* Content file already exisits *************************');
   }
 }
 
@@ -62,4 +79,12 @@ Future<List> stream() async {
   List items = json.decode(dataString);
 
   return items;
+}
+
+addNewContentToContentFile() async {
+  final path = await _localPath;
+  File newContentFile = File('$path/newContent.json');
+  newContentFile.exists().then((exists) {
+    if (exists) {}
+  });
 }

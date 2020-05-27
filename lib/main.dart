@@ -1,3 +1,4 @@
+import 'package:RACR/stores/progress_store.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
@@ -14,16 +15,15 @@ import './utils/progress.dart';
 import './utils/anlaytics.dart';
 
 void main() async {
-//   
+//
   WidgetsFlutterBinding.ensureInitialized();
   await FlutterDownloader.initialize();
-  await fetchContent(); // TODO STOP THIS FUNCTION IF FILE EXISTS
+
+  runApp(new MyApp());
+  await fetchContent();
   await checkProgressFile();
   //await saveAnalyticsToServer();//TODO TEST THIS FUNCTION
-  runApp(new MyApp());
 }
-
-
 
 class MyApp extends StatelessWidget {
   final myDarkGrey = Color(0xff605E5E);
@@ -31,13 +31,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-   
     return MultiProvider(
       providers: [
         Provider<ViewStore>(create: (_) => ViewStore()),
         Provider<DrawerStore>(create: (_) => DrawerStore()),
         Provider<PageStore>(create: (_) => PageStore()),
-             ],
+        Provider<ProgressStore>(create: (_) => ProgressStore()),
+      ],
       child: new MaterialApp(
         title: 'الحياة والطفل',
         theme: new ThemeData(

@@ -1,13 +1,14 @@
 import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:device_info/device_info.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
+import 'package:provider/provider.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,6 +19,9 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:connectivity/connectivity.dart';
+import '../stores/progress_store.dart';
+import '../utils/content_fetch.dart';
+import '../utils/progress.dart';
 
 class NotificationWidget extends StatefulWidget {
   final Color color;
@@ -34,6 +38,7 @@ class _NotificationState extends State<NotificationWidget>
   final myDarkBlueOverlay = Color(0x55085576);
   final mylightBlue = Color(0xff8AD0EE);
   var customColor = Color(0xff605E5E);
+
   bool downloading = false;
   String progressString = '';
   double progressValue = 0.0;
@@ -43,6 +48,11 @@ class _NotificationState extends State<NotificationWidget>
   _NotificationState(this.customColor);
 
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+
+  //Progress overlay
+  OverlayState overlayState;
+  OverlayEntry overlayForProgress;
+  OverlayEntry progressBarForFile;
 
   // Animation
   AnimationController _controller;
@@ -165,7 +175,7 @@ class _NotificationState extends State<NotificationWidget>
                   DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now())
             }),
           );
-        
+
           prefs.setString('NCDPDeviceToken', token);
         } else {
           if (prefs.getString('NCDPDeviceToken') != token) {
@@ -254,187 +264,21 @@ class _NotificationState extends State<NotificationWidget>
         )).show();
   }
 
-  void handleNewContent() async{
-     var connectivityResult = await (Connectivity().checkConnectivity());
-      if (connectivityResult == ConnectivityResult.wifi ||
-          connectivityResult == ConnectivityResult.mobile) {
-    Alert(
-        context: context,
-        title: "هل ترغب بتنزيل المحتوى الجديد؟",
-        buttons: [
-          DialogButton(
-              child: Text(
-                "تنزيل",
-                style: TextStyle(color: myDarkBlue, fontSize: 18),
-              ),
-              onPressed: () => checkDownload(),
-              color: mylightBlue),
-        ],
-        style: AlertStyle(
-          animationType: AnimationType.grow,
-          descStyle: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-          animationDuration: Duration(milliseconds: 400),
-          backgroundColor: myDarkBlue,
-          alertBorder: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-            side: BorderSide(
-              color: myDarkBlue,
-            ),
-          ),
-          titleStyle: TextStyle(
-            color: Colors.white,
-          ),
-          overlayColor: myDarkBlueOverlay,
-        )).show();
-          } else {
-Alert(
-        context: context,
-        title: "لا يوجد اتصال بالانترنت",
-        buttons: [],
-        style: AlertStyle(
-          animationType: AnimationType.grow,
-          descStyle: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-          animationDuration: Duration(milliseconds: 400),
-          backgroundColor: myDarkBlue,
-          alertBorder: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-            side: BorderSide(
-              color: myDarkBlue,
-            ),
-          ),
-          titleStyle: TextStyle(
-            color: Colors.white,
-          ),
-          overlayColor: myDarkBlueOverlay,
-        )).show();
-          }
-  }
-
-  void checkDownload() async {
-    // IF THE SPACE IS GOOD THEN MOVE OT THE DOWNLOAD PROGRESS PAGE AND DOWNLAD
-    // ELSE PROMPT AN ALERT BOX TO EITHER DOWNLOAD ONLY THE TEXT VERSION OR TO FREE SPACE
-    double fileSize = await checkFileSizeBeforeDownload();
-    Navigator.of(context).pop();
-    if (fileSize > _platformVersion * 1000) {
-      // remove this alert and show the free some sapce alert
-
+  void handleNewContent(BuildContext context) async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.wifi ||
+        connectivityResult == ConnectivityResult.mobile) {
       Alert(
           context: context,
-          title: "الرجاء تحرير بعض المساحة علي الجهاز لتنزيل الملف بنجاح",
-          buttons: [],
-          style: AlertStyle(
-            animationType: AnimationType.grow,
-            descStyle: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-            animationDuration: Duration(milliseconds: 400),
-            backgroundColor: myDarkBlue,
-            alertBorder: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-              side: BorderSide(
-                color: myDarkBlue,
-              ),
-            ),
-            titleStyle: TextStyle(
-              color: Colors.white,
-            ),
-            overlayColor: myDarkBlueOverlay,
-          )).show();
-    } else {
-      await downloadJsonFile(context);
-    }
-  }
-
-  Future<double> checkFileSizeBeforeDownload() async {
-    
-    var fileUrl = 'http://162.247.76.211:3000/JSONFile';
-    http.Response response = await http.head(fileUrl);
-    double size;
-    try {
-      size = double.parse(response.headers['content-length']);
-    } catch (error) {
-      print('error finiding the size of the file before downloading it');
-    }
-    return size;
-  }
-
-  // Future<void> openFile() async {
-  //   var dir = await getExternalStorageDirectory();
-  //   final filePath = "${dir.path}/x.json";
-  //   await OpenFile.open(filePath);
-  // }
-
-  Future<void> downloadJsonFile(BuildContext context) async {
-    var fileUrl = 'http://162.247.76.211:3000/JSONFile';
-    var dio = Dio();
-    dio.interceptors.add(LogInterceptor());
-    try {
-      var dir = await getApplicationDocumentsDirectory();
-
-      OverlayState overlayState = Overlay.of(context);
-      OverlayEntry overlayForProgress = OverlayEntry(
-          builder: (context) => SizedBox.expand(
-                  child: Container(
-                color: myDarkBlueOverlay,
-              )));
-      OverlayEntry progressBarForFile = OverlayEntry(
-          builder: (context) => Container(
-              margin: EdgeInsets.fromLTRB(30.0, 0, 30.0, 0.0),
-              width: 250,
-              child: new LinearPercentIndicator(
-                  width: 250,
-                  animation: true,
-                  animationDuration: 2000,
-                  lineHeight: 50.0,
-                  padding: EdgeInsets.all(0),
-                  center: Text(
-                    progressString,
-                    style: GoogleFonts.lateef(
-                        textStyle: TextStyle(
-                            fontSize: 28.0, color: Colors.white, height: 1)),
-                  ),
-                  linearStrokeCap: LinearStrokeCap.butt,
-                  backgroundColor: mylightBlue,
-                  progressColor: myDarkBlue,
-                  percent: progressValue)));
-      overlayState.insert(overlayForProgress);
-      overlayState.insert(progressBarForFile);
-      await dio.download(fileUrl, "${dir.path}/content.json",
-          onReceiveProgress: (rec, total) {
-        print("Rec: $rec , Total: $total");
-
-        setState(() {
-          downloading = true;
-          progressValue = (rec / total);
-          progressString = (progressValue * 100).toStringAsFixed(2) + "%";
-        });
-      });
-      progressBarForFile.remove();
-      overlayForProgress.remove();
-
-      setState(() {
-        downloading = false;
-        hasNotification = false;
-      });
-
-      Alert(
-          context: context,
-          title: "تم التنزيل بنجاح",
+          title: "هل ترغب بتنزيل المحتوى الجديد؟",
           buttons: [
-            // DialogButton(
-            //     child: Text(
-            //       "الرابط",
-            //       style: TextStyle(color: myDarkBlue, fontSize: 18),
-            //     ),
-            //     onPressed: () => openFile(),
-            //     color: mylightBlue),
+            DialogButton(
+                child: Text(
+                  "تنزيل",
+                  style: TextStyle(color: myDarkBlue, fontSize: 18),
+                ),
+                onPressed: () => checkDownload(context),
+                color: mylightBlue),
           ],
           style: AlertStyle(
             animationType: AnimationType.grow,
@@ -455,12 +299,10 @@ Alert(
             ),
             overlayColor: myDarkBlueOverlay,
           )).show();
-    } catch (error) {
-      print('File downloading error: ' + error);
-
+    } else {
       Alert(
           context: context,
-          title: "حدث خطأ أثناء التحميل الرجاء المحاولة مرة أخرى",
+          title: "لا يوجد اتصال بالانترنت",
           buttons: [],
           style: AlertStyle(
             animationType: AnimationType.grow,
@@ -484,8 +326,210 @@ Alert(
     }
   }
 
+  void showNoInternetAlert(BuildContext context) {
+    Alert(
+        context: context,
+        title: "حدثت مشكلة الرجاء التأكد من اتصالك بالانترنت وحاول مرة أخرى",
+        buttons: [],
+        style: AlertStyle(
+          animationType: AnimationType.grow,
+          descStyle: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+          animationDuration: Duration(milliseconds: 400),
+          backgroundColor: myDarkBlue,
+          alertBorder: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+            side: BorderSide(
+              color: myDarkBlue,
+            ),
+          ),
+          titleStyle: TextStyle(
+            color: Colors.white,
+          ),
+          overlayColor: myDarkBlueOverlay,
+        )).show();
+  }
+
+  void checkDownload(BuildContext context) async {
+    // IF THE SPACE IS GOOD THEN MOVE OT THE DOWNLOAD PROGRESS PAGE AND DOWNLAD
+    // ELSE PROMPT AN ALERT BOX TO EITHER DOWNLOAD ONLY THE TEXT VERSION OR TO FREE SPACE
+    Navigator.of(context).pop();
+    overlayState = Overlay.of(context);
+    overlayForProgress = OverlayEntry(
+        builder: (context) => SizedBox.expand(
+                child: Container(
+              color: myDarkBlueOverlay,
+            )));
+
+    progressBarForFile =
+        OverlayEntry(builder: (context) => ProgressDownload());
+    overlayState.insert(overlayForProgress);
+    overlayState.insert(progressBarForFile);
+    double fileSize = await checkFileSizeBeforeDownload();
+    if (fileSize == 0) {
+      showNoInternetAlert(context);
+    } else {
+      if (fileSize > _platformVersion * 1000) {
+        // remove this alert and show the free some sapce alert
+
+        Alert(
+            context: context,
+            title: "الرجاء تحرير بعض المساحة علي الجهاز لتنزيل الملف بنجاح",
+            buttons: [],
+            style: AlertStyle(
+              animationType: AnimationType.grow,
+              descStyle: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+              animationDuration: Duration(milliseconds: 400),
+              backgroundColor: myDarkBlue,
+              alertBorder: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+                side: BorderSide(
+                  color: myDarkBlue,
+                ),
+              ),
+              titleStyle: TextStyle(
+                color: Colors.white,
+              ),
+              overlayColor: myDarkBlueOverlay,
+            )).show();
+      } else {
+        await downloadJsonFile();
+      }
+    }
+  }
+
+  Future<double> checkFileSizeBeforeDownload() async {
+    double size = 0;
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.wifi ||
+        connectivityResult == ConnectivityResult.mobile) {
+      var fileUrl = 'http://162.247.76.211:3000/JSONFile';
+      http.Response response = await http.head(fileUrl);
+
+      try {
+        size = double.parse(response.headers['content-length']);
+      } catch (error) {
+        print('error finiding the size of the file before downloading it');
+        return 0;
+      }
+    }
+    return size;
+  }
+
+  // Future<void> openFile() async {
+  //   var dir = await getExternalStorageDirectory();
+  //   final filePath = "${dir.path}/x.json";
+  //   await OpenFile.open(filePath);
+  // }
+
+  Future<void> downloadJsonFile() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.wifi ||
+        connectivityResult == ConnectivityResult.mobile) {
+      var progressStore = Provider.of<ProgressStore>(context,listen: false);
+
+      var fileUrl = 'http://162.247.76.211:3000/JSONFile';
+      var dio = Dio();
+      dio.interceptors.add(LogInterceptor());
+      try {
+        var dir = await getApplicationDocumentsDirectory();
+
+        await dio.download(fileUrl, "${dir.path}/newContent.json",
+            onReceiveProgress: (rec, total) {
+          print("Rec: $rec , Total: $total");
+
+          setState(() {
+            downloading = true;
+            progressValue = (rec / total);
+            print('setting');
+            progressStore.setProgress(progressValue);
+            progressString = (progressValue * 100).toStringAsFixed(2) + "%";
+          });
+        });
+        progressBarForFile.remove();
+        overlayForProgress.remove();
+        setState(() {
+          downloading = false;
+          hasNotification = false;
+        });
+//TODO ADD NEW CONTENT TO CONTENT FILE AND PROGRESS FILE
+       addNewContentToContentFile();
+       addNewContentToProgressFile();
+        Alert(
+            context: context,
+            title: "تم التنزيل بنجاح",
+            buttons: [
+              // DialogButton(
+              //     child: Text(
+              //       "الرابط",
+              //       style: TextStyle(color: myDarkBlue, fontSize: 18),
+              //     ),
+              //     onPressed: () => openFile(),
+              //     color: mylightBlue),
+            ],
+            style: AlertStyle(
+              animationType: AnimationType.grow,
+              descStyle: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+              animationDuration: Duration(milliseconds: 400),
+              backgroundColor: myDarkBlue,
+              alertBorder: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+                side: BorderSide(
+                  color: myDarkBlue,
+                ),
+              ),
+              titleStyle: TextStyle(
+                color: Colors.white,
+              ),
+              overlayColor: myDarkBlueOverlay,
+            )).show();
+      } catch (error) {
+        print('File downloading error: ' + error);
+        progressBarForFile.remove();
+        overlayForProgress.remove();
+        Alert(
+            context: context,
+            title: "حدث خطأ أثناء التحميل الرجاء المحاولة مرة أخرى",
+            buttons: [],
+            style: AlertStyle(
+              animationType: AnimationType.grow,
+              descStyle: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+              animationDuration: Duration(milliseconds: 400),
+              backgroundColor: myDarkBlue,
+              alertBorder: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+                side: BorderSide(
+                  color: myDarkBlue,
+                ),
+              ),
+              titleStyle: TextStyle(
+                color: Colors.white,
+              ),
+              overlayColor: myDarkBlueOverlay,
+            )).show();
+      }
+    } else {
+      progressBarForFile.remove();
+      overlayForProgress.remove();
+      showNoInternetAlert(context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    print('building .................................');
+
     return !hasNotification
         ? RawMaterialButton(
             onPressed: () => handleNoContent(context),
@@ -497,10 +541,55 @@ Alert(
             scale: _tween.animate(
                 CurvedAnimation(parent: _controller, curve: Curves.elasticOut)),
             child: RawMaterialButton(
-              onPressed: () => handleNewContent(),
+              onPressed: () => handleNewContent(context),
               child: Icon(Icons.notifications, color: customColor),
               shape: new CircleBorder(),
               constraints: new BoxConstraints(minHeight: 10.0, minWidth: 10.0),
             ));
+  }
+}
+
+class ProgressDownload extends StatelessWidget {
+ 
+  final myDarkGrey = Color(0xff605E5E);
+  final myDarkBlue = Color(0xff085576);
+  final myDarkBlueOverlay = Color(0x55085576);
+  final mylightBlue = Color(0xff8AD0EE);
+
+
+  @override
+  Widget build(BuildContext context) {
+    print('building progress download ..............');
+    var progressStore = Provider.of<ProgressStore>(context);
+    return Observer(
+        builder: (_) => Container(
+            margin: EdgeInsets.fromLTRB(30.0, 0, 30.0, 0.0),
+            width: 250,
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    'يتم البحث عن المحتوى وتنزيله...',
+                    style: GoogleFonts.lateef(
+                        textStyle: TextStyle(
+                            fontSize: 28.0, color: Colors.white, height: 1)),
+                  ),
+                  LinearPercentIndicator(
+                      lineHeight: 50.0,
+                      padding: EdgeInsets.all(0),
+                      center: Text(
+                        (progressStore.getProgress * 100).toStringAsFixed(2) +
+                            "%",
+                        style: GoogleFonts.lateef(
+                            textStyle: TextStyle(
+                                fontSize: 28.0,
+                                color: Colors.white,
+                                height: 1)),
+                      ),
+                      linearStrokeCap: LinearStrokeCap.butt,
+                      backgroundColor: mylightBlue,
+                      progressColor: myDarkBlue,
+                      percent: progressStore.getProgress)
+                ])));
   }
 }

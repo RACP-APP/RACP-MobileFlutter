@@ -101,7 +101,7 @@ class _MyDrawer extends State<MyDrawer> {
     audioFiles.forEach((media) {
       audioFilesMediaLinks.add(media['MediaLink']);
     });
-   
+
     return audioFilesMediaLinks;
   }
 
@@ -112,6 +112,30 @@ class _MyDrawer extends State<MyDrawer> {
     var pageStore = Provider.of<PageStore>(context);
     bool viewed = false;
     bool allArticlesViewed = false;
+
+    List listing(contentList) {
+      List ordered = new List();
+
+      if (contentList.length != 0) {
+        List text = contentList[0]["text"];
+        List media = contentList[0]["Media"];
+
+        if (text != null) {
+          for (var i = 0; i < text.length; i++) {
+            ordered.add(text[i]);
+          }
+        }
+        if (media != null) {
+          for (var i = 0; i < media.length; i++) {
+            ordered.add(media[i]);
+          }
+        }
+      }
+      // order the ordered content according to the mediaOrder attribute
+      ordered.sort((a, b) => a['MediaOrder'].compareTo(b['MediaOrder']));
+      return ordered;
+    }
+
     Widget articles(item, context, content, modelId, topicId) {
       return Observer(
         builder: (_) => ListTile(
@@ -137,10 +161,11 @@ class _MyDrawer extends State<MyDrawer> {
           trailing: Icon(Icons.keyboard_arrow_right, color: mylightBlue),
           onTap: () async {
             //todoS
-           
+
             itemStore.setCurrent(item["Title"]);
             _barStore.setCurrentName('hello');
-            pageStore.setContent(content);
+            var orderedContent = listing(content);
+            pageStore.setContent(orderedContent);
             pageStore.setTopicId(topicId);
             pageStore.setArticleId(item["ArticleID"]);
             pageStore.setAudioFiles(getAudioFiles(item));

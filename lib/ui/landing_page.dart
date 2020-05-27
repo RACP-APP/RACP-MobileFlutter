@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../widgets/video_p.dart';
 import '../utils/content_fetch.dart';
 import '../ui/app_notification.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class Landing extends StatefulWidget {
   Landing({Key key}) : super(key: key);
@@ -16,7 +18,48 @@ class _LandingState extends State<Landing> {
   final myDarkGrey = Color(0xff605E5E);
   final myDarkBlue = Color(0xff085576);
   final mylightBlue = Color(0xff8AD0EE);
-  int counter = 0;
+  final myDarkBlueOverlay = Color(0x55085576);
+
+
+  getHelpApplication()  {
+    Alert(
+        context: context,
+        title:
+            "سوف يتم توجيهك لتحميل تطبيق يوفر المساعدة في حال التعرض للعنف مع ملاحظة أن هذا التطبيق تحت رعاية جهة أخري",
+        buttons: [
+          DialogButton(
+              child: Text(
+                "تنزيل التطبيق",
+                style: TextStyle(color: myDarkBlue, fontSize: 18),
+              ),
+              onPressed: () => goToHelpApp(),
+              color: mylightBlue),
+        ],
+        style: AlertStyle(
+          animationType: AnimationType.grow,
+          descStyle: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+          animationDuration: Duration(milliseconds: 400),
+          backgroundColor: myDarkBlue,
+          alertBorder: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+            side: BorderSide(
+              color: myDarkBlue,
+            ),
+          ),
+          titleStyle: TextStyle(
+            color: Colors.white,
+          ),
+          overlayColor: myDarkBlueOverlay,
+        )).show();
+  }
+
+  goToHelpApp() async {
+    await launch(
+        "https://play.google.com/store/apps/details?id=jo.dwt.sgbv&hl=ar");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,67 +125,92 @@ class _LandingState extends State<Landing> {
             ),
             Container(
                 child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
-                      Container(
-                        padding: EdgeInsets.symmetric(vertical: 20.0),
-                        child: Center(
-                            child: Text(
-                          "يتضمن هذا التطبيق العديد  من \n المواضيع التي تهم الأمهات ",
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.lateef(
-                              textStyle: TextStyle(
-                                  fontSize: 28.0,
-                                  color: Colors.white,
-                                  height: 1)),
-                        )),
-                      ),
-                      Container(
-                        padding: EdgeInsets.only(bottom: 20.0),
-                        child: Center(
-                          child: RaisedButton(
-                            padding: EdgeInsets.all(4.0),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: new BorderRadius.circular(20.0),
-                            ),
-                            color: mylightBlue,
-                            onPressed: () async =>
-                                Navigator.of(context).pushNamed(
-                              '/ML',
-                              arguments: await stream(),
-                            ),
-                            child: Container(
-                                width: 200,
-                                child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      Transform.rotate(
-                                          angle: 1.0,
-                                          child: RawMaterialButton(
-                                            onPressed: null,
-                                            child: Icon(Icons.play_arrow,
-                                                color: myDarkGrey, size: 40),
-                                            shape: new CircleBorder(),
-                                            constraints: new BoxConstraints(
-                                                minHeight: 40.0,
-                                                minWidth: 40.0),
-                                          )),
-                                      Padding(
-                                          padding: EdgeInsets.only(right: 8.0),
-                                          child: Text(
-                                            "ابدأ التعلم",
-                                            textAlign: TextAlign.start,
-                                            style: GoogleFonts.lateef(
-                                                textStyle: TextStyle(
-                                                    fontSize: 28.0,
-                                                    color: myDarkGrey,
-                                                    height: 1)),
-                                          ))
-                                    ])),
-                          ),
+                  Container(
+                    padding: EdgeInsets.symmetric(vertical: 20.0),
+                    child: Center(
+                        child: Text(
+                      "يتضمن هذا التطبيق العديد  من \n المواضيع التي تهم الأمهات ",
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.lateef(
+                          textStyle: TextStyle(
+                              fontSize: 28.0, color: Colors.white, height: 1)),
+                    )),
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(bottom: 10.0),
+                    child: Center(
+                      child: RaisedButton(
+                        padding: EdgeInsets.all(4.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.circular(20.0),
                         ),
+                        color: mylightBlue,
+                        onPressed: () async => Navigator.of(context).pushNamed(
+                          '/ML',
+                          arguments: await stream(),
+                        ),
+                        child: Container(
+                            width: 200,
+                            child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Transform.rotate(
+                                      angle: 1.0,
+                                      child: RawMaterialButton(
+                                        onPressed: null,
+                                        child: Icon(Icons.play_arrow,
+                                            color: myDarkGrey, size: 40),
+                                        shape: new CircleBorder(),
+                                        constraints: new BoxConstraints(
+                                            minHeight: 20.0, minWidth: 40.0),
+                                      )),
+                                  Padding(
+                                      padding: EdgeInsets.only(right: 8.0),
+                                      child: Text(
+                                        "ابدأ التعلم",
+                                        textAlign: TextAlign.start,
+                                        style: GoogleFonts.lateef(
+                                            textStyle: TextStyle(
+                                                fontSize: 28.0,
+                                                color: myDarkGrey,
+                                                height: 1)),
+                                      ))
+                                ])),
                       ),
-                    ])),
+                    ),
+                  ), Container(
+                    padding: EdgeInsets.only(bottom: 10.0),
+                    child: Center(
+                      child: RaisedButton(
+                        padding: EdgeInsets.all(4.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.circular(20.0),
+                        ),
+                        color: mylightBlue,
+                        onPressed: () async => getHelpApplication(),
+                        child: Container(
+                            width: 200,
+                            child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Padding(
+                                      padding: EdgeInsets.only(right: 8.0),
+                                      child: Text(
+                                        "هل تحتاجين مساعدة ؟",
+                                        textAlign: TextAlign.start,
+                                        style: GoogleFonts.lateef(
+                                            textStyle: TextStyle(
+                                                fontSize: 28.0,
+                                                color: myDarkGrey,
+                                                height: 1)),
+                                      ))
+                                ])),
+                      ),
+                    ),
+                  )
+                ])),
           ],
         ),
       ),

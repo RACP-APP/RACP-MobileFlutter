@@ -48,7 +48,7 @@ class Module extends StatelessWidget {
         decoration: BoxDecoration(
           image: DecorationImage(
             image: NetworkImage(
-                "https://firebasestorage.googleapis.com/v0/b/ncdp-270519.appspot.com/o/images%2Fexpress-js-png-5.png?alt=media&token=a746268e-1deb-4165-90de-f8692c9d5a38"),
+            img),
             fit: BoxFit.cover,
           ),
           border: Border.all(

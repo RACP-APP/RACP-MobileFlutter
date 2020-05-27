@@ -1,4 +1,7 @@
+import 'package:RACR/stores/module_page_store.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:provider/provider.dart';
 import './video_handler.dart';
 import '../utils/anlaytics.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
@@ -24,29 +27,7 @@ class _Content extends State<Content> {
   DateTime begining;
   DateTime end;
 
-  List listing() {
-    List ordered = new List();
-
-    if (contentList.length != 0) {
-      List text = contentList[0]["text"];
-      List media = contentList[0]["Media"];
-
-      if (text != null) {
-        for (var i = 0; i < text.length; i++) {
-          ordered.add(text[i]);
-        }
-      }
-      if (media != null) {
-        for (var i = 0; i < media.length; i++) {
-          ordered.add(media[i]);
-        }
-      }
-    }
-    // order the ordered content according to the mediaOrder attribute
-    ordered.sort((a, b) => a['MediaOrder'].compareTo(b['MediaOrder']));
-    return ordered;
-  }
-
+  
   Widget _contentItem(type, cont, txt, context) {
     if (type == "vedio") {
       return Container(
@@ -89,7 +70,7 @@ class _Content extends State<Content> {
   }
 
   @override
- void didUpdateWidget(Contnet oldWidget) {
+ void didUpdateWidget(Content oldWidget) {
     super.didUpdateWidget(oldWidget);
     end = DateTime.now();
     var duration = end.difference(begining).inMinutes;
@@ -100,25 +81,28 @@ class _Content extends State<Content> {
   @override
   Widget build(BuildContext context) {
     setDuration(articleId);
-    var content = listing();
+       var storeP = Provider.of<PageStore>(context);
+
     return Container(
       color: Colors.white,
       width: double.maxFinite,
       height: double.maxFinite,
-      child: ListView.builder(
+      child: Observer(
+                      builder: (_) => ListView.builder(
           physics: const PageScrollPhysics(),
           padding: EdgeInsets.symmetric(horizontal: 1.0),
           scrollDirection: Axis.vertical,
-          itemCount: content.length,
+          itemCount: storeP.getContent.length,
           itemBuilder: (context, index) {
-            var item = content[index];
+            var item = storeP.getContent[index];
             return Container(
               padding: const EdgeInsets.only(
                   top: 0.0, bottom: 100.0, left: 0.0, right: 0.0),
               child: _contentItem(item['MediaType'], item['MediaLink'],
                   item["ContentText"], context),
             );
-          }),
+          })
+          ),
     );
   }
 }
