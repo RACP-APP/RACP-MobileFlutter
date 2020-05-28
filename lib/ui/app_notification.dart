@@ -20,8 +20,8 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:connectivity/connectivity.dart';
 import '../stores/progress_store.dart';
-import '../utils/content_fetch.dart';
 import '../utils/progress.dart';
+import '../utils/content_fetch.dart';
 
 class NotificationWidget extends StatefulWidget {
   final Color color;
@@ -458,8 +458,9 @@ class _NotificationState extends State<NotificationWidget>
           hasNotification = false;
         });
 //TODO ADD NEW CONTENT TO CONTENT FILE AND PROGRESS FILE
-       addNewContentToContentFile();
-       addNewContentToProgressFile();
+print('addddddddddddddddddddddddddddddddddddddddddddddddddddddd');
+       await addNewContentToContentFile();
+      await  addNewContentToProgressFile();
         Alert(
             context: context,
             title: "تم التنزيل بنجاح",
@@ -491,6 +492,7 @@ class _NotificationState extends State<NotificationWidget>
               ),
               overlayColor: myDarkBlueOverlay,
             )).show();
+            progressStore.setProgress(0.0);
       } catch (error) {
         print('File downloading error: ' + error);
         progressBarForFile.remove();
@@ -528,7 +530,6 @@ class _NotificationState extends State<NotificationWidget>
 
   @override
   Widget build(BuildContext context) {
-    print('building .................................');
 
     return !hasNotification
         ? RawMaterialButton(

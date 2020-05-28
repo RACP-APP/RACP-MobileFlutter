@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
+import 'package:collection/collection.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/services.dart';
@@ -178,7 +179,7 @@ Future<bool> getIfAllArticlesViewed(modelId, topicId) async {
             }
           }
         }
-        ;
+        
       }
     }
   }
@@ -249,6 +250,80 @@ Future<void> checkProgressFile() async {
     print(error);
   }
   return;
+}
+
+addNewContentToProgressFile() async {
+  final directory = await getApplicationDocumentsDirectory();
+  final path = directory.path;
+  File progressFile = File('$path/progress.json');
+  File contentFile = File('$path/content.json');
+  contentFile.exists().then((exists) async {
+    if (exists) {
+      var contentFileContent = await contentFile.readAsString();
+      List<dynamic> modelsList = jsonDecode(contentFileContent);
+      var progressFileContent = await progressFile.readAsString();
+      print('progress conent ****************************');
+      print(progressFileContent);
+      Map<String, dynamic> progressModelsList = jsonDecode(progressFileContent);
+        for (var model in modelsList) {
+          var modelExists = false;
+          for (var pmodel in progressModelsList['models']) {
+            if (model['ModelID'] == pmodel['ModelID']) {
+              modelExists = true;
+                // iterate topics
+                for (var topic in model["Topics"]) {
+                  var topicExists = false;
+                  for (var ptopic in pmodel["Topics"]) {
+                    if (topic['TopicID'] == ptopic['TopicID']) {
+                      topicExists = true;
+                        // iterate articles
+                        for (var article in topic["Article"]) {
+                          var articleExists = false;
+                          for (var particle in ptopic["Article"]) {
+                            if (article['ArticleID'] == particle['ArticleID']) {
+                              articleExists = true;
+                                // replace content
+                                particle['content'] = article['content'];
+                                article['TimesViewd'] = 0; // reset
+                              
+                            }
+                          }
+                          if (!articleExists) {
+                            ptopic["Article"].add(PArticle.fromJson(article) );
+                            print('iiiiiiiiiiiiiiiiiiiiiiiiiiii');
+                            print('article adeded');
+                            print(article['Title']);
+                            print(PArticle.fromJson(article));
+                          }
+                        }
+                    
+                    }
+                  }
+                  if (!topicExists) {
+                    pmodel["Topics"].add(PTopics.fromJson(topic) );
+                    print('iiiiiiiiiiiiiiiiiiiiiiiiiiii');
+                    print('topic adeded');
+                    print(topic['Title']);
+                    print(PTopics.fromJson(topic) );
+                  }
+                }
+              
+            }
+          }
+
+          if (!modelExists) {
+            
+            progressModelsList['models'].add(PModels.fromJson(model));
+            print('iiiiiiiiiiiiiiiiiiiiiiiiiiii');
+            print('model adeded');
+            print(model['Title']);
+            print(PModels.fromJson(model));
+          }
+        }
+      
+      progressFile.writeAsString(jsonEncode(progressModelsList));
+    }
+  });
 }
 
 // Progress file convert to Json code
