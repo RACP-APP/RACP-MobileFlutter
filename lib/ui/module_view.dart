@@ -35,16 +35,20 @@ class ModulesView extends StatelessWidget {
                         builder: (context, AsyncSnapshot<double> snapshot) {
                           if (snapshot.hasData) {
                             progress = snapshot.data;
+                            print('wwwwwwwwwwwwwwwwwwwwwwwwwww');
+                            print(progress);
                           }
-                          return TopicBar(
-                            50,
-                            progress,
-                          );
+                          print(progress);
+                          return TopicBar(50, progress);
                         })),
                 Expanded(
                   child: Center(
                     child: Observer(
-                      builder: (_) => Content(this.args['id'],storeP.getTopicId,storeP.getArticleId,storeP.content),
+                      builder: (_) => Content(
+                          this.args['id'],
+                          storeP.getTopicId,
+                          storeP.getArticleId,
+                          storeP.content),
                     ),
                   ),
                 ),
@@ -119,8 +123,8 @@ class MyCustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 }
 
 class TopicBar extends StatefulWidget {
-  double percent;
-  double height;
+  final double percent;
+  final double height;
   TopicBar(this.height, this.percent);
   @override
   _TopicBar createState() => _TopicBar(this.height, this.percent);
@@ -137,7 +141,7 @@ class _TopicBar extends State<TopicBar> {
   var myDarkBlueOverlay = Color(0x55085576);
   String audioButtonState = 'toPlay';
   List audiofilesState = new List();
-
+  
   playArticleAudio(BuildContext context, List audioFiles) async {
     if (audioFiles.length == audiofilesState.length) {
       var state;
@@ -235,16 +239,22 @@ class _TopicBar extends State<TopicBar> {
       }
     }
   }
-@override void dispose() {
+
+  @override
+  void dispose() {
     super.dispose();
     advancedPlayer.stop();
   }
+
   @override
   Widget build(BuildContext context) {
-    // final barStore = Provider.of<ViewStore>(context);
     var pageStore = Provider.of<PageStore>(context);
+    print('ppppppppppppppppppppppssssssssssssss');
+    print(percent);
     return Observer(builder: (_) {
-      var progress =
+      print('sssssssssssssssssssssssssspercent');
+      print(pageStore.getProgress);
+      var progress = 
           pageStore.getProgress > percent ? pageStore.getProgress : percent;
       return Container(
         decoration: new BoxDecoration(

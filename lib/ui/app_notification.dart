@@ -64,6 +64,8 @@ class _NotificationState extends State<NotificationWidget>
   //Check if the Shared Prefereces has the notification key
   void checkNotificationExistInSharedPreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    print('has notification ?????????????????????????????????');
+    print(prefs.getBool('NCDPNotification'));
     if (prefs.getBool('NCDPNotification') != null) {
       setState(() {
         hasNotification = true;
@@ -78,7 +80,7 @@ class _NotificationState extends State<NotificationWidget>
   }
 
   // Save Notification in the Shared Preferences.
-  void saveNotificationInSharedPreferences() async {
+  Future<void> saveNotificationInSharedPreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setBool('NCDPNotification', true);
     setState(() {
@@ -87,13 +89,19 @@ class _NotificationState extends State<NotificationWidget>
     });
   }
 
-  void removeNotificationFromSharedPreferences() async {
+  Future<void> removeNotificationFromSharedPreferences() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    print('removing notification from shared prefs ************************');
     await prefs.remove('NCDPNotification');
     setState(() {
       hasNotification = false;
       notificationIcon = Icons.notifications_none;
     });
+     if (prefs.getBool('NCDPNotification') != null) {
+       print('strill have the notification *************');
+     } else {
+       print('notification removed **********************');;
+     }
   }
 
   Future<void> initPlatformState() async {
@@ -130,16 +138,16 @@ class _NotificationState extends State<NotificationWidget>
     _firebaseMessaging.configure(
       onMessage: (Map<String, dynamic> message) async {
         //store in shared preferecns
-        saveNotificationInSharedPreferences();
+        await saveNotificationInSharedPreferences();
         print("onMessage: $message");
       },
       onLaunch: (Map<String, dynamic> message) async {
         print("onLaunch: $message");
-        saveNotificationInSharedPreferences();
+        await saveNotificationInSharedPreferences();
       },
       onResume: (Map<String, dynamic> message) async {
         print("onResume: $message");
-        saveNotificationInSharedPreferences();
+        await saveNotificationInSharedPreferences();
       },
     );
     _firebaseMessaging.requestNotificationPermissions(
@@ -179,14 +187,18 @@ class _NotificationState extends State<NotificationWidget>
           prefs.setString('NCDPDeviceToken', token);
         } else {
           if (prefs.getString('NCDPDeviceToken') != token) {
-            // TODO update in db
+            //The same as inserting . it will be inserted with the new tocken
             http.post(
               'http://162.247.76.211:3000/Articles/Registration', // CHANGE THIS LINE
               headers: <String, String>{
                 'Content-Type': 'application/json; charset=UTF-8',
               },
-              body:
-                  jsonEncode(<String, String>{'id': deviceId, 'token': token}),
+               body: jsonEncode(<String, String>{
+              'id': deviceId,
+              'token': token,
+              'regDate':
+                  DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now())
+            })
             );
             prefs.setString('NCDPDeviceToken', token);
           }
@@ -457,10 +469,9 @@ class _NotificationState extends State<NotificationWidget>
           downloading = false;
           hasNotification = false;
         });
-//TODO ADD NEW CONTENT TO CONTENT FILE AND PROGRESS FILE
-print('addddddddddddddddddddddddddddddddddddddddddddddddddddddd');
        await addNewContentToContentFile();
       await  addNewContentToProgressFile();
+      await removeNotificationFromSharedPreferences();
         Alert(
             context: context,
             title: "تم التنزيل بنجاح",

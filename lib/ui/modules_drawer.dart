@@ -1,3 +1,4 @@
+import 'package:RACR/stores/progress_store.dart';
 import 'package:flutter/material.dart';
 import '../stores/drawer_store.dart';
 import 'package:provider/provider.dart';
@@ -5,6 +6,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import '../stores/module_view_store.dart';
 import '../stores/module_page_store.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import '../utils/progress.dart';
 
 class MyDrawer extends StatefulWidget {
@@ -34,7 +36,8 @@ class _MyDrawer extends State<MyDrawer> {
       if (topic['Article'].length != 0) {
         topics[topic['TopicID']] = new List<dynamic>();
         topic['Article'].forEach((article) {
-          topics[topic['TopicID']].add({article['ArticleID']: false});
+          topics[topic['TopicID']]
+              .add({article['ArticleID']: false, "loading": false});
         });
       } else {
         topics[topic['TopicID']] = null;
@@ -48,6 +51,19 @@ class _MyDrawer extends State<MyDrawer> {
         article.forEach((key, value) {
           if (key == articleId) {
             article[articleId] = true;
+            article["loading"] = false;
+          }
+        });
+      });
+    });
+  }
+
+  setTopicAndArticleStateLoading(topicId, articleId) {
+    setState(() {
+      topics[topicId].forEach((article) {
+        article.forEach((key, value) {
+          if (key == articleId) {
+            article["loading"] = true;
           }
         });
       });
@@ -69,12 +85,21 @@ class _MyDrawer extends State<MyDrawer> {
     return topicState;
   }
 
-  bool getArticleState(topicId, articleId) {
-    bool state = false;
+   int getArticleState(topicId, articleId) {
+    int state = 0;
     topics[topicId].forEach((article) {
       article.forEach((key, value) {
         if (key == articleId) {
-          state = value;
+          if(article['loading']){
+             state = 1 ; // show loading indicator
+          } else {
+             if(value){
+               state = 2; // show the check mark;
+             } else {
+               state = 0; // leave it as it is
+             }
+          }
+         
         }
       });
     });
@@ -105,11 +130,41 @@ class _MyDrawer extends State<MyDrawer> {
     return audioFilesMediaLinks;
   }
 
+  void showCompletedAlert(context) {
+    final myDarkBlueOverlay = Color(0x55085576);
+
+    Alert(
+        context: context,
+        title:
+            "تهانينا! باكمالك قراءة هذه المقالة تكون قد أكملت قراءة الموضوع كاملاً",
+        buttons: [],
+        style: AlertStyle(
+          animationType: AnimationType.grow,
+          descStyle: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+          animationDuration: Duration(milliseconds: 400),
+          backgroundColor: myDarkBlue,
+          alertBorder: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+            side: BorderSide(
+              color: myDarkBlue,
+            ),
+          ),
+          titleStyle: TextStyle(
+            color: Colors.white,
+          ),
+          overlayColor: myDarkBlueOverlay,
+        )).show();
+  }
+
   @override
   Widget build(BuildContext context) {
     var itemStore = Provider.of<DrawerStore>(context);
     var _barStore = Provider.of<ViewStore>(context);
     var pageStore = Provider.of<PageStore>(context);
+    var progressStroe = Provider.of<ProgressStore>(context);
     bool viewed = false;
     bool allArticlesViewed = false;
 
@@ -146,10 +201,17 @@ class _MyDrawer extends State<MyDrawer> {
                 if (snapshot.hasData) {
                   viewed = snapshot.data;
                 }
-                var state = getArticleState(topicId, item["ArticleID"]);
-
-                return Icon(
-                  viewed || state ? Icons.done : Icons.remove,
+                int state = getArticleState(topicId, item["ArticleID"]);
+                bool iconState= false; 
+                bool loading = false;
+                switch(state) {
+                  case 0: iconState = false; break;
+                  case 1: iconState = true; break;
+                  case 2 : loading = true; break;
+                }
+                
+                return loading? CircularProgressIndicator(): Icon(
+                  viewed || iconState ? Icons.done : Icons.remove,
                   color: mylightBlue,
                   size: 20,
                 );
@@ -171,11 +233,17 @@ class _MyDrawer extends State<MyDrawer> {
             pageStore.setAudioFiles(getAudioFiles(item));
 
             // itemStore.setArticleState(topicId, item["ArticleID"], true);
-            setTopicAndArticleState(topicId, item["ArticleID"]);
-
+            setTopicAndArticleStateLoading(topicId, item["ArticleID"]);
             setArticleCompleted(modelId, topicId, item["ArticleID"]).then((x) {
               getModelProgressPercent(modelId).then((value) {
+                print('progress of the model *************************');
+                print(value);
+                // if (value == 1) {
+                //   showCompletedAlert(context);
+                // }
                 pageStore.setProgress(value);
+                progressStroe.setModuleProgress(modelId, value);
+                setTopicAndArticleState(topicId, item["ArticleID"]);
               });
             });
           },

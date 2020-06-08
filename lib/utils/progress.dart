@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
-import 'package:collection/collection.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/services.dart';
+import 'package:open_file/open_file.dart';
 
 Future<bool> setArticleCompleted(modelId, topicId, articleId) async {
   var myTopic;
@@ -12,6 +12,11 @@ Future<bool> setArticleCompleted(modelId, topicId, articleId) async {
   final path = directory.path;
   final progressFile = File('$path/progress.json');
   String progressFileContent = await progressFile.readAsString();
+  print('22222222222222222222222222222222222222222222222222222222');
+  print(progressFileContent);
+
+  OpenFile.open('$path/progress.json');
+
   Map<String, dynamic> modelsList = jsonDecode(progressFileContent);
   modelsList["models"].forEach((model) {
     if (model["ModelID"] == modelId) {
@@ -27,25 +32,28 @@ Future<bool> setArticleCompleted(modelId, topicId, articleId) async {
           }
         }
       }
-      ;
     }
   });
-
   var progressModelsJson = ProgressModels.fromJson(modelsList);
   await progressFile.writeAsString(jsonEncode(progressModelsJson.toJson()));
   return getIfAllArticlesViewedSync(myTopic);
 }
 
 Future<double> getOverallProgressPercent() async {
-  double overallProgress = 0;
+  print('helooo form oaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+  double overallProgress = 0.0;
   final directory = await getApplicationDocumentsDirectory();
   final path = directory.path;
   final progressFile = File('$path/progress.json');
   String progressFileContent = await progressFile.readAsString();
   Map<String, dynamic> progressFileContentMap = jsonDecode(progressFileContent);
   double modelProgress;
+  print('ssssssssssseeeeeeeeeeeeeeSeeeeeeeee');
+  print(progressFileContentMap["models"].length);
   for (final model in progressFileContentMap["models"]) {
     modelProgress = getModelProgressPercentSync(model);
+
+    print(modelProgress);
     overallProgress += modelProgress;
   }
 
@@ -60,7 +68,6 @@ Future<double> getModelProgressPercent(modelId) async {
   final progressFile = File('$path/progress.json');
   String progressFileContent = await progressFile.readAsString();
   Map<String, dynamic> progressFileContentMap = jsonDecode(progressFileContent);
-
   for (var model in progressFileContentMap["models"]) {
     if (model["ModelID"] == modelId) {
       if (model["Topics"] != null && model["Topics"].length != 0) {
@@ -68,6 +75,7 @@ Future<double> getModelProgressPercent(modelId) async {
         noOfTopics = model["Topics"].length;
         for (final topic in topics) {
           var topicProgress;
+          print('tttttttttttttttt');
           topicProgress = getTopicProgressPercent(topic);
           modelProgress += topicProgress;
         }
@@ -179,7 +187,6 @@ Future<bool> getIfAllArticlesViewed(modelId, topicId) async {
             }
           }
         }
-        
       }
     }
   }
@@ -244,7 +251,8 @@ Future<void> checkProgressFile() async {
       });
     } else {
       print('file exists=================================================');
-      //await progressFile.delete();
+      // OpenFile.open('$path/progress.json');
+      //  await progressFile.delete();
     }
   } catch (error) {
     print(error);
@@ -262,65 +270,85 @@ addNewContentToProgressFile() async {
       var contentFileContent = await contentFile.readAsString();
       List<dynamic> modelsList = jsonDecode(contentFileContent);
       var progressFileContent = await progressFile.readAsString();
-      print('progress conent ****************************');
-      print(progressFileContent);
       Map<String, dynamic> progressModelsList = jsonDecode(progressFileContent);
-        for (var model in modelsList) {
-          var modelExists = false;
-          for (var pmodel in progressModelsList['models']) {
-            if (model['ModelID'] == pmodel['ModelID']) {
-              modelExists = true;
-                // iterate topics
-                for (var topic in model["Topics"]) {
-                  var topicExists = false;
-                  for (var ptopic in pmodel["Topics"]) {
-                    if (topic['TopicID'] == ptopic['TopicID']) {
-                      topicExists = true;
-                        // iterate articles
-                        for (var article in topic["Article"]) {
-                          var articleExists = false;
-                          for (var particle in ptopic["Article"]) {
-                            if (article['ArticleID'] == particle['ArticleID']) {
-                              articleExists = true;
-                                // replace content
-                                particle['content'] = article['content'];
-                                article['TimesViewd'] = 0; // reset
-                              
-                            }
-                          }
-                          if (!articleExists) {
-                            ptopic["Article"].add(PArticle.fromJson(article) );
-                            print('iiiiiiiiiiiiiiiiiiiiiiiiiiii');
-                            print('article adeded');
-                            print(article['Title']);
-                            print(PArticle.fromJson(article));
-                          }
-                        }
-                    
+      print('888888888888888progress model lists8888888888888888888');
+      print(progressModelsList.runtimeType);
+      print(progressModelsList);
+      for (var model in modelsList) {
+        print('iterating the models in content *****************');
+        var modelExists = false;
+        for (var pmodel in progressModelsList['models']) {
+          print('iterating the models in progress *****************');
+
+          if (model['ModelID'] == pmodel['ModelID']) {
+            print(
+                'iterating the models in progress Model Match::::*****************');
+
+            modelExists = true;
+            // iterate topics
+            for (var topic in model["Topics"]) {
+              print(
+                  'iterating the topics of model in content *****************');
+
+              var topicExists = false;
+              for (var ptopic in pmodel["Topics"]) {
+                print(
+                    'iterating the topcis in progress Model Match::::*****************');
+
+                if (topic['TopicID'] == ptopic['TopicID']) {
+                  print(
+                      'iterating the topics in progress topic Match::::*****************');
+                  topicExists = true;
+                  // iterate articles
+                  for (var article in topic["Article"]) {
+                    print(
+                        'iterating the articles in content :::*****************');
+                    var articleExists = false;
+                    for (var particle in ptopic["Article"]) {
+                      print(
+                          'iterating the articles in progress :::*****************');
+                      if (article['ArticleID'] == particle['ArticleID']) {
+                        print(
+                            'iterating the articles in progress article Match::::*****************');
+                        articleExists = true;
+                        // TODO COMPAE CONTENT
+                        // TODO ITERATE THROUGH CONTENT TO MAKE SURE IT IS UPDATED.
+                        // particle['TimesViewd'] = 0; // reset
+
+                      }
+                    }
+                    if (!articleExists) {
+                      print('adding new article **************************');
+                      print(ptopic["Article"]);
+                      print('9999999999999999999');
+                      print(P1Article.fromJson(article).toJson());
+                      ptopic["Article"]
+                          .add(P1Article.fromJson(article).toJson());
+                      print('33333333333333333333333');
+                      print(ptopic["Article"]);
                     }
                   }
-                  if (!topicExists) {
-                    pmodel["Topics"].add(PTopics.fromJson(topic) );
-                    print('iiiiiiiiiiiiiiiiiiiiiiiiiiii');
-                    print('topic adeded');
-                    print(topic['Title']);
-                    print(PTopics.fromJson(topic) );
-                  }
                 }
-              
+              }
+              if (!topicExists) {
+                print('adding new topic **************************');
+
+                pmodel["Topics"].add(PTopics.fromJson(topic));
+              }
             }
           }
-
-          if (!modelExists) {
-            
-            progressModelsList['models'].add(PModels.fromJson(model));
-            print('iiiiiiiiiiiiiiiiiiiiiiiiiiii');
-            print('model adeded');
-            print(model['Title']);
-            print(PModels.fromJson(model));
-          }
         }
-      
+
+        if (!modelExists) {
+          print(
+              'iterating the models in progress adding new m odel no match *****************');
+
+          progressModelsList['models'].add(PModels.fromJson(model));
+
+          print(model);
+        }
+      }
+
       progressFile.writeAsString(jsonEncode(progressModelsList));
     }
   });
@@ -444,6 +472,38 @@ class PArticle {
   }
 }
 
+class P1Article {
+  int articleID;
+  int topicID;
+  int timesViewed;
+  int durationViewd;
+  String dateViewd;
+  P1Article(
+      {this.articleID,
+      this.topicID,
+      this.timesViewed,
+      this.durationViewd,
+      this.dateViewd});
+
+  P1Article.fromJson(Map<String, dynamic> json) {
+    articleID = json['ArticleID'];
+    topicID = json['TopicID'];
+    timesViewed = 0;
+    durationViewd = 0;
+    dateViewd = '';
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['ArticleID'] = this.articleID;
+    data['TopicID'] = this.topicID;
+    data['TimesViewed'] = this.timesViewed;
+    data['DurationViewd'] = this.durationViewd;
+    data['DateViewd'] = this.dateViewd;
+    return data;
+  }
+}
+
 // Content file Convert to Json code
 class ModelsList {
   final List<Model> models;
@@ -539,7 +599,8 @@ class Article {
   Article.fromJson(Map<String, dynamic> json) {
     articleID = json['ArticleID'];
     topicID = json['TopicID'];
-    timesViewd = json['TimesViewd'];
+    // timesViewd = json['TimesViewd'];
+    timesViewd = 0;
   }
 
   Map<String, dynamic> toJson() {

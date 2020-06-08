@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:collection/collection.dart';
+import '../utils/progress.dart';
 
 Future<String> get _localPath async {
   final directory = await getApplicationDocumentsDirectory();
@@ -24,6 +25,7 @@ Future<bool> get _localFileCheck async {
 
 Future<File> writeContent(String content) async {
   final file = await _localFile;
+
   final exists = await _localFileCheck;
   file.createSync();
   // Write the file.
@@ -61,6 +63,10 @@ Future fetchContent() async {
   } else {
     print(
         '************************* Content file already exisits *************************');
+        addNewContentToProgressFile();
+    // final file = await _localFile;
+    // print('deleteingdddddddddddddddddddddddddddddddddddddddddddddd');
+    // await file.delete();
   }
 }
 
@@ -125,7 +131,7 @@ addNewContentToContentFile() async {
                             print('iiiiiiiiiiiiiiiiiiiiiiiiiiii');
                             print('article adeded');
                             print(narticle['Title']);
-                             print( topic["Article"]);
+                            print(topic["Article"]);
                           }
                         }
                       } else {
@@ -138,7 +144,7 @@ addNewContentToContentFile() async {
                     print('iiiiiiiiiiiiiiiiiiiiiiiiiiii');
                     print('topic adeded');
                     print(ntopic['Title']);
-                    print( model["Topics"]);
+                    print(model["Topics"]);
                   }
                 }
               } else {
@@ -152,15 +158,13 @@ addNewContentToContentFile() async {
             print('iiiiiiiiiiiiiiiiiiiiiiiiiiii');
             print('model adeded');
             print(nmodel['Title']);
-             print(modelsList);
+            print(modelsList);
           }
         }
       }
-       contentFile.writeAsString(
-              jsonEncode(modelsList));
+      contentFile.writeAsString(jsonEncode(modelsList));
     }
   });
-  
 }
 
 class OriginalModelsList {
