@@ -39,6 +39,8 @@ class _MyDrawer extends State<MyDrawer> {
           topics[topic['TopicID']]
               .add({article['ArticleID']: false, "loading": false});
         });
+        print('sttttttttttttttttttttttttttate');
+        print(topics[topic['TopicID']]);
       } else {
         topics[topic['TopicID']] = null;
       }
@@ -47,14 +49,20 @@ class _MyDrawer extends State<MyDrawer> {
 
   setTopicAndArticleState(topicId, articleId) {
     setState(() {
-      topics[topicId].forEach((article) {
-        article.forEach((key, value) {
-          if (key == articleId) {
-            article[articleId] = true;
-            article["loading"] = false;
-          }
+      if (topics[topicId] != null) {
+        topics[topicId].forEach((article) {
+          article.forEach((key, value) {
+            if (key == articleId) {
+              print(
+                  'setting article icon state ssssssssssssssssssssssssssssssssss');
+              article[articleId] = true;
+              article["loading"] = false;
+              print(article['loading']);
+              print('try building sssssssssssssssssssssssssss');
+            }
+          });
         });
-      });
+      }
     });
   }
 
@@ -85,21 +93,20 @@ class _MyDrawer extends State<MyDrawer> {
     return topicState;
   }
 
-   int getArticleState(topicId, articleId) {
+  int getArticleState(topicId, articleId) {
     int state = 0;
     topics[topicId].forEach((article) {
       article.forEach((key, value) {
         if (key == articleId) {
-          if(article['loading']){
-             state = 1 ; // show loading indicator
+          if (article['loading']) {
+            state = 1; // show loading indicator
           } else {
-             if(value){
-               state = 2; // show the check mark;
-             } else {
-               state = 0; // leave it as it is
-             }
+            if (value) {
+              state = 2; // show the check mark;
+            } else {
+              state = 0; // leave it as it is
+            }
           }
-         
         }
       });
     });
@@ -161,10 +168,11 @@ class _MyDrawer extends State<MyDrawer> {
 
   @override
   Widget build(BuildContext context) {
+    print('buildingggggggggggggggggggggggggggggggggggggg');
     var itemStore = Provider.of<DrawerStore>(context);
     var _barStore = Provider.of<ViewStore>(context);
     var pageStore = Provider.of<PageStore>(context);
-    var progressStroe = Provider.of<ProgressStore>(context);
+    var progressStore = Provider.of<ProgressStore>(context);
     bool viewed = false;
     bool allArticlesViewed = false;
 
@@ -202,19 +210,27 @@ class _MyDrawer extends State<MyDrawer> {
                   viewed = snapshot.data;
                 }
                 int state = getArticleState(topicId, item["ArticleID"]);
-                bool iconState= false; 
+                bool iconState = false;
                 bool loading = false;
-                switch(state) {
-                  case 0: iconState = false; break;
-                  case 1: iconState = true; break;
-                  case 2 : loading = true; break;
+                switch (state) {
+                  case 0:
+                    iconState = false;
+                    break;
+                  case 1:
+                    loading = true;
+                    break;
+                  case 2:
+                    iconState = true;
+                    break;
                 }
-                
-                return loading? CircularProgressIndicator(): Icon(
-                  viewed || iconState ? Icons.done : Icons.remove,
-                  color: mylightBlue,
-                  size: 20,
-                );
+
+                return loading
+                    ? CircularProgressIndicator()
+                    : Icon(
+                        viewed || iconState ? Icons.done : Icons.remove,
+                        color: mylightBlue,
+                        size: 20,
+                      );
               }),
           title: Text("${item["Title"]}",
               style: GoogleFonts.lateef(
@@ -236,16 +252,18 @@ class _MyDrawer extends State<MyDrawer> {
             setTopicAndArticleStateLoading(topicId, item["ArticleID"]);
             setArticleCompleted(modelId, topicId, item["ArticleID"]).then((x) {
               getModelProgressPercent(modelId).then((value) {
+                if (value == 1) {
+                  showCompletedAlert(context);
+                }
+                return value;
+              }).then((value) {
                 print('progress of the model *************************');
                 print(value);
-                // if (value == 1) {
-                //   showCompletedAlert(context);
-                // }
-                pageStore.setProgress(value);
-                progressStroe.setModuleProgress(modelId, value);
-                setTopicAndArticleState(topicId, item["ArticleID"]);
+                progressStore.setModuleProgress(modelId, value);
+                progressStore.setOverAllProgress(100);
               });
-            });
+            }).then(
+                (value) => setTopicAndArticleState(topicId, item["ArticleID"]));
           },
           selected: itemStore.current == item["Title"] ? true : false,
         ),
@@ -277,60 +295,52 @@ class _MyDrawer extends State<MyDrawer> {
             flex: 85,
             child: Container(
               color: myDarkBlue,
-              child: Observer(
-                  builder: (_) => ListView.builder(
-                        padding: EdgeInsets.all(0),
-                        scrollDirection: Axis.vertical,
-                        itemCount: itemList.length,
-                        //itemExtent: 100.0,
-                        itemBuilder: (context, index) {
-                          var item = itemList[index];
-                          return Container(
-                              margin: EdgeInsets.all(0),
-                              decoration: BoxDecoration(color: myDarkBlue),
-                              child: ExpansionTile(
-                                leading: FutureBuilder<bool>(
-                                    future: getIfAllArticlesViewed(
-                                        this.id, item['TopicID']),
-                                    builder: (context,
-                                        AsyncSnapshot<bool> snapshot) {
-                                      if (snapshot.hasData) {
-                                        allArticlesViewed = snapshot.data;
-                                      }
-                                      var topicState =
-                                          getTopicState(item['TopicID']);
+              child: ListView.builder(
+                padding: EdgeInsets.all(0),
+                scrollDirection: Axis.vertical,
+                itemCount: itemList.length,
+                //itemExtent: 100.0,
+                itemBuilder: (context, index) {
+                  var item = itemList[index];
+                  return Container(
+                      margin: EdgeInsets.all(0),
+                      decoration: BoxDecoration(color: myDarkBlue),
+                      child: ExpansionTile(
+                        leading: FutureBuilder<bool>(
+                            future: getIfAllArticlesViewed(
+                                this.id, item['TopicID']),
+                            builder: (context, AsyncSnapshot<bool> snapshot) {
+                              if (snapshot.hasData) {
+                                allArticlesViewed = snapshot.data;
+                              }
+                              var topicState = getTopicState(item['TopicID']);
 
-                                      return Icon(
-                                        allArticlesViewed || topicState
-                                            ? Icons.done_all
-                                            : Icons.remove,
-                                        color: mylightBlue,
-                                        size: 20,
-                                      );
-                                    }),
-                                title: Container(
-                                    padding: EdgeInsets.only(left: 0),
-                                    decoration:
-                                        BoxDecoration(color: myDarkBlue),
-                                    child: Text(
-                                      item["Title"],
-                                      style: GoogleFonts.lateef(
-                                          textStyle: TextStyle(
-                                              fontSize: 20.0,
-                                              color: Colors.white,
-                                              height: 1.1)),
-                                    )),
-                                children: item["Article"].map<Widget>((item) {
-                                  return articles(
-                                      item,
-                                      context,
-                                      item["content"],
-                                      this.id,
-                                      item['TopicID']);
-                                }).toList(),
-                              ));
-                        },
-                      )),
+                              return Icon(
+                                allArticlesViewed || topicState
+                                    ? Icons.done_all
+                                    : Icons.remove,
+                                color: mylightBlue,
+                                size: 20,
+                              );
+                            }),
+                        title: Container(
+                            padding: EdgeInsets.only(left: 0),
+                            decoration: BoxDecoration(color: myDarkBlue),
+                            child: Text(
+                              item["Title"],
+                              style: GoogleFonts.lateef(
+                                  textStyle: TextStyle(
+                                      fontSize: 20.0,
+                                      color: Colors.white,
+                                      height: 1.1)),
+                            )),
+                        children: item["Article"].map<Widget>((item) {
+                          return articles(item, context, item["content"],
+                              this.id, item['TopicID']);
+                        }).toList(),
+                      ));
+                },
+              ),
             ),
           )
         ],

@@ -1,3 +1,4 @@
+import 'package:RACR/stores/progress_store.dart';
 import 'package:RACR/ui/app_notification.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -18,42 +19,29 @@ class ModulesView extends StatelessWidget {
   final args;
   @override
   Widget build(BuildContext context) {
+    print('butidling topic bar--------------------------------');
     var storeP = Provider.of<PageStore>(context);
+    var progressStore = Provider.of<ProgressStore>(context);
     double progress = 0.0;
     return SafeArea(
-      child: Scaffold(
-          drawer:
-              MyDrawer(this.args["items"], this.args["icon"], this.args['id']),
-          appBar: MyCustomAppBar(50, this.args["name"]),
-          body: Container(
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                Observer(
-                    builder: (_) => FutureBuilder<double>(
-                        future: getModelProgressPercent(this.args['id']),
-                        builder: (context, AsyncSnapshot<double> snapshot) {
-                          if (snapshot.hasData) {
-                            progress = snapshot.data;
-                            print('wwwwwwwwwwwwwwwwwwwwwwwwwww');
-                            print(progress);
-                          }
-                          print(progress);
-                          return TopicBar(50, progress);
-                        })),
-                Expanded(
-                  child: Center(
-                    child: Observer(
-                      builder: (_) => Content(
-                          this.args['id'],
-                          storeP.getTopicId,
-                          storeP.getArticleId,
-                          storeP.content),
+        child: Scaffold(
+      drawer: MyDrawer(this.args["items"], this.args["icon"], this.args['id']),
+      appBar: MyCustomAppBar(50, this.args["name"]),
+      body: Observer(
+          builder: (_) => Container(
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                    TopicBar(
+                        50, progressStore.getModuleProgress, this.args['id']),
+                    Expanded(
+                      child: Center(
+                        child: Content(this.args['id'], storeP.getTopicId,
+                            storeP.getArticleId, storeP.content),
+                      ),
                     ),
-                  ),
-                ),
-              ]))),
-    );
+                  ]))),
+    ));
   }
 }
 
@@ -123,25 +111,27 @@ class MyCustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 }
 
 class TopicBar extends StatefulWidget {
-  final double percent;
+  final Map<int, double> percent;
   final double height;
-  TopicBar(this.height, this.percent);
+  final int modelId;
+  TopicBar(this.height, this.percent, this.modelId);
   @override
-  _TopicBar createState() => _TopicBar(this.height, this.percent);
+  _TopicBar createState() => _TopicBar(this.height, this.percent, this.modelId);
 }
 
 class _TopicBar extends State<TopicBar> {
   AudioPlayer advancedPlayer = AudioPlayer();
-  _TopicBar(this.height, this.percent) : super();
-  double percent;
-  double height;
+  _TopicBar(this.height, this.percent, this.modelId) : super();
+  final Map<int, double> percent;
+  final double height;
+  final int modelId;
   var myDarkGrey = Color(0xff605E5E);
   var myDarkBlue = Color(0xff085576);
   var mylightBlue = Color(0xff8AD0EE);
   var myDarkBlueOverlay = Color(0x55085576);
   String audioButtonState = 'toPlay';
   List audiofilesState = new List();
-  
+
   playArticleAudio(BuildContext context, List audioFiles) async {
     if (audioFiles.length == audiofilesState.length) {
       var state;
@@ -248,15 +238,18 @@ class _TopicBar extends State<TopicBar> {
 
   @override
   Widget build(BuildContext context) {
+    print('hello buitdlsdfssssssssssssssssssssssssss');
     var pageStore = Provider.of<PageStore>(context);
-    print('ppppppppppppppppppppppssssssssssssss');
-    print(percent);
-    return Observer(builder: (_) {
-      print('sssssssssssssssssssssssssspercent');
-      print(pageStore.getProgress);
-      var progress = 
-          pageStore.getProgress > percent ? pageStore.getProgress : percent;
-      return Container(
+    double progress = 0.0;
+    percent.forEach((key, value) {
+      if (key == modelId) {
+        print('sssssssssssssssssssssssssspercent');
+        print(value);
+        progress = value;
+      }
+    });
+   
+    return Observer(builder: (_) => Container(
         decoration: new BoxDecoration(
           color: Colors.white,
         ),
@@ -313,7 +306,7 @@ class _TopicBar extends State<TopicBar> {
             )
           ],
         ),
-      );
-    });
+      )
+    );
   }
 }

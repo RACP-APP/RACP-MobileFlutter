@@ -12,30 +12,32 @@ Future<bool> setArticleCompleted(modelId, topicId, articleId) async {
   final path = directory.path;
   final progressFile = File('$path/progress.json');
   String progressFileContent = await progressFile.readAsString();
-  print('22222222222222222222222222222222222222222222222222222222');
-  print(progressFileContent);
-
-  OpenFile.open('$path/progress.json');
 
   Map<String, dynamic> modelsList = jsonDecode(progressFileContent);
   modelsList["models"].forEach((model) {
     if (model["ModelID"] == modelId) {
       List topics = model["Topics"];
       for (final topic in topics) {
-        myTopic = topic;
         if (topic["TopicID"] == topicId) {
           List articles = topic["Article"];
           for (final article in articles) {
             if (article["ArticleID"] == articleId) {
+              print('seting arricle viewewefwefwe');
+              print(article["ArticleID"]);
               article["TimesViewed"]++;
+              print(article["TimesViewed"]);
             }
           }
         }
+        myTopic = topic;
       }
     }
   });
+
   var progressModelsJson = ProgressModels.fromJson(modelsList);
   await progressFile.writeAsString(jsonEncode(progressModelsJson.toJson()));
+  // OpenFile.open('$path/progress.json');
+
   return getIfAllArticlesViewedSync(myTopic);
 }
 
@@ -67,6 +69,8 @@ Future<double> getModelProgressPercent(modelId) async {
   final path = directory.path;
   final progressFile = File('$path/progress.json');
   String progressFileContent = await progressFile.readAsString();
+  print('////////////////////////////////////////////////');
+  print(progressFileContent);
   Map<String, dynamic> progressFileContentMap = jsonDecode(progressFileContent);
   for (var model in progressFileContentMap["models"]) {
     if (model["ModelID"] == modelId) {
@@ -252,7 +256,7 @@ Future<void> checkProgressFile() async {
     } else {
       print('file exists=================================================');
       // OpenFile.open('$path/progress.json');
-      //  await progressFile.delete();
+        //await progressFile.delete();
     }
   } catch (error) {
     print(error);
@@ -454,6 +458,8 @@ class PArticle {
       this.dateViewd});
 
   PArticle.fromJson(Map<String, dynamic> json) {
+    print('mmmmmmmmmmmmmmmmmmmmmmmmmm');
+    print(json);
     articleID = json['ArticleID'];
     topicID = json['TopicID'];
     timesViewed = json['TimesViewed'];
