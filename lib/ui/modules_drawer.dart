@@ -260,6 +260,7 @@ class _MyDrawer extends State<MyDrawer> {
                 print('progress of the model *************************');
                 print(value);
                 progressStore.setModuleProgress(modelId, value);
+                // TODO CALCULATE THE OVERALL PROGRESS
                 progressStore.setOverAllProgress(100);
               });
             }).then(

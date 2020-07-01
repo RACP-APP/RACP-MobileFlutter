@@ -1,6 +1,5 @@
 import 'package:RACR/stores/module_page_store.dart';
 import 'package:RACR/stores/progress_store.dart';
-import 'package:RACR/stores/progress_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:percent_indicator/linear_percent_indicator.dart";
@@ -46,20 +45,8 @@ class Module extends StatelessWidget {
   Widget build(BuildContext context) {
     print('hessssssssssssssssssesesf');
     print(percent);
-    var progressStore = Provider.of<ProgressStore>(context);
 
-    return Observer(builder: (_) {
-      var progress = 0.0;
-      var modProgress = progressStore.getModuleProgress;
-      modProgress.forEach((key, value) {
-        print('keeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeey');
-        print(key);
-        print(id);
-        if (key == id) {
-          progress = value;
-        }
-      });
-      return Column(children: <Widget>[
+    return Column(children: <Widget>[
         Container(
           margin: EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 0),
           width: 250,
@@ -93,13 +80,13 @@ class Module extends StatelessWidget {
                 linearStrokeCap: LinearStrokeCap.butt,
                 backgroundColor: mylightBlue,
                 progressColor: myDarkBlue,
-                percent: percent > progress ? percent : progress)),
+                percent: percent)),
         Container(
             margin: EdgeInsets.all(5),
             width: 250,
             child: Center(
                 child: Text(
-              (percent > progress ? percent * 100 : progress * 100)
+              (percent * 100 )
                       .toStringAsFixed(2) +
                   "%",
               style: GoogleFonts.lateef(
@@ -107,8 +94,8 @@ class Module extends StatelessWidget {
                       TextStyle(fontSize: 20.0, color: myDarkGrey, height: 1)),
             )))
       ]);
-    });
-  }
+    }
+  
 }
 
 class VerticalView extends StatelessWidget {
@@ -117,8 +104,8 @@ class VerticalView extends StatelessWidget {
   final myDarkGrey = Color(0xff605E5E);
   final myDarkBlue = Color(0xff085576);
   final mylightBlue = Color(0xff8AD0EE);
-  double overallProgress = 0;
-  double modelProgress = 0;
+  double overallProgress = 0.0;
+  double modelProgress = 0.0;
   @override
   Widget build(BuildContext context) {
     var pageStore = Provider.of<PageStore>(context);
@@ -148,7 +135,9 @@ class VerticalView extends StatelessWidget {
                             animation: true,
                             lineHeight: 30.0,
                             animationDuration: 2000,
-                            percent: progressStore.getOverAllProgress > overAllP?progressStore.getOverAllProgress: overAllP,
+                            percent: progressStore.getOverAllProgress > overAllP
+                                ? progressStore.getOverAllProgress
+                                : overAllP,
                             center: Text("مدى التقدم الكامل",
                                 style: GoogleFonts.lateef(
                                     textStyle: TextStyle(
@@ -195,7 +184,15 @@ class VerticalView extends StatelessWidget {
                                       }
                                     ];
                                     pageStore.setContent(content);
-                                    progressStore.setProgress(modelProgress);
+                                    progressStore.getModuleProgress
+                                        .forEach((key, value) {
+                                      if (key == item["ModelID"]) {
+                                        print(
+                                            'sssssssssss item[ModelID]ssssssssssssssspercent');
+                                        print(value);
+                                        modelProgress = value;
+                                      }
+                                    });
                                     Navigator.of(context).pushNamed(
                                       '/MV',
                                       arguments: {
