@@ -12,6 +12,9 @@ import './modules_drawer.dart';
 import '../stores/module_page_store.dart';
 import '../widgets/content_viewer.dart';
 import '../utils/progress.dart';
+import '../utils/content_fetch.dart';
+import '../customIcons/irj_logo_icons_icons.dart';
+
 //import '../stores/module_view_store.dart';
 
 class ModulesView extends StatelessWidget {
@@ -22,10 +25,10 @@ class ModulesView extends StatelessWidget {
     print('butidling topic bar--------------------------------');
     var storeP = Provider.of<PageStore>(context);
     var progressStore = Provider.of<ProgressStore>(context);
-    double progress = 0.0;
     return SafeArea(
         child: Scaffold(
-      drawer: MyDrawer(this.args["items"], this.args["icon"], this.args['id']),
+      drawer: MyDrawer(
+          this.args["items"], this.args["icon"], this.args['id'], context),
       appBar: MyCustomAppBar(50, this.args["name"]),
       body: Observer(
           builder: (_) => Container(
@@ -35,8 +38,9 @@ class ModulesView extends StatelessWidget {
                     TopicBar(
                         50, progressStore.getModuleProgress, this.args['id']),
                     Expanded(
-                      child: Center(
-                        child: Content(this.args['id'], storeP.getTopicId,
+                      child: Scrollbar(
+                        isAlwaysShown: true,
+                        child: MContent(this.args['id'], storeP.getTopicId,
                             storeP.getArticleId, storeP.content),
                       ),
                     ),
@@ -77,12 +81,25 @@ class MyCustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                               onPressed: () =>
                                   Navigator.of(context).pushNamed('/'),
                               child: new Icon(FeatherIcons.home,
-                                  color: Colors.white, size: 20),
+                                  color: Colors.white),
                               shape: new CircleBorder(),
                               constraints: new BoxConstraints(
-                                  minHeight: 10.0, minWidth: 10.0),
+                                  minHeight: 7.0, minWidth: 7.0),
                             )),
-                        new NotificationWidget(Colors.white)
+                        Padding(
+                            padding: EdgeInsets.only(bottom: 3.0,),
+                            child: RawMaterialButton(
+                              onPressed: () async =>
+                                  Navigator.of(context).pushNamed(
+                                '/ML',
+                                arguments: await stream(),
+                              ),
+                              child: new Icon(FeatherIcons.grid,
+                                  color: Colors.white),
+                              constraints: new BoxConstraints(
+                                  minHeight:7.0, minWidth: 7.0),
+                            )),
+                        // new NotificationWidget(Colors.white)
                       ]))),
           Container(
               child: Center(
@@ -97,7 +114,7 @@ class MyCustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               child: Padding(
                   padding: EdgeInsets.all(10.0),
                   child: Icon(
-                    Icons.flare,
+                    IrjLogoIcons.irjlogowhite,
                     color: Colors.white,
                     size: 30,
                   )))
@@ -248,65 +265,65 @@ class _TopicBar extends State<TopicBar> {
         progress = value;
       }
     });
-   
-    return Observer(builder: (_) => Container(
-        decoration: new BoxDecoration(
-          color: Colors.white,
-        ),
-        width: double.maxFinite,
-        height: 50,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Container(
-              child: Padding(
-                  padding: EdgeInsets.only(bottom: 3.0),
-                  child: RawMaterialButton(
-                    onPressed: () => Scaffold.of(context).openDrawer(),
-                    child: new Icon(FeatherIcons.menu,
-                        color: myDarkBlue, size: 20),
-                    shape: new CircleBorder(),
-                    constraints:
-                        new BoxConstraints(minHeight: 10.0, minWidth: 10.0),
-                  )),
-            ),
-            Container(
-                width: 250,
-                child: new LinearPercentIndicator(
-                    width: 250,
-                    lineHeight: 20.0,
-                    padding: EdgeInsets.all(0),
-                    center: Text(
-                      (progress * 100).toStringAsFixed(2) + "%",
-                      style: GoogleFonts.lateef(
-                          textStyle: TextStyle(
-                              fontSize: 20.0,
-                              color: Colors.white,
-                              height: 1.1)),
-                    ),
-                    linearStrokeCap: LinearStrokeCap.roundAll,
-                    backgroundColor: mylightBlue,
-                    progressColor: myDarkBlue,
-                    percent: progress)),
-            Align(
-              alignment: Alignment.centerRight,
-              child: RawMaterialButton(
-                onPressed: () =>
-                    playArticleAudio(context, pageStore.getAudioFiles),
-                child: Icon(
-                    audioButtonState == 'playing'
-                        ? Icons.pause
-                        : FeatherIcons.volume2,
-                    color: myDarkBlue,
-                    size: 24),
-                shape: new CircleBorder(),
-                constraints:
-                    new BoxConstraints(minHeight: 20.0, minWidth: 20.0),
+
+    return Observer(
+        builder: (_) => Container(
+              decoration: new BoxDecoration(
+                color: Colors.white,
               ),
-            )
-          ],
-        ),
-      )
-    );
+              width: double.maxFinite,
+              height: 50,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Container(
+                    child: Padding(
+                        padding: EdgeInsets.only(bottom: 3.0),
+                        child: RawMaterialButton(
+                          onPressed: () => Scaffold.of(context).openDrawer(),
+                          child: new Icon(FeatherIcons.menu,
+                              color: myDarkBlue, size: 20),
+                          shape: new CircleBorder(),
+                          constraints: new BoxConstraints(
+                              minHeight: 10.0, minWidth: 10.0),
+                        )),
+                  ),
+                  Container(
+                      width: 250,
+                      child: new LinearPercentIndicator(
+                          width: 250,
+                          lineHeight: 20.0,
+                          padding: EdgeInsets.all(0),
+                          center: Text(
+                            (progress * 100).toStringAsFixed(2) + "%",
+                            style: GoogleFonts.lateef(
+                                textStyle: TextStyle(
+                                    fontSize: 20.0,
+                                    color: Colors.white,
+                                    height: 1.1)),
+                          ),
+                          linearStrokeCap: LinearStrokeCap.roundAll,
+                          backgroundColor: mylightBlue,
+                          progressColor: myDarkBlue,
+                          percent: progress)),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: RawMaterialButton(
+                      onPressed: () =>
+                          playArticleAudio(context, pageStore.getAudioFiles),
+                      child: Icon(
+                          audioButtonState == 'playing'
+                              ? Icons.pause
+                              : FeatherIcons.volume2,
+                          color: myDarkBlue,
+                          size: 24),
+                      shape: new CircleBorder(),
+                      constraints:
+                          new BoxConstraints(minHeight: 20.0, minWidth: 20.0),
+                    ),
+                  )
+                ],
+              ),
+            ));
   }
 }

@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../utils/progress.dart';
 import 'app_notification.dart';
+import '../customIcons/irj_logo_icons_icons.dart';
 
 class ModulesList extends StatefulWidget {
   ModulesList(this.stuff);
@@ -270,7 +271,7 @@ class MyCustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               child: Padding(
                   padding: EdgeInsets.all(10.0),
                   child: Icon(
-                    Icons.flare,
+                    IrjLogoIcons.irjlogowhite,
                     color: Colors.white,
                     size: 30,
                   )))

@@ -6,7 +6,7 @@ import '../widgets/video_p.dart';
 import '../utils/content_fetch.dart';
 import '../ui/app_notification.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-
+import '../customIcons/irj_logo_icons_icons.dart';
 class Landing extends StatefulWidget {
   Landing({Key key}) : super(key: key);
 
@@ -15,13 +15,20 @@ class Landing extends StatefulWidget {
 }
 
 class _LandingState extends State<Landing> {
-  final myDarkGrey = Color(0xff605E5E);
+  static final myDarkGrey = Color(0xff605E5E);
   final myDarkBlue = Color(0xff085576);
   final mylightBlue = Color(0xff8AD0EE);
   final myDarkBlueOverlay = Color(0x55085576);
-
-
-  getHelpApplication()  {
+  bool isLoading = false;
+  Widget startLearningStatus = Transform.rotate(
+      angle: 1.0,
+      child: RawMaterialButton(
+        onPressed: null,
+        child: Icon(Icons.play_arrow, color: myDarkGrey, size: 40),
+        shape: new CircleBorder(),
+        constraints: new BoxConstraints(minHeight: 20.0, minWidth: 40.0),
+      ));
+  getHelpApplication() {
     Alert(
         context: context,
         title:
@@ -71,7 +78,7 @@ class _LandingState extends State<Landing> {
           color: myDarkBlue,
         ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
             Container(
               decoration: new BoxDecoration(
@@ -92,7 +99,7 @@ class _LandingState extends State<Landing> {
                       child: Padding(
                           padding: EdgeInsets.all(10.0),
                           child: Icon(
-                            Icons.flare,
+                            IrjLogoIcons.irglogo,
                             color: myDarkGrey,
                             size: 30,
                           )))
@@ -102,13 +109,14 @@ class _LandingState extends State<Landing> {
             Padding(
               padding: EdgeInsets.symmetric(vertical: 15.0),
               child: Container(
+                padding: EdgeInsets.only(left: 10.0, right: 10.0),
                 child: Center(
                   child: Text(
-                    " مرحبا بك في تطبيق\n التوعية حول الحياة و الطفل",
+                    "أهلاً وسهلاً عزيزتي المربية/عزيزي المربي",
                     textAlign: TextAlign.center,
                     style: GoogleFonts.lateef(
                         textStyle: TextStyle(
-                            fontSize: 36.0, color: Colors.white, height: 1.1)),
+                            fontSize: 30.0, color: Colors.white, height: 1.1)),
                   ),
                 ),
               ),
@@ -124,93 +132,127 @@ class _LandingState extends State<Landing> {
               ),
             ),
             Container(
+                padding: EdgeInsets.symmetric(vertical: 15.0),
                 child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.symmetric(vertical: 20.0),
-                    child: Center(
-                        child: Text(
-                      "يتضمن هذا التطبيق العديد  من \n المواضيع التي تهم الأمهات ",
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.lateef(
-                          textStyle: TextStyle(
-                              fontSize: 28.0, color: Colors.white, height: 1)),
-                    )),
-                  ),
-                  Container(
-                    padding: EdgeInsets.only(bottom: 10.0),
-                    child: Center(
-                      child: RaisedButton(
-                        padding: EdgeInsets.all(4.0),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(20.0),
+                      Container(
+                        child: Center(
+                          child: RaisedButton(
+                            padding: EdgeInsets.all(12.0),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(20.0),
+                            ),
+                            color: mylightBlue,
+                            onPressed: () async =>
+                                Navigator.of(context).pushNamed('/INTRO'),
+                            child: Container(
+                                width: 190,
+                                child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Padding(
+                                          padding: EdgeInsets.only(right: 8.0),
+                                          child: Text(
+                                            "مرحباً",
+                                            textAlign: TextAlign.start,
+                                            style: GoogleFonts.lateef(
+                                                textStyle: TextStyle(
+                                                    fontSize: 28.0,
+                                                    color: myDarkGrey,
+                                                    height: 1)),
+                                          ))
+                                    ])),
+                          ),
                         ),
-                        color: mylightBlue,
-                        onPressed: () async => Navigator.of(context).pushNamed(
-                          '/ML',
-                          arguments: await stream(),
-                        ),
-                        child: Container(
-                            width: 200,
-                            child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Transform.rotate(
-                                      angle: 1.0,
-                                      child: RawMaterialButton(
-                                        onPressed: null,
-                                        child: Icon(Icons.play_arrow,
-                                            color: myDarkGrey, size: 40),
-                                        shape: new CircleBorder(),
-                                        constraints: new BoxConstraints(
-                                            minHeight: 20.0, minWidth: 40.0),
-                                      )),
-                                  Padding(
-                                      padding: EdgeInsets.only(right: 8.0),
-                                      child: Text(
-                                        "ابدأ التعلم",
-                                        textAlign: TextAlign.start,
-                                        style: GoogleFonts.lateef(
-                                            textStyle: TextStyle(
-                                                fontSize: 28.0,
-                                                color: myDarkGrey,
-                                                height: 1)),
-                                      ))
-                                ])),
                       ),
-                    ),
-                  ), Container(
-                    padding: EdgeInsets.only(bottom: 10.0),
-                    child: Center(
-                      child: RaisedButton(
-                        padding: EdgeInsets.all(4.0),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: new BorderRadius.circular(20.0),
+                      Container(
+                          padding: EdgeInsets.only(top: 15.0, bottom: 10.0),
+                          child: Center(
+                            child: RaisedButton(
+                              padding: EdgeInsets.all(4.0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: new BorderRadius.circular(20.0),
+                              ),
+                              color: mylightBlue,
+                              onPressed: () async {
+                                setState(() {
+                                  startLearningStatus =
+                                      CircularProgressIndicator();
+                                });
+                                stream().then((modules) {
+                                  // stop loading
+                                  setState(() {
+                                    startLearningStatus = Transform.rotate(
+                                        angle: 1.0,
+                                        child: RawMaterialButton(
+                                          onPressed: null,
+                                          child: Icon(Icons.play_arrow,
+                                              color: myDarkGrey, size: 40),
+                                          shape: new CircleBorder(),
+                                          constraints: new BoxConstraints(
+                                              minHeight: 20.0, minWidth: 40.0),
+                                        ));
+                                  });
+                                  Navigator.of(context).pushNamed(
+                                    '/ML',
+                                    arguments: modules,
+                                  );
+                                });
+                              },
+                              child: Container(
+                                  width: 200,
+                                  child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        startLearningStatus,
+                                        Padding(
+                                            padding:
+                                                EdgeInsets.only(right: 8.0),
+                                            child: Text(
+                                              "ابدأ التعلم",
+                                              textAlign: TextAlign.start,
+                                              style: GoogleFonts.lateef(
+                                                  textStyle: TextStyle(
+                                                      fontSize: 28.0,
+                                                      color: myDarkGrey,
+                                                      height: 1)),
+                                            ))
+                                      ])),
+                            ),
+                          )),
+                      Container(
+                        padding: EdgeInsets.only(bottom: 10.0),
+                        child: Center(
+                          child: RaisedButton(
+                            padding: EdgeInsets.all(4.0),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(20.0),
+                            ),
+                            color: mylightBlue,
+                            onPressed: () async => getHelpApplication(),
+                            child: Container(
+                                width: 200,
+                                child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Padding(
+                                          padding: EdgeInsets.only(right: 8.0),
+                                          child: Text(
+                                            "هل تحتاجين مساعدة ؟",
+                                            textAlign: TextAlign.start,
+                                            style: GoogleFonts.lateef(
+                                                textStyle: TextStyle(
+                                                    fontSize: 28.0,
+                                                    color: myDarkGrey,
+                                                    height: 1)),
+                                          ))
+                                    ])),
+                          ),
                         ),
-                        color: mylightBlue,
-                        onPressed: () async => getHelpApplication(),
-                        child: Container(
-                            width: 200,
-                            child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Padding(
-                                      padding: EdgeInsets.only(right: 8.0),
-                                      child: Text(
-                                        "هل تحتاجين مساعدة ؟",
-                                        textAlign: TextAlign.start,
-                                        style: GoogleFonts.lateef(
-                                            textStyle: TextStyle(
-                                                fontSize: 28.0,
-                                                color: myDarkGrey,
-                                                height: 1)),
-                                      ))
-                                ])),
-                      ),
-                    ),
-                  )
-                ])),
+                      )
+                    ])),
           ],
         ),
       ),

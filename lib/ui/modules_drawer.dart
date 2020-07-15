@@ -13,17 +13,19 @@ class MyDrawer extends StatefulWidget {
   final List itemList;
   final String img;
   final int id;
-  MyDrawer(this.itemList, this.img, this.id);
+  final BuildContext original;
+  MyDrawer(this.itemList, this.img, this.id, this.original);
 
   @override
-  _MyDrawer createState() => _MyDrawer(itemList, img, id);
+  _MyDrawer createState() => _MyDrawer(itemList, img, id, original);
 }
 
 class _MyDrawer extends State<MyDrawer> {
-  _MyDrawer(this.itemList, this.img, this.id);
+  _MyDrawer(this.itemList, this.img, this.id, this.original);
   final List itemList;
   final String img;
   final int id;
+  final BuildContext original;
   final Map<int, dynamic> topics = new Map<int, dynamic>();
   final myDarkGrey = Color(0xff605E5E);
   final myDarkBlue = Color(0xff085576);
@@ -55,6 +57,7 @@ class _MyDrawer extends State<MyDrawer> {
             if (key == articleId) {
               print(
                   'setting article icon state ssssssssssssssssssssssssssssssssss');
+              print(article);
               article[articleId] = true;
               article["loading"] = false;
               print(article['loading']);
@@ -71,7 +74,9 @@ class _MyDrawer extends State<MyDrawer> {
       topics[topicId].forEach((article) {
         article.forEach((key, value) {
           if (key == articleId) {
-            article["loading"] = true;
+            if (!value) {
+              article["loading"] = true;
+            }
           }
         });
       });
@@ -175,6 +180,7 @@ class _MyDrawer extends State<MyDrawer> {
     var progressStore = Provider.of<ProgressStore>(context);
     bool viewed = false;
     bool allArticlesViewed = false;
+    var drawerContext = context;
 
     List listing(contentList) {
       List ordered = new List();
@@ -200,6 +206,7 @@ class _MyDrawer extends State<MyDrawer> {
     }
 
     Widget articles(item, context, content, modelId, topicId) {
+      var originalCxt = context;
       return Observer(
         builder: (_) => ListTile(
           contentPadding: EdgeInsets.fromLTRB(30.0, 5.0, 5.0, 10.0),
@@ -239,6 +246,7 @@ class _MyDrawer extends State<MyDrawer> {
           trailing: Icon(Icons.keyboard_arrow_right, color: mylightBlue),
           onTap: () async {
             //todoS
+            int state = getArticleState(topicId, item["ArticleID"]);
 
             itemStore.setCurrent(item["Title"]);
             _barStore.setCurrentName('hello');
@@ -247,24 +255,32 @@ class _MyDrawer extends State<MyDrawer> {
             pageStore.setTopicId(topicId);
             pageStore.setArticleId(item["ArticleID"]);
             pageStore.setAudioFiles(getAudioFiles(item));
+           
 
             // itemStore.setArticleState(topicId, item["ArticleID"], true);
-            setTopicAndArticleStateLoading(topicId, item["ArticleID"]);
-            setArticleCompleted(modelId, topicId, item["ArticleID"]).then((x) {
-              getModelProgressPercent(modelId).then((value) {
-                if (value == 1) {
-                  showCompletedAlert(context);
-                }
-                return value;
-              }).then((value) {
-                print('progress of the model *************************');
-                print(value);
-                progressStore.setModuleProgress(modelId, value);
-                // TODO CALCULATE THE OVERALL PROGRESS
-                progressStore.setOverAllProgress(100);
-              });
-            }).then(
-                (value) => setTopicAndArticleState(topicId, item["ArticleID"]));
+            if (state == 0) {
+              setTopicAndArticleStateLoading(topicId, item["ArticleID"]);
+              setArticleCompleted(modelId, topicId, item["ArticleID"])
+                  .then((x) {
+                getModelProgressPercent(modelId).then((value) {
+                  if (value == 1) {
+                    showCompletedAlert(context);
+                  }
+                  return value;
+                }).then((value) {
+                  print('progress of the model *************************');
+                  print(value);
+                  progressStore.setModuleProgress(modelId, value);
+                  // TODO CALCULATE THE OVERALL PROGRESS
+                  progressStore.setOverAllProgress(100);
+                   print('***************orignal****************');
+                  print(originalCxt);
+                  print(context);
+                  Navigator.pop(context);
+                });
+              }).then((value) =>
+                      setTopicAndArticleState(topicId, item["ArticleID"]));
+            }
           },
           selected: itemStore.current == item["Title"] ? true : false,
         ),
@@ -336,7 +352,7 @@ class _MyDrawer extends State<MyDrawer> {
                                       height: 1.1)),
                             )),
                         children: item["Article"].map<Widget>((item) {
-                          return articles(item, context, item["content"],
+                          return articles(item, drawerContext, item["content"],
                               this.id, item['TopicID']);
                         }).toList(),
                       ));

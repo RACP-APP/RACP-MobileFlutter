@@ -63,7 +63,7 @@ Future fetchContent() async {
   } else {
     print(
         '************************* Content file already exisits *************************');
-        addNewContentToProgressFile();
+    addNewContentToProgressFile();
     // final file = await _localFile;
     // print('deleteingdddddddddddddddddddddddddddddddddddddddddddddd');
     // await file.delete();
@@ -101,54 +101,73 @@ addNewContentToContentFile() async {
         for (var nmodel in newModelsList) {
           var modelExists = false;
           for (var model in modelsList) {
-            if (nmodel['ModelID'] == model['ModelID']) {
-              modelExists = true;
-              if (!unOrdDeepEq(nmodel, model)) {
-                // iterate topics
-                for (var ntopic in nmodel["Topics"]) {
-                  var topicExists = false;
-                  for (var topic in model["Topics"]) {
-                    if (ntopic['TopicID'] == topic['TopicID']) {
-                      topicExists = true;
-                      if (!unOrdDeepEq(ntopic, topic)) {
-                        // iterate articles
-                        for (var narticle in ntopic["Article"]) {
-                          var articleExists = false;
-                          for (var article in topic["Article"]) {
-                            if (narticle['ArticleID'] == article['ArticleID']) {
-                              articleExists = true;
-                              if (!unOrdDeepEq(narticle, article)) {
-                                // replace content
-                                article['content'] = narticle['content'];
-                                article['TimesViewd'] = 0; // reset
-                              } else {
-                                break;
+            // CHECK IF MODEL IS NOT DELETED IN NMODEL
+            if (!newModelsList.contains(model)) {
+              print('removing modelsssssssssssssssssssss');
+
+              modelsList.remove(model);
+            } else {
+              if (nmodel['ModelID'] == model['ModelID']) {
+                modelExists = true;
+                if (!unOrdDeepEq(nmodel, model)) {
+                  // iterate topics
+                  for (var ntopic in nmodel["Topics"]) {
+                    var topicExists = false;
+                    for (var topic in model["Topics"]) {
+                      if (!nmodel["Topics"].contains(topic)) {
+                        print('removing topicssssssssssssssssssssssssss');
+
+                        model["Topics"].remove(topic);
+                      } else {
+                        if (ntopic['TopicID'] == topic['TopicID']) {
+                          topicExists = true;
+                          if (!unOrdDeepEq(ntopic, topic)) {
+                            // iterate articles
+                            for (var narticle in ntopic["Article"]) {
+                              var articleExists = false;
+                              for (var article in topic["Article"]) {
+                                if (!ntopic["Article"].contains(article)) {
+                                  print('removing articlessssssssssssssssss');
+                                  topic["Article"].remove(article);
+                                } else {
+                                  if (narticle['ArticleID'] ==
+                                      article['ArticleID']) {
+                                    articleExists = true;
+                                    if (!unOrdDeepEq(narticle, article)) {
+                                      // replace content
+                                      article['content'] = narticle['content'];
+                                      article['TimesViewd'] = 0; // reset
+                                    } else {
+                                      break;
+                                    }
+                                  }
+                                }
+                              }
+                              if (!articleExists) {
+                                topic["Article"].add(narticle);
+                                print('iiiiiiiiiiiiiiiiiiiiiiiiiiii');
+                                print('article adeded');
+                                print(narticle['Title']);
+                                print(topic["Article"]);
                               }
                             }
-                          }
-                          if (!articleExists) {
-                            topic["Article"].add(narticle);
-                            print('iiiiiiiiiiiiiiiiiiiiiiiiiiii');
-                            print('article adeded');
-                            print(narticle['Title']);
-                            print(topic["Article"]);
+                          } else {
+                            break;
                           }
                         }
-                      } else {
-                        break;
                       }
                     }
+                    if (!topicExists) {
+                      model["Topics"].add(ntopic);
+                      print('iiiiiiiiiiiiiiiiiiiiiiiiiiii');
+                      print('topic adeded');
+                      print(ntopic['Title']);
+                      print(model["Topics"]);
+                    }
                   }
-                  if (!topicExists) {
-                    model["Topics"].add(ntopic);
-                    print('iiiiiiiiiiiiiiiiiiiiiiiiiiii');
-                    print('topic adeded');
-                    print(ntopic['Title']);
-                    print(model["Topics"]);
-                  }
+                } else {
+                  break;
                 }
-              } else {
-                break;
               }
             }
           }
@@ -162,6 +181,7 @@ addNewContentToContentFile() async {
           }
         }
       }
+
       contentFile.writeAsString(jsonEncode(modelsList));
     }
   });
