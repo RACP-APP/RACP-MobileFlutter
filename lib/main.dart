@@ -13,6 +13,7 @@ import './stores/module_page_store.dart';
 import './ui/landing_page.dart';
 import './utils/progress.dart';
 import './utils/anlaytics.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
 //
@@ -20,6 +21,7 @@ void main() async {
   await FlutterDownloader.initialize();
 
   runApp(new MyApp());
+  
   await fetchContent();
   await checkProgressFile();
   //await saveAnalyticsToServer();//TODO TEST THIS FUNCTION

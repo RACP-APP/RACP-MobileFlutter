@@ -77,8 +77,7 @@ class _LandingState extends State<Landing> {
         decoration: new BoxDecoration(
           color: myDarkBlue,
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+        child: ListView(
           children: <Widget>[
             Container(
               decoration: new BoxDecoration(
@@ -132,9 +131,9 @@ class _LandingState extends State<Landing> {
               ),
             ),
             Container(
-                padding: EdgeInsets.symmetric(vertical: 15.0),
+                padding: EdgeInsets.symmetric(vertical:55.0),
                 child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
                       Container(
                         child: Center(
@@ -180,7 +179,7 @@ class _LandingState extends State<Landing> {
                                   startLearningStatus =
                                       CircularProgressIndicator();
                                 });
-                                stream().then((modules) {
+                                getModelsFromDB().then((modules) {
                                   // stop loading
                                   setState(() {
                                     startLearningStatus = Transform.rotate(

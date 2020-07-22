@@ -92,7 +92,7 @@ class MyCustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                               onPressed: () async =>
                                   Navigator.of(context).pushNamed(
                                 '/ML',
-                                arguments: await stream(),
+                                arguments: await getModelsFromDB(),
                               ),
                               child: new Icon(FeatherIcons.grid,
                                   color: Colors.white),
