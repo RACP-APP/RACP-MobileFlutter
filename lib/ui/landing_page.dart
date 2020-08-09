@@ -7,6 +7,7 @@ import '../utils/content_fetch.dart';
 import '../ui/app_notification.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import '../customIcons/irj_logo_icons_icons.dart';
+
 class Landing extends StatefulWidget {
   Landing({Key key}) : super(key: key);
 
@@ -69,6 +70,12 @@ class _LandingState extends State<Landing> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
@@ -110,13 +117,17 @@ class _LandingState extends State<Landing> {
               child: Container(
                 padding: EdgeInsets.only(left: 10.0, right: 10.0),
                 child: Center(
-                  child: Directionality(textDirection: TextDirection.rtl , child: Text(
-                    "أهلاً بك ...",
-                    textAlign: TextAlign.center,
-                    style: GoogleFonts.lateef(
-                        textStyle: TextStyle(
-                            fontSize: 30.0, color: Colors.white, height: 1.1)),
-                  )) ,
+                  child: Directionality(
+                      textDirection: TextDirection.rtl,
+                      child: Text(
+                        "أهلاً بك ...",
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.lateef(
+                            textStyle: TextStyle(
+                                fontSize: 30.0,
+                                color: Colors.white,
+                                height: 1.1)),
+                      )),
                 ),
               ),
             ),
@@ -124,14 +135,14 @@ class _LandingState extends State<Landing> {
               child: Container(
                 width: double.maxFinite,
                 child: ChewieListItem(
-                  videoPlayerController: VideoPlayerController.network(
-                    "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-                  ),
+                  videoPlayerController:
+                      VideoPlayerController.asset('assets/videos/intro.mp4'),
+                  
                 ),
               ),
             ),
             Container(
-                padding: EdgeInsets.symmetric(vertical:25.0),
+                padding: EdgeInsets.symmetric(vertical: 25.0),
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
