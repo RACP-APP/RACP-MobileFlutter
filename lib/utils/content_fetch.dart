@@ -35,48 +35,50 @@ Future<File> writeContent(String content) async {
 }
 
 Future fetchContent() async {
-  final exists = await _localFileCheck;
-  if (!exists) {
-    print(
-        '***************************** Getting the contnet file from the server *****************************');
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.wifi ||
-        connectivityResult == ConnectivityResult.mobile) {
-      print('connected');
-      final response = await http.get('http://162.247.76.211:3000/JSONFile');
+  // final exists = await _localFileCheck;
+  // if (!exists) {
+  print(
+      '***************************** Getting the contnet file from the server *****************************');
+  var connectivityResult = await (Connectivity().checkConnectivity());
+  if (connectivityResult == ConnectivityResult.wifi ||
+      connectivityResult == ConnectivityResult.mobile) {
+    print('connected');
+    print('trying to get the conent ********************************');
+    final response = await http.get('http://162.247.76.211:3000/JSONFile');
 
-      // final response = await http.get('http://ncdp-dash.herokuapp.com/JSONFile');
+    // final response = await http.get('http://ncdp-dash.herokuapp.com/JSONFile');
 
-      if (response.statusCode == 200) {
-        // If the server did return a 200 OK response,
-        // then parse the JSON.
-        // writeContent(response.body);
-        print('adding to dbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb');
-        await insertToDb(jsonDecode(response.body));
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setBool('ncdpDbSet', true);
-      } else {
-        // If the server did not return a 200 OK response,
-        // then throw an exception.
-        print(
-            '********************* Need an Internet Connetion *********************');
-        throw Exception('Failed to load Content');
-      }
+    if (response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      // then parse the JSON.
+      // writeContent(response.body);
+      print('goooooooooooooooooooot the contnt');
+      print('adding to dbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb');
+      await insertToDb(jsonDecode(response.body));
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('ncdpDbSet', true);
     } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
       print(
           '********************* Need an Internet Connetion *********************');
+      throw Exception('Failed to load Content');
     }
   } else {
     print(
-        '************************* Content file already exisits *************************');
-    //addNewContentToProgressFile();
-    // final file = await _localFile;
-    // print('deleteingdddddddddddddddddddddddddddddddddddddddddddddd');
-    // await file.delete();
+        '********************* Need an Internet Connetion *********************');
   }
+  // } else {
+  //   print(
+  //       '************************* Content file already exisits *************************');
+  //   //addNewContentToProgressFile();
+  //   // final file = await _localFile;
+  //   // print('deleteingdddddddddddddddddddddddddddddddddddddddddddddd');
+  //   // await file.delete();
+  // }
 }
 
-Future<void> insertToDb(content) async{
+Future<void> insertToDb(content) async {
   for (var model in content) {
     await insertModel(
         new Model(model['ModelID'], model['Title'], model['Icon'], 0));
@@ -87,7 +89,7 @@ Future<void> insertToDb(content) async{
         await insertArticle(new Article(
             article['ArticleID'],
             article["TopicID"],
-            article['ModelID'],
+            topic['ModelID'],
             article['Icon'],
             article['Title'],
             article['UpdateDate'],
@@ -99,7 +101,7 @@ Future<void> insertToDb(content) async{
             0));
         var articleId = article['ArticleID'];
         var topicId = article['TopicID'];
-        var modelId = article['ModelID'];
+        var modelId = topic['ModelID'];
 
         for (var content in article["content"]) {
           var contentId = content['contentID'];
@@ -110,21 +112,21 @@ Future<void> insertToDb(content) async{
                 articleId,
                 topicId,
                 modelId,
-                content['ContentText'],
-                content['MediaType'],
-                content['MediaOrder'],
+                text['ContentText'],
+                text['MediaType'],
+                text['MediaOrder'],
                 0));
           }
-          for (var text in content['Media']) {
+          for (var media in content['Media']) {
             await insertContent(new Content(
-                text['MediaID'],
+                media['MediaID'],
                 contentId,
                 articleId,
                 topicId,
                 modelId,
-                content['MediaLink'],
-                content['MediaType'],
-                content['MediaOrder'],
+                media['MediaLink'],
+                media['MediaType'],
+                media['MediaOrder'],
                 0));
           }
         }
@@ -133,134 +135,143 @@ Future<void> insertToDb(content) async{
   }
 }
 
-void addNewContentOrUpdateAndRemoveDeletedContentToDb() async {
-  final response = await http.get('http://162.247.76.211:3000/JSONFile');
-  if (response.statusCode == 200) {
-    // add or update
-    for (var model in jsonDecode(response.body)) {
-      List dbModel = await getModelById(model['ModelID']);
-      if (dbModel.length == 0) {
-        await insertModel(
-            new Model(model['ModelID'], model['Title'], model['Icon'], 1));
-      } else {
-        await updateModel(
-            new Model(model['ModelID'], model['Title'], model['Icon'], 1));
-      }
-      for (var topic in model["Topics"]) {
-        List dbTopic = await getTopicByModelIdAndTopicId(
-            model['ModelID'], topic["TopicID"]);
-        if (dbTopic.length == 0) {
-          await insertTopic(new Topic(topic["TopicID"], topic['ModelID'],
-              topic['Icon'], topic['Title'], 1));
+Future<void> addNewContentOrUpdateAndRemoveDeletedContentToDb() async {
+  final path = await _localPath;
+  File newContentFile = File('$path/newContent.json');
+  newContentFile.exists().then((exists) async {
+    if (exists) {
+      var newContentFileContent = await newContentFile.readAsString();
+      List<dynamic> newModelsList = jsonDecode(newContentFileContent);
+      // add or update
+      for (var model in newModelsList) {
+        List dbModel = await getModelById(model['ModelID']);
+        if (dbModel.length == 0) {
+          await insertModel(
+              new Model(model['ModelID'], model['Title'], model['Icon'], 1));
         } else {
-          await updateTopic(new Topic(topic["TopicID"], topic['ModelID'],
-              topic['Icon'], topic['Title'], 1));
+          await updateModel(
+              new Model(model['ModelID'], model['Title'], model['Icon'], 1));
         }
-        for (var article in topic["Article"]) {
-          List dbArticle = await getArticleByIdAndByTopicIdAndModelId(
-              model['ModelID'], topic["TopicID"], article['ArticleID']);
-          if (dbArticle.length == 0) {
-            await insertArticle(new Article(
-                article['ArticleID'],
-                article["TopicID"],
-                article['ModelID'],
-                article['Icon'],
-                article['Title'],
-                article['UpdateDate'],
-                article['CreatedDate'],
-                0,
-                0,
-                0,
-                0,
-                1));
+        for (var topic in model["Topics"]) {
+          List dbTopic = await getTopicByModelIdAndTopicId(
+              model['ModelID'], topic["TopicID"]);
+          if (dbTopic.length == 0) {
+            await insertTopic(new Topic(topic["TopicID"], topic['ModelID'],
+                topic['Icon'], topic['Title'], 1));
           } else {
-            await updateArticle(new Article(
-                article['ArticleID'],
-                article["TopicID"],
-                article['ModelID'],
-                article['Icon'],
-                article['Title'],
-                article['UpdateDate'],
-                article['CreatedDate'],
-                0,
-                0,
-                0,
-                0,
-                1));
+            await updateTopic(new Topic(topic["TopicID"], topic['ModelID'],
+                topic['Icon'], topic['Title'], 1));
           }
-          var articleId = article['ArticleID'];
-          var topicId = article['TopicID'];
-          var modelId = article['ModelID'];
-
-          for (var content in article["content"]) {
-            var contentId = content['contentID'];
-            for (var text in content['text']) {
-              List dbText = await getContentById(
-                  modelId, topicId, articleId, text['TextID']);
-              if (dbText.length == 0) {
-                await insertContent(new Content(
-                    text['TextID'],
-                    contentId,
-                    articleId,
-                    topicId,
-                    modelId,
-                    text['ContentText'],
-                    text['MediaType'],
-                    text['MediaOrder'],
-                    1));
-              } else {
-                await updateContent(new Content(
-                    text['TextID'],
-                    contentId,
-                    articleId,
-                    topicId,
-                    modelId,
-                    text['ContentText'],
-                    text['MediaType'],
-                    text['MediaOrder'],
-                    1));
-              }
+          for (var article in topic["Article"]) {
+            List dbArticle = await getArticleByIdAndByTopicIdAndModelId(
+                model['ModelID'], topic["TopicID"], article['ArticleID']);
+            print('articlesssssssssssssfrom conteeeeeeeeeeeeeeeeeeeeeeeent');
+            print(dbArticle.length);
+            if (dbArticle.length == 0) {
+              print('inserting a new article');
+              print(article['Title']);
+              await insertArticle(new Article(
+                  article['ArticleID'],
+                  article["TopicID"],
+                  model['ModelID'],
+                  article['Icon'],
+                  article['Title'],
+                  article['UpdateDate'],
+                  article['CreatedDate'],
+                  0,
+                  0,
+                  0,
+                  0,
+                  1));
+            } else {
+              print('updating a new article');
+              //TODO RESET VIEWED IF THE CONTNET HAS ANY CHANGES.
+              await updateArticle({
+                'ARTICLE_ID': article['ArticleID'],
+                'TOPIC_ID': article["TopicID"],
+                'MODEL_ID':  model['ModelID'],
+                'TITLE': article['Title'],
+                'ICON': article['Icon'],
+                'UPDATE_DATE': article['UpdateDate'],
+                'TO_BE_DELETED': 1
+              });
             }
-            for (var media in content['Media']) {
-              List dbMedia = await getContentById(
-                  modelId, topicId, articleId, media['MediaID']);
-              if (dbMedia.length == 0) {
-                await insertContent(new Content(
-                    media['MediaID'],
-                    contentId,
-                    articleId,
-                    topicId,
-                    modelId,
-                    media['MediaLink'],
-                    media['MediaType'],
-                    media['MediaOrder'],
-                    1));
-              } else {
-                await updateContent(new Content(
-                    media['MediaID'],
-                    contentId,
-                    articleId,
-                    topicId,
-                    modelId,
-                    media['MediaLink'],
-                    media['MediaType'],
-                    media['MediaOrder'],
-                    1));
+            var articleId = article['ArticleID'];
+            var topicId = article['TopicID'];
+            var modelId = model['ModelID'];
+
+            for (var content in article["content"]) {
+              var contentId = content['contentID'];
+              for (var text in content['text']) {
+                List dbText = await getContentById(
+                    modelId, topicId, articleId, contentId, text['TextID']);
+                if (dbText.length == 0) {
+                  await insertContent(new Content(
+                      text['TextID'],
+                      contentId,
+                      articleId,
+                      topicId,
+                      modelId,
+                      text['ContentText'],
+                      text['MediaType'],
+                      text['MediaOrder'],
+                      1));
+                } else {
+                  await updateContent(new Content(
+                      text['TextID'],
+                      contentId,
+                      articleId,
+                      topicId,
+                      modelId,
+                      text['ContentText'],
+                      text['MediaType'],
+                      text['MediaOrder'],
+                      1));
+                }
+              }
+              for (var media in content['Media']) {
+                List dbMedia = await getContentById(
+                    modelId, topicId, articleId, contentId, media['MediaID']);
+                if (dbMedia.length == 0) {
+                  await insertContent(new Content(
+                      media['MediaID'],
+                      contentId,
+                      articleId,
+                      topicId,
+                      modelId,
+                      media['MediaLink'],
+                      media['MediaType'],
+                      media['MediaOrder'],
+                      1));
+                } else {
+                  await updateContent(new Content(
+                      media['MediaID'],
+                      contentId,
+                      articleId,
+                      topicId,
+                      modelId,
+                      media['MediaLink'],
+                      media['MediaType'],
+                      media['MediaOrder'],
+                      1));
+                }
               }
             }
           }
         }
       }
+
+     
+      // This is to make sure that what ever is deleted from the dashboard is also deleted from our local db
+      // delete every thing form all tables with TO_BE_DELETED column = 0
+      await deleteContent();
+      await deleteArticle();
+      await deleteTopic();
+      await deleteModel();
+      // // update every thing form all tables with TO_BE_DELETED column = 1 into TO_BE_DELETED column = 0
+      await updateAllToBeDeleted();
     }
-    // This is to make sure that what ever is deleted from the dashboard is also deleted from our local db
-    // delete every thing form all tables with TO_BE_DELETED column = 0
-    await deleteContent();
-    await deleteArticle();
-    await deleteTopic();
-    await deleteModel();
-    // update every thing form all tables with TO_BE_DELETED column = 1 into TO_BE_DELETED column = 0
-    await updateAllToBeDeleted();
-  }
+  });
 }
 
 Future<List> getModelsFromDB() async {

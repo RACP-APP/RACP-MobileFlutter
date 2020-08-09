@@ -24,14 +24,7 @@ abstract class _PageStore with Store {
   List audioFiles = new List();
 
   @observable
-  List content = [
-    {
-      "text": [
-        {"ContentText": "", "MediaType": "Text"}
-      ],
-      "Media": []
-    }
-  ];
+  List content = [];
 
   @observable
   bool last = false;

@@ -3,6 +3,7 @@ import '../ui/module_view.dart';
 import '../ui/module_list.dart';
 import '../ui/landing_page.dart';
 import '../ui/welcome.dart';
+import '../ui/about_us.dart';
 
 
 class RouteGenerator {
@@ -15,6 +16,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => Landing());
       case '/INTRO':
         return MaterialPageRoute(builder: (_) => Welcome());
+        case '/AboutUs':
+        return MaterialPageRoute(builder: (_) => AboutUs());
       case '/ML':
         return MaterialPageRoute(builder: (_) => ModulesList(args));
       case '/MV':

@@ -91,7 +91,6 @@ Future<void> updateModel(Model model) async {
 Future<void> deleteModel() async {
   // Get a reference to the database.
   final Database db = await openDb();
-
   await db.delete('MODELS', where: "TO_BE_DELETED = ?", whereArgs: [0]);
 }
 
@@ -231,12 +230,16 @@ Future<List<Map>> getArticleByIdAndByTopicIdAndModelId(
       whereArgs: [modelId, topicId, articleId]);
 }
 
-Future<void> updateArticle(Article article) async {
+Future<void> updateArticle(Map<String, dynamic> article) async {
   // Get a reference to the database.
   final Database db = await openDb();
-  await db.update('ATRICLES', article.toMap(),
+  await db.update('ATRICLES', article,
       where: "MODEL_ID = ? AND TOPIC_ID = ? AND ARTICLE_ID = ?",
-      whereArgs: [article.modelId, article.topicId, article.articleId]);
+      whereArgs: [
+        article["MODEL_ID"],
+        article["TOPIC_ID"],
+        article["ARTICLE_ID"]
+      ]);
 }
 
 // Future<void> deleteArticle(int modelId, int topicId, int articleId) async {
@@ -308,18 +311,20 @@ Future<List<Map>> getContentByArticleId(modelId, topicId, articleId) async {
   // Query the table for all The Dogs.
   return await db.query('CONTENT',
       where: 'MODEL_ID= ? AND  TOPIC_ID= ? AND ARTICLE_ID= ?',
+      orderBy: 'CONTENT_ORDER ASC',
       whereArgs: [modelId, topicId, articleId]);
 }
 
-Future<List<Map>> getContentById(modelId, topicId, articleId, contentId) async {
+Future<List<Map>> getContentById(
+    modelId, topicId, articleId, contentId, id) async {
   // Get a reference to the database.
   final Database db = await openDb();
 
   // Query the table for all The Dogs.
   return await db.query('CONTENT',
       where:
-          'MODEL_ID= ? AND  TOPIC_ID= ? AND ARTICLE_ID= ? AND CONTENT_ID = ?',
-      whereArgs: [modelId, topicId, articleId, contentId]);
+          'MODEL_ID= ? AND  TOPIC_ID= ? AND ARTICLE_ID= ? AND CONTENT_ID = ? AND ID =?',
+      whereArgs: [modelId, topicId, articleId, contentId, id]);
 }
 
 Future<void> updateContent(Content content) async {
@@ -343,7 +348,9 @@ Future<void> updateContent(Content content) async {
 Future<void> deleteContent() async {
   // Get a reference to the database.
   final Database db = await openDb();
-
+  print(
+      'helooooooooooooooooooooooooooooooooooooooooooooo from deleting content');
+  print(await db.rawQuery('SELECT * FROM CONTENT WHERE TO_BE_DELETED =0'));
   await db.delete('CONTENT', where: "TO_BE_DELETED = ?", whereArgs: [0]);
 }
 
@@ -351,22 +358,84 @@ Future<void> updateAllToBeDeleted() async {
   final Database db = await openDb();
   await db.update(
     'CONTENT',
-    {"TO_BE_DELETED":0},
-    where: "TO_BE_DELETED = ?", whereArgs: [1],
+    {"TO_BE_DELETED": 0},
+    where: "TO_BE_DELETED = ?",
+    whereArgs: [1],
   );
   await db.update(
     'ATRICLES',
-    {"TO_BE_DELETED":0},
-    where: "TO_BE_DELETED = ?", whereArgs: [1],
+    {"TO_BE_DELETED": 0},
+    where: "TO_BE_DELETED = ?",
+    whereArgs: [1],
   );
   await db.update(
     'TOPICS',
-    {"TO_BE_DELETED":0},
-    where: "TO_BE_DELETED = ?", whereArgs: [1],
+    {"TO_BE_DELETED": 0},
+    where: "TO_BE_DELETED = ?",
+    whereArgs: [1],
   );
   await db.update(
     'MODELS',
-    {"TO_BE_DELETED":0},
-    where: "TO_BE_DELETED = ?", whereArgs: [1],
+    {"TO_BE_DELETED": 0},
+    where: "TO_BE_DELETED = ?",
+    whereArgs: [1],
   );
+}
+
+// progress related functions
+
+Future<int> getOverallNumOfArticles() async {
+  final Database db = await openDb();
+
+  return Sqflite.firstIntValue(
+      await db.rawQuery('SELECT COUNT(*) FROM ATRICLES'));
+}
+
+Future<int> getOverallNumOfViewedArticles() async {
+  final Database db = await openDb();
+  return Sqflite.firstIntValue(
+      await db.rawQuery('SELECT COUNT(*) FROM ATRICLES WHERE VIEWED = 1'));
+}
+
+Future<int> getOverallNumOfArticlesOfAModel(int modelId) async {
+  final Database db = await openDb();
+
+  return Sqflite.firstIntValue(await db
+      .rawQuery('SELECT COUNT(*) FROM ATRICLES WHERE MODEL_ID =$modelId'));
+}
+
+Future<int> getOverallNumOfViewedArticlesOfAModel(int modelId) async {
+  final Database db = await openDb();
+  return Sqflite.firstIntValue(await db.rawQuery(
+      'SELECT COUNT(*) FROM ATRICLES WHERE MODEL_ID =$modelId AND VIEWED = 1'));
+}
+
+Future<bool> getIfArticleViewedDb(modelId, topciId, articleId) async {
+  final Database db = await openDb();
+  int count = Sqflite.firstIntValue(await db.rawQuery(
+      'SELECT COUNT(*) FROM ATRICLES WHERE MODEL_ID =$modelId AND TOPIC_ID = $topciId AND ARTICLE_ID=$articleId  AND VIEWED = 1'));
+  return count > 0;
+}
+
+Future<bool> getIfAllArticlesViewedOfAtopicDb(modelId, topciId) async {
+  final Database db = await openDb();
+  int allArticles = Sqflite.firstIntValue(await db.rawQuery(
+      'SELECT COUNT(*) FROM ATRICLES WHERE MODEL_ID =$modelId  AND TOPIC_ID = $topciId'));
+  int count = Sqflite.firstIntValue(await db.rawQuery(
+      'SELECT COUNT(*) FROM ATRICLES WHERE MODEL_ID =$modelId  AND TOPIC_ID = $topciId AND VIEWED = 1'));
+  return allArticles == count;
+}
+
+Future<void> setArticleCompleted(modelId, topicId, articleId) async {
+  final Database db = await openDb();
+  await db.rawQuery(
+      'UPDATE ATRICLES SET VIEWED = 1 WHERE MODEL_ID =$modelId  AND TOPIC_ID = $topicId AND ARTICLE_ID =$articleId');
+}
+
+Future<void> saveDurationDb(modelId, topicId, articleId, duration) async {
+  final Database db = await openDb();
+  await db.rawQuery(
+      'UPDATE ATRICLES SET TIME_SPENT_ON_ARTICLE = $duration ,TIMES_VIEWED = (' +
+          '(SELECT TIMES_VIEWED FROM ATRICLES  WHERE MODEL_ID =$modelId  AND TOPIC_ID = ' +
+          '$topicId AND ARTICLE_ID =$articleId) + 1 ), ANALYTICS_SAVED = 0 WHERE MODEL_ID =$modelId  AND TOPIC_ID = $topicId AND ARTICLE_ID =$articleId');
 }

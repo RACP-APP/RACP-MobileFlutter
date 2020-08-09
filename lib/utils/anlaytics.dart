@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:connectivity/connectivity.dart';
-
+import '../utils/db.dart';
 Future<void> saveAnalyticsToServer() async {
   // Check connectivity
   var connectivityResult = await (Connectivity().checkConnectivity());
@@ -53,34 +53,36 @@ Future<void> saveAnalyticsToServer() async {
     print('not connected');
   }
 }
-
 saveDuration(modelId, topicId, articleId, duration) async {
-  final directory = await getApplicationDocumentsDirectory();
-  final path = directory.path;
-  final progressFile = File('$path/progress.json');
-  String progressFileContent = await progressFile.readAsString();
-  Map<String, dynamic> modelsList = jsonDecode(progressFileContent);
-  modelsList["models"].forEach((model) {
-    if (model["ModelID"] == modelId) {
-      List topics = model["Topics"];
-      for (final topic in topics) {
-        // myTopic = topic;
-        if (topic["TopicID"] == topicId) {
-          List articles = topic["Article"];
-          for (final article in articles) {
-            if (article["ArticleID"] == articleId) {
-              article["DurationViewd"] = article["DurationViewd"] + duration;
-            }
-          }
-        }
-      }
-      ;
-    }
-  });
-
-  var progressModelsJson = ProgressModels.fromJson(modelsList);
-  await progressFile.writeAsString(jsonEncode(progressModelsJson.toJson()));
+   await saveDurationDb(modelId, topicId, articleId, duration);
 }
+// saveDuration(modelId, topicId, articleId, duration) async {
+//   final directory = await getApplicationDocumentsDirectory();
+//   final path = directory.path;
+//   final progressFile = File('$path/progress.json');
+//   String progressFileContent = await progressFile.readAsString();
+//   Map<String, dynamic> modelsList = jsonDecode(progressFileContent);
+//   modelsList["models"].forEach((model) {
+//     if (model["ModelID"] == modelId) {
+//       List topics = model["Topics"];
+//       for (final topic in topics) {
+//         // myTopic = topic;
+//         if (topic["TopicID"] == topicId) {
+//           List articles = topic["Article"];
+//           for (final article in articles) {
+//             if (article["ArticleID"] == articleId) {
+//               article["DurationViewd"] = article["DurationViewd"] + duration;
+//             }
+//           }
+//         }
+//       }
+//       ;
+//     }
+//   });
+
+//   var progressModelsJson = ProgressModels.fromJson(modelsList);
+//   await progressFile.writeAsString(jsonEncode(progressModelsJson.toJson()));
+// }
 
 // Progress file convert to Json code
 class ProgressModels {

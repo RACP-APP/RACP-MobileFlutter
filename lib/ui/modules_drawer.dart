@@ -1,4 +1,5 @@
 import 'package:RACR/stores/progress_store.dart';
+import 'package:RACR/utils/db.dart';
 import 'package:flutter/material.dart';
 import '../stores/drawer_store.dart';
 import 'package:provider/provider.dart';
@@ -7,22 +8,27 @@ import '../stores/module_view_store.dart';
 import '../stores/module_page_store.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-import '../utils/progress.dart';
+import '../utils/progress_db.dart';
 
 class MyDrawer extends StatefulWidget {
   final List itemList;
+  final Map<int, dynamic> topicsArticles;
   final String img;
   final int id;
   final BuildContext original;
-  MyDrawer(this.itemList, this.img, this.id, this.original);
+  MyDrawer(
+      this.itemList, this.topicsArticles, this.img, this.id, this.original);
 
   @override
-  _MyDrawer createState() => _MyDrawer(itemList, img, id, original);
+  _MyDrawer createState() =>
+      _MyDrawer(itemList, topicsArticles, img, id, original);
 }
 
 class _MyDrawer extends State<MyDrawer> {
-  _MyDrawer(this.itemList, this.img, this.id, this.original);
+  _MyDrawer(
+      this.itemList, this.topicsArticles, this.img, this.id, this.original);
   final List itemList;
+  final Map<int, dynamic> topicsArticles;
   final String img;
   final int id;
   final BuildContext original;
@@ -34,19 +40,22 @@ class _MyDrawer extends State<MyDrawer> {
   @override
   void initState() {
     super.initState();
-    itemList.forEach((topic) {
-      if (topic['Article'].length != 0) {
-        topics[topic['TopicID']] = new List<dynamic>();
-        topic['Article'].forEach((article) {
-          topics[topic['TopicID']]
-              .add({article['ArticleID']: false, "loading": false});
+    setTopicsAndArticles();
+  }
+
+  setTopicsAndArticles() {
+    for (var topic in itemList) {
+      List articles = topicsArticles[topic['TOPIC_ID']];
+      if (articles.length != 0) {
+        topics[topic['TOPIC_ID']] = new List<dynamic>();
+        articles.forEach((article) {
+          topics[topic['TOPIC_ID']]
+              .add({article['ARTICLE_ID']: false, "loading": false});
         });
-        print('sttttttttttttttttttttttttttate');
-        print(topics[topic['TopicID']]);
       } else {
-        topics[topic['TopicID']] = null;
+        topics[topic['TOPIC_ID']] = null;
       }
-    });
+    }
   }
 
   setTopicAndArticleState(topicId, articleId) {
@@ -55,13 +64,8 @@ class _MyDrawer extends State<MyDrawer> {
         topics[topicId].forEach((article) {
           article.forEach((key, value) {
             if (key == articleId) {
-              print(
-                  'setting article icon state ssssssssssssssssssssssssssssssssss');
-              print(article);
               article[articleId] = true;
               article["loading"] = false;
-              print(article['loading']);
-              print('try building sssssssssssssssssssssssssss');
             }
           });
         });
@@ -118,27 +122,21 @@ class _MyDrawer extends State<MyDrawer> {
     return state;
   }
 
-  List getAudioFiles(article) {
+  List getAudioFiles(articleContent) {
     List audioFiles = new List();
-    if (article['content'] != [] || article['content'] != null) {
-      article['content'].forEach((content) {
-        if (content['Media'] != null) {
-          content['Media'].forEach((media) {
-            if (media['MediaType'] == "audio") {
-              audioFiles.add(media);
-            }
-          });
+    if (articleContent != [] || articleContent != null) {
+      articleContent.forEach((content) {
+        if (content['CONTENT_TYPE'] == 'audio') {
+          audioFiles.add(content);
         }
       });
     }
-
-    audioFiles.sort((a, b) => a["MediaOrder"].compareTo(b["MediaOrder"]));
+    audioFiles.sort((a, b) => a["CONTENT_ORDER"].compareTo(b["CONTENT_ORDER"]));
 
     List audioFilesMediaLinks = new List();
     audioFiles.forEach((media) {
-      audioFilesMediaLinks.add(media['MediaLink']);
+      audioFilesMediaLinks.add(media['CONTENT_DETIALS']);
     });
-
     return audioFilesMediaLinks;
   }
 
@@ -173,50 +171,24 @@ class _MyDrawer extends State<MyDrawer> {
 
   @override
   Widget build(BuildContext context) {
-    print('buildingggggggggggggggggggggggggggggggggggggg');
     var itemStore = Provider.of<DrawerStore>(context);
-    var _barStore = Provider.of<ViewStore>(context);
     var pageStore = Provider.of<PageStore>(context);
     var progressStore = Provider.of<ProgressStore>(context);
     bool viewed = false;
     bool allArticlesViewed = false;
     var drawerContext = context;
 
-    List listing(contentList) {
-      List ordered = new List();
-
-      if (contentList.length != 0) {
-        List text = contentList[0]["text"];
-        List media = contentList[0]["Media"];
-
-        if (text != null) {
-          for (var i = 0; i < text.length; i++) {
-            ordered.add(text[i]);
-          }
-        }
-        if (media != null) {
-          for (var i = 0; i < media.length; i++) {
-            ordered.add(media[i]);
-          }
-        }
-      }
-      // order the ordered content according to the mediaOrder attribute
-      ordered.sort((a, b) => a['MediaOrder'].compareTo(b['MediaOrder']));
-      return ordered;
-    }
-
-    Widget articles(item, context, content, modelId, topicId) {
-      var originalCxt = context;
+    Widget articles(item, context, modelId, topicId) {
       return Observer(
         builder: (_) => ListTile(
           contentPadding: EdgeInsets.fromLTRB(30.0, 5.0, 5.0, 10.0),
           leading: FutureBuilder<bool>(
-              future: getIfArticleViewed(modelId, topicId, item["ArticleID"]),
+              future: getIfArticleViewed(modelId, topicId, item["ARTICLE_ID"]),
               builder: (context, AsyncSnapshot<bool> snapshot) {
                 if (snapshot.hasData) {
                   viewed = snapshot.data;
                 }
-                int state = getArticleState(topicId, item["ArticleID"]);
+                int state = getArticleState(topicId, item["ARTICLE_ID"]);
                 bool iconState = false;
                 bool loading = false;
                 switch (state) {
@@ -239,48 +211,44 @@ class _MyDrawer extends State<MyDrawer> {
                         size: 20,
                       );
               }),
-          title: Text("${item["Title"]}",
+          title: Text("${item["TITLE"]}",
               style: GoogleFonts.lateef(
                   textStyle: TextStyle(
                       fontSize: 18.0, color: Colors.white, height: 1.1))),
           trailing: Icon(Icons.keyboard_arrow_right, color: mylightBlue),
           onTap: () async {
             //todoS
-            int state = getArticleState(topicId, item["ArticleID"]);
+            bool state = await getIfArticleViewed(modelId, topicId, item["ARTICLE_ID"]);
+           
+            itemStore.setCurrent(item["TITLE"]);
+            var orderedContent = await getContentByArticleId(
+                modelId, topicId, item["ARTICLE_ID"]);
 
-            itemStore.setCurrent(item["Title"]);
-            _barStore.setCurrentName('hello');
-            var orderedContent = listing(content);
             pageStore.setContent(orderedContent);
             pageStore.setTopicId(topicId);
-            pageStore.setArticleId(item["ArticleID"]);
-            pageStore.setAudioFiles(getAudioFiles(item));
-           
+            print('cliiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiik');
+            print(pageStore.getTopicId);
+            pageStore.setArticleId(item["ARTICLE_ID"]);
+                        print(pageStore.getArticleId);
 
-            // itemStore.setArticleState(topicId, item["ArticleID"], true);
-            if (state == 0) {
-              setTopicAndArticleStateLoading(topicId, item["ArticleID"]);
-              setArticleCompleted(modelId, topicId, item["ArticleID"])
-                  .then((x) {
-                getModelProgressPercent(modelId).then((value) {
-                  if (value == 1) {
-                    showCompletedAlert(context);
-                  }
-                  return value;
-                }).then((value) {
-                  print('progress of the model *************************');
-                  print(value);
-                  progressStore.setModuleProgress(modelId, value);
-                  // TODO CALCULATE THE OVERALL PROGRESS
-                  progressStore.setOverAllProgress(100);
-                   print('***************orignal****************');
-                  print(originalCxt);
-                  print(context);
-                  Navigator.pop(context);
-                });
-              }).then((value) =>
-                      setTopicAndArticleState(topicId, item["ArticleID"]));
+            pageStore.setAudioFiles(getAudioFiles(orderedContent));
+            if (!state) {
+              setTopicAndArticleStateLoading(topicId, item["ARTICLE_ID"]);
+              await setArticleCompleted(modelId, topicId, item["ARTICLE_ID"]);
+              var value = await getModelProgressPercent(modelId);
+              print('vaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+              print(value);
+              if (value == 1) {
+                showCompletedAlert(drawerContext);
+              }
+              progressStore.setModuleProgress(modelId, value);
+              print(progressStore.getModuleProgress);
+              var newOverAllProgress = await getOverallProgressPercent();
+              progressStore.setOverAllProgress(newOverAllProgress);
+              setTopicAndArticleState(topicId, item["ArticleID"]);
+              
             }
+             Navigator.pop(context);
           },
           selected: itemStore.current == item["Title"] ? true : false,
         ),
@@ -324,14 +292,13 @@ class _MyDrawer extends State<MyDrawer> {
                       decoration: BoxDecoration(color: myDarkBlue),
                       child: ExpansionTile(
                         leading: FutureBuilder<bool>(
-                            future: getIfAllArticlesViewed(
-                                this.id, item['TopicID']),
+                            future: getIfAllArticlesViewedOfAtopic(
+                                this.id, item['TOPIC_ID']),
                             builder: (context, AsyncSnapshot<bool> snapshot) {
                               if (snapshot.hasData) {
                                 allArticlesViewed = snapshot.data;
                               }
-                              var topicState = getTopicState(item['TopicID']);
-
+                              var topicState = getTopicState(item['TOPIC_ID']);
                               return Icon(
                                 allArticlesViewed || topicState
                                     ? Icons.done_all
@@ -344,17 +311,20 @@ class _MyDrawer extends State<MyDrawer> {
                             padding: EdgeInsets.only(left: 0),
                             decoration: BoxDecoration(color: myDarkBlue),
                             child: Text(
-                              item["Title"],
+                              item["TITLE"],
                               style: GoogleFonts.lateef(
                                   textStyle: TextStyle(
                                       fontSize: 20.0,
                                       color: Colors.white,
                                       height: 1.1)),
                             )),
-                        children: item["Article"].map<Widget>((item) {
-                          return articles(item, drawerContext, item["content"],
-                              this.id, item['TopicID']);
-                        }).toList(),
+                        children: topicsArticles[item['TOPIC_ID']] != null
+                            ? topicsArticles[item['TOPIC_ID']]
+                                .map<Widget>((article) {
+                                return articles(article, drawerContext, this.id,
+                                    article['TOPIC_ID']);
+                              }).toList()
+                            : [],
                       ));
                 },
               ),

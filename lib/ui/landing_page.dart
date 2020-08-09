@@ -110,13 +110,13 @@ class _LandingState extends State<Landing> {
               child: Container(
                 padding: EdgeInsets.only(left: 10.0, right: 10.0),
                 child: Center(
-                  child: Text(
-                    "أهلاً وسهلاً عزيزتي المربية/عزيزي المربي",
+                  child: Directionality(textDirection: TextDirection.rtl , child: Text(
+                    "أهلاً بك ...",
                     textAlign: TextAlign.center,
                     style: GoogleFonts.lateef(
                         textStyle: TextStyle(
                             fontSize: 30.0, color: Colors.white, height: 1.1)),
-                  ),
+                  )) ,
                 ),
               ),
             ),
@@ -131,7 +131,7 @@ class _LandingState extends State<Landing> {
               ),
             ),
             Container(
-                padding: EdgeInsets.symmetric(vertical:55.0),
+                padding: EdgeInsets.symmetric(vertical:25.0),
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: <Widget>[
@@ -239,7 +239,7 @@ class _LandingState extends State<Landing> {
                                       Padding(
                                           padding: EdgeInsets.only(right: 8.0),
                                           child: Text(
-                                            "هل تحتاجين مساعدة ؟",
+                                            "للمساعدة ",
                                             textAlign: TextAlign.start,
                                             style: GoogleFonts.lateef(
                                                 textStyle: TextStyle(
@@ -250,7 +250,37 @@ class _LandingState extends State<Landing> {
                                     ])),
                           ),
                         ),
-                      )
+                      ),
+                      Container(
+                        child: Center(
+                          child: RaisedButton(
+                            padding: EdgeInsets.all(12.0),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(20.0),
+                            ),
+                            color: mylightBlue,
+                            onPressed: () async =>
+                                Navigator.of(context).pushNamed('/AboutUs'),
+                            child: Container(
+                                width: 190,
+                                child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Padding(
+                                          padding: EdgeInsets.only(right: 8.0),
+                                          child: Text(
+                                            "من نحن",
+                                            textAlign: TextAlign.start,
+                                            style: GoogleFonts.lateef(
+                                                textStyle: TextStyle(
+                                                    fontSize: 28.0,
+                                                    color: myDarkGrey,
+                                                    height: 1)),
+                                          ))
+                                    ])),
+                          ),
+                        ),
+                      ),
                     ])),
           ],
         ),

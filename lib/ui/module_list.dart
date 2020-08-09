@@ -1,18 +1,19 @@
 import 'package:RACR/stores/module_page_store.dart';
 import 'package:RACR/stores/progress_store.dart';
+import 'package:RACR/utils/db.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import "package:percent_indicator/linear_percent_indicator.dart";
 import 'package:feather_icons_flutter/feather_icons_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import '../utils/progress.dart';
+import '../utils/progress_db.dart';
 import 'app_notification.dart';
 import '../customIcons/irj_logo_icons_icons.dart';
 
 class ModulesList extends StatefulWidget {
-  ModulesList(this.stuff);
-  final stuff;
+  ModulesList(this.models);
+  final models;
 
   @override
   _ModuleListState createState() => _ModuleListState();
@@ -24,7 +25,7 @@ class _ModuleListState extends State<ModulesList> {
     return SafeArea(
       child: Scaffold(
         appBar: MyCustomAppBar(height: 58),
-        body: VerticalView(this.widget.stuff),
+        body: VerticalView(this.widget.models),
       ),
     );
   }
@@ -44,69 +45,69 @@ class Module extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('hessssssssssssssssssesesf');
-    print(percent);
-
     return Column(children: <Widget>[
-        Container(
-          margin: EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 0),
-          width: 250,
-          height: 150,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: NetworkImage(img),
-              fit: BoxFit.cover,
-            ),
-            border: Border.all(
-              color: myDarkBlue,
-              width: 1,
-            ),
+      Container(
+        margin: EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 0),
+        width: 250,
+        height: 150,
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: NetworkImage(img),
+            fit: BoxFit.cover,
+          ),
+          border: Border.all(
+            color: myDarkBlue,
+            width: 1,
           ),
         ),
-        Container(
-            margin: EdgeInsets.fromLTRB(30.0, 0, 30.0, 0.0),
-            width: 250,
-            child: new LinearPercentIndicator(
-                width: 250,
-                animation: true,
-                animationDuration: 2000,
-                lineHeight: 50.0,
-                padding: EdgeInsets.all(0),
-                center: Text(
-                  name,
-                  style: GoogleFonts.lateef(
-                      textStyle: TextStyle(
-                          fontSize: 28.0, color: Colors.white, height: 1)),
-                ),
-                linearStrokeCap: LinearStrokeCap.butt,
-                backgroundColor: mylightBlue,
-                progressColor: myDarkBlue,
-                percent: percent)),
-        Container(
-            margin: EdgeInsets.all(5),
-            width: 250,
-            child: Center(
-                child: Text(
-              (percent * 100 )
-                      .toStringAsFixed(2) +
-                  "%",
-              style: GoogleFonts.lateef(
-                  textStyle:
-                      TextStyle(fontSize: 20.0, color: myDarkGrey, height: 1)),
-            )))
-      ]);
-    }
-  
+      ),
+      Container(
+          margin: EdgeInsets.fromLTRB(30.0, 0, 30.0, 0.0),
+          width: 250,
+          child: new LinearPercentIndicator(
+              width: 250,
+              animation: true,
+              animationDuration: 2000,
+              lineHeight: 50.0,
+              padding: EdgeInsets.all(0),
+              center: Padding(
+                  padding: EdgeInsets.all(10),
+                  child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        name,
+                        style: GoogleFonts.lateef(
+                            textStyle: TextStyle(
+                                fontSize: 24.0,
+                                color: Colors.white,
+                                height: 0.5)),
+                      ))),
+              linearStrokeCap: LinearStrokeCap.butt,
+              backgroundColor: mylightBlue,
+              progressColor: myDarkBlue,
+              percent: percent)),
+      Container(
+          margin: EdgeInsets.all(5),
+          width: 250,
+          child: Center(
+              child: Text(
+            (percent * 100).toStringAsFixed(2) + "%",
+            style: GoogleFonts.lateef(
+                textStyle:
+                    TextStyle(fontSize: 20.0, color: myDarkGrey, height: 1)),
+          )))
+    ]);
+  }
 }
 
 class VerticalView extends StatelessWidget {
-  VerticalView(this.stuff);
-  final stuff;
+  VerticalView(this.models);
+  final models;
   final myDarkGrey = Color(0xff605E5E);
   final myDarkBlue = Color(0xff085576);
   final mylightBlue = Color(0xff8AD0EE);
-  double overallProgress = 0.0;
-  double modelProgress = 0.0;
+  final double overallProgress = 0.0;
+  final double modelProgress = 0.0;
   @override
   Widget build(BuildContext context) {
     var pageStore = Provider.of<PageStore>(context);
@@ -122,16 +123,12 @@ class VerticalView extends StatelessWidget {
                         builder: (context, AsyncSnapshot<double> snapshot) {
                           var overAllP = 0.0;
                           if (snapshot.hasData) {
-                            overallProgress = snapshot.data;
-                            overAllP = overallProgress;
-                            print('ovvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv');
-                            print(overallProgress);
-                            progressStore.setOverAllProgress(overallProgress);
-                          } else {
-                            print('noooooooooooooooo data');
-                          }
+                            overAllP = snapshot.data;
 
-                          return new LinearPercentIndicator(
+                            progressStore.setOverAllProgress(overallProgress);
+                          } else {}
+
+                          return LinearPercentIndicator(
                             width: MediaQuery.of(context).size.width / 1.07,
                             animation: true,
                             lineHeight: 30.0,
@@ -153,26 +150,24 @@ class VerticalView extends StatelessWidget {
                 new Expanded(
                   child: ListView.builder(
                     scrollDirection: Axis.vertical,
-                    itemCount: stuff.length,
+                    itemCount: models.length,
                     //itemExtent: 100.0,
                     itemBuilder: (context, index) {
-                      var item = stuff[index];
+                      var item = models[index];
                       return FutureBuilder<double>(
-                          future: getModelProgressPercent(item["ModelID"]),
+                          future: getModelProgressPercent(item["MODEL_ID"]),
                           builder: (context, AsyncSnapshot<double> snapshot) {
+                            double modelProgress = 0.0;
                             if (snapshot.hasData) {
                               modelProgress = snapshot.data;
-                              print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
-                              print(item["ModelID"]);
-                              print(modelProgress);
                               progressStore.setModuleProgress(
-                                  item["ModelID"], modelProgress);
+                                  item["MODEL_ID"], snapshot.data);
                             }
                             return Padding(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 4.0, vertical: 4.0),
                               child: GestureDetector(
-                                  onTap: () {
+                                  onTap: () async {
                                     List content = [
                                       {
                                         "text": [
@@ -187,26 +182,34 @@ class VerticalView extends StatelessWidget {
                                     pageStore.setContent(content);
                                     progressStore.getModuleProgress
                                         .forEach((key, value) {
-                                      if (key == item["ModelID"]) {
-                                        print(
-                                            'sssssssssss item[ModelID]ssssssssssssssspercent');
-                                        print(value);
+                                      if (key == item["MODEL_ID"]) {
                                         modelProgress = value;
                                       }
                                     });
+                                    var topics = await getTopicsByModelId(
+                                        item["MODEL_ID"]);
+                                    Map<int, dynamic> topicArticles =
+                                        new Map<int, dynamic>();
+                                    for (var topic in topics) {
+                                      topicArticles[topic['TOPIC_ID']] =
+                                          await getArticlesByTopicIdAndModelId(
+                                              item["MODEL_ID"],
+                                              topic['TOPIC_ID']);
+                                    }
                                     Navigator.of(context).pushNamed(
                                       '/MV',
                                       arguments: {
-                                        "items": item["Topics"],
-                                        "icon": item["Icon"],
-                                        "name": item["Title"],
+                                        "items": topics,
+                                        "topicArticles": topicArticles,
+                                        "icon": item["ICON"],
+                                        "name": item["TITLE"],
                                         "progress": modelProgress,
-                                        "id": item["ModelID"]
+                                        "id": item["MODEL_ID"]
                                       },
                                     );
                                   },
-                                  child: Module(item["ModelID"], item["Title"],
-                                      item["Icon"], modelProgress)),
+                                  child: Module(item["MODEL_ID"], item["TITLE"],
+                                      item["ICON"], modelProgress)),
                             );
                           });
                     },

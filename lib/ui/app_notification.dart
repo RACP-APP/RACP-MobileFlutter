@@ -90,18 +90,18 @@ class _NotificationState extends State<NotificationWidget>
   }
 
   Future<void> removeNotificationFromSharedPreferences() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    print('removing notification from shared prefs ************************');
-    await prefs.remove('NCDPNotification');
+    // SharedPreferences prefs = await SharedPreferences.getInstance();
+    print('seting notification to false ************************');
+    // await prefs.remove('NCDPNotification');
     setState(() {
       hasNotification = false;
       notificationIcon = Icons.notifications_none;
     });
-     if (prefs.getBool('NCDPNotification') != null) {
-       print('strill have the notification *************');
-     } else {
-       print('notification removed **********************');;
-     }
+    //  if (prefs.getBool('NCDPNotification') != null) {
+    //    print('strill have the notification *************');
+    //  } else {
+    //    print('notification removed **********************');;
+    //  }
   }
 
   Future<void> initPlatformState() async {
@@ -410,7 +410,7 @@ class _NotificationState extends State<NotificationWidget>
               overlayColor: myDarkBlueOverlay,
             )).show();
       } else {
-        await downloadJsonFile();
+        await saveNewContent();
       }
     }
   }
@@ -433,13 +433,112 @@ class _NotificationState extends State<NotificationWidget>
     return size;
   }
 
-  // Future<void> openFile() async {
-  //   var dir = await getExternalStorageDirectory();
-  //   final filePath = "${dir.path}/x.json";
-  //   await OpenFile.open(filePath);
-  // }
+  // // Future<void> openFile() async {
+  // //   var dir = await getExternalStorageDirectory();
+  // //   final filePath = "${dir.path}/x.json";
+  // //   await OpenFile.open(filePath);
+  // // }
 
-  Future<void> downloadJsonFile() async {
+  // Future<void> downloadJsonFile() async {
+  //   var connectivityResult = await (Connectivity().checkConnectivity());
+  //   if (connectivityResult == ConnectivityResult.wifi ||
+  //       connectivityResult == ConnectivityResult.mobile) {
+  //     var progressStore = Provider.of<ProgressStore>(context,listen: false);
+
+  //     var fileUrl = 'http://162.247.76.211:3000/JSONFile';
+  //     var dio = Dio();
+  //     dio.interceptors.add(LogInterceptor());
+  //     try {
+  //       var dir = await getApplicationDocumentsDirectory();
+
+  //       await dio.download(fileUrl, "${dir.path}/newContent.json",
+  //           onReceiveProgress: (rec, total) {
+  //         print("Rec: $rec , Total: $total");
+
+  //         setState(() {
+  //           downloading = true;
+  //           progressValue = (rec / total);
+  //           print('setting');
+  //           progressStore.setProgress(progressValue);
+  //           progressString = (progressValue * 100).toStringAsFixed(2) + "%";
+  //         });
+  //       });
+  //       progressBarForFile.remove();
+  //       overlayForProgress.remove();
+  //       setState(() {
+  //         downloading = false;
+  //         hasNotification = false;
+  //       });
+  //      await addNewContentToContentFile();
+  //     await  addNewContentToProgressFile();
+  //     await removeNotificationFromSharedPreferences();
+  //       Alert(
+  //           context: context,
+  //           title: "تم التنزيل بنجاح",
+  //           buttons: [
+  //             // DialogButton(
+  //             //     child: Text(
+  //             //       "الرابط",
+  //             //       style: TextStyle(color: myDarkBlue, fontSize: 18),
+  //             //     ),
+  //             //     onPressed: () => openFile(),
+  //             //     color: mylightBlue),
+  //           ],
+  //           style: AlertStyle(
+  //             animationType: AnimationType.grow,
+  //             descStyle: TextStyle(
+  //               fontWeight: FontWeight.bold,
+  //               color: Colors.white,
+  //             ),
+  //             animationDuration: Duration(milliseconds: 400),
+  //             backgroundColor: myDarkBlue,
+  //             alertBorder: RoundedRectangleBorder(
+  //               borderRadius: BorderRadius.circular(10),
+  //               side: BorderSide(
+  //                 color: myDarkBlue,
+  //               ),
+  //             ),
+  //             titleStyle: TextStyle(
+  //               color: Colors.white,
+  //             ),
+  //             overlayColor: myDarkBlueOverlay,
+  //           )).show();
+  //           progressStore.setProgress(0.0);
+  //     } catch (error) {
+  //       print('File downloading error: ' + error);
+  //       progressBarForFile.remove();
+  //       overlayForProgress.remove();
+  //       Alert(
+  //           context: context,
+  //           title: "حدث خطأ أثناء التحميل الرجاء المحاولة مرة أخرى",
+  //           buttons: [],
+  //           style: AlertStyle(
+  //             animationType: AnimationType.grow,
+  //             descStyle: TextStyle(
+  //               fontWeight: FontWeight.bold,
+  //               color: Colors.white,
+  //             ),
+  //             animationDuration: Duration(milliseconds: 400),
+  //             backgroundColor: myDarkBlue,
+  //             alertBorder: RoundedRectangleBorder(
+  //               borderRadius: BorderRadius.circular(10),
+  //               side: BorderSide(
+  //                 color: myDarkBlue,
+  //               ),
+  //             ),
+  //             titleStyle: TextStyle(
+  //               color: Colors.white,
+  //             ),
+  //             overlayColor: myDarkBlueOverlay,
+  //           )).show();
+  //     }
+  //   } else {
+  //     progressBarForFile.remove();
+  //     overlayForProgress.remove();
+  //     showNoInternetAlert(context);
+  //   }
+  // }
+Future<void> saveNewContent() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.wifi ||
         connectivityResult == ConnectivityResult.mobile) {
@@ -458,7 +557,6 @@ class _NotificationState extends State<NotificationWidget>
           setState(() {
             downloading = true;
             progressValue = (rec / total);
-            print('setting');
             progressStore.setProgress(progressValue);
             progressString = (progressValue * 100).toStringAsFixed(2) + "%";
           });
@@ -469,8 +567,8 @@ class _NotificationState extends State<NotificationWidget>
           downloading = false;
           hasNotification = false;
         });
-       await addNewContentToContentFile();
-      await  addNewContentToProgressFile();
+       await addNewContentOrUpdateAndRemoveDeletedContentToDb();
+      // await  addNewContentToProgressFile();
       await removeNotificationFromSharedPreferences();
         Alert(
             context: context,
@@ -538,7 +636,6 @@ class _NotificationState extends State<NotificationWidget>
       showNoInternetAlert(context);
     }
   }
-
   @override
   Widget build(BuildContext context) {
 

@@ -21,9 +21,15 @@ void main() async {
   await FlutterDownloader.initialize();
 
   runApp(new MyApp());
-  
-  await fetchContent();
-  await checkProgressFile();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  if (prefs.getBool('ncdpDbSet') == null) {
+    print('there is no db **************');
+    await fetchContent();
+
+  }else {
+    print('there is db ***********************');
+  }
+  // await checkProgressFile();
   //await saveAnalyticsToServer();//TODO TEST THIS FUNCTION
 }
 
@@ -59,31 +65,31 @@ class MyApp extends StatelessWidget {
                   // Use the FaIcon Widget + FontAwesomeIcons class for the IconData
                   icon: new Icon(FeatherIcons.facebook, color: myDarkGrey),
                   onPressed: () async =>
-                      await launch("https://www.facebook.com"),
+                      await launch("https://www.facebook.com/408212529232733/"),
                 ),
-                IconButton(
-                  // Use the FaIcon Widget + FontAwesomeIcons class for the IconData
-                  icon: new Icon(FeatherIcons.linkedin, color: myDarkGrey),
-                  onPressed: () async => await launch("https://www.linkedin"),
-                ),
+                // IconButton(
+                //   // Use the FaIcon Widget + FontAwesomeIcons class for the IconData
+                //   icon: new Icon(FeatherIcons.linkedin, color: myDarkGrey),
+                //   onPressed: () async => await launch("https://www.linkedin"),
+                // ),
                 IconButton(
                   // Use the FaIcon Widget + FontAwesomeIcons class for the IconData
                   icon: new Icon(FeatherIcons.twitter, color: myDarkGrey),
                   onPressed: () async =>
-                      await launch("https://www.twitter.com"),
+                      await launch("https://twitter.com/Islamicreliefjo?s=08"),
                 ),
                 IconButton(
                   // Use the FaIcon Widget + FontAwesomeIcons class for the IconData
                   icon: new Icon(FeatherIcons.instagram, color: myDarkGrey),
                   onPressed: () async =>
-                      await launch("https://www.instagram.com"),
+                      await launch("https://instagram.com/islamic.relief.jo?igshid=fnbh5qkitrjg"),
                 ),
-                IconButton(
-                  // Use the FaIcon Widget + FontAwesomeIcons class for the IconData
-                  icon: FaIcon(FontAwesomeIcons.whatsapp, color: myDarkGrey),
-                  onPressed: () async => await launch(
-                      "https://api.whatsapp.com/send?phone=962787097853"),
-                ),
+                // IconButton(
+                //   // Use the FaIcon Widget + FontAwesomeIcons class for the IconData
+                //   icon: FaIcon(FontAwesomeIcons.whatsapp, color: myDarkGrey),
+                //   onPressed: () async => await launch(
+                //       "https://api.whatsapp.com/send?phone=962787097853"),
+                // ),
               ],
             ),
           ),

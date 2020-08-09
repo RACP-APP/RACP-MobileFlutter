@@ -9,6 +9,6 @@
      
         <bitmap
             
-            android:src="@drawable/luanchs" />
+            android:src="@drawable/launchs" />
     </item> 
 </layer-list>

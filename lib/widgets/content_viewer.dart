@@ -28,26 +28,27 @@ class _MContent extends State<MContent> {
   DateTime begining;
   DateTime end;
 
-  Widget _contentItem(type, cont, txt, context) {
+  Widget _contentItem(type, details, context) {
+    
     if (type == "vedio") {
       return Container(
-        padding: EdgeInsets.all(0),
-        child: Videohandler(name: "placeholder", url: cont),
+        padding: EdgeInsets.all(10),
+        child: Videohandler(name: "placeholder", url: details),
       );
-    } else if (type == "Text" && txt != null) {
+    } else if (type == "Text" && details != null) {
       return Container(
-        padding: EdgeInsets.all(0),
+        padding: EdgeInsets.all(10),
         //height: MediaQuery.of(context).size.height / 1.1,
         child: Directionality(
           textDirection: TextDirection.rtl,
-          child: HtmlWidget(txt,webView:true),
+          child: HtmlWidget(details, webView: true),
         ),
       );
     } else if (type == "Image") {
       return Container(
-        padding: EdgeInsets.all(0),
+        padding: EdgeInsets.all(10),
         width: double.maxFinite / 1.07,
-        child: new Image.network(cont),
+        child: new Image.network(details),
       );
     }
     return null;
@@ -62,15 +63,16 @@ class _MContent extends State<MContent> {
     super.didUpdateWidget(oldWidget);
     end = DateTime.now();
     var duration = end.difference(begining).inMinutes;
+        var storeP = Provider.of<PageStore>(context);
     saveDuration(
-        oldWidget.modelId, oldWidget.topicId, oldWidget.articleId, duration);
+        oldWidget.modelId, storeP.getTopicId, storeP.getArticleId, duration);
   }
 
   @override
   Widget build(BuildContext context) {
     setDuration(articleId);
     var storeP = Provider.of<PageStore>(context);
-
+    
     return Container(
       color: Colors.white,
       width: double.maxFinite,
@@ -83,11 +85,12 @@ class _MContent extends State<MContent> {
               itemCount: storeP.getContent.length,
               itemBuilder: (context, index) {
                 var item = storeP.getContent[index];
+
                 return Container(
                   padding: const EdgeInsets.only(
                       top: 0.0, bottom: 0.0, left: 0.0, right: 0.0),
-                  child: _contentItem(item['MediaType'], item['MediaLink'],
-                      item["ContentText"], context),
+                  child: _contentItem(
+                      item['CONTENT_TYPE'], item['CONTENT_DETIALS'], context),
                 );
               })),
     );
