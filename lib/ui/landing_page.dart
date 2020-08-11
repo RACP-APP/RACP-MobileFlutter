@@ -136,8 +136,7 @@ class _LandingState extends State<Landing> {
                 width: double.maxFinite,
                 child: ChewieListItem(
                   videoPlayerController:
-                      VideoPlayerController.asset('assets/videos/intro.mp4'),
-                  
+                      VideoPlayerController.asset('assets/videos/intro.mp4'),               
                 ),
               ),
             ),

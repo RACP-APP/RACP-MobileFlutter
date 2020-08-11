@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import './file_downloader_single.dart';
@@ -17,6 +19,7 @@ class _VideohandlerState extends State<Videohandler> {
   bool _done;
   bool _stream;
   String _localpath;
+  File _localFile;
   final myDarkGrey = Color(0xff605E5E);
   final myDarkBlue = Color(0xff085576);
   final mylightBlue = Color(0xff8AD0EE);
@@ -30,80 +33,78 @@ class _VideohandlerState extends State<Videohandler> {
   }
 
   void _donedown(v) {
+    print('loooooooooooooooooooooooooocal');
+    print(v);
     setState(() {
       _done = true;
       _localpath = v;
+
+      _localFile = new File(v);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     final platform = Theme.of(context).platform;
+    print(this._done);
     return Container(
       decoration: BoxDecoration(border: Border.all(color: myDarkBlue)),
       child: new Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          Expanded(
-              child: this._done
+          this._done
+              ? Container(
+                  child: ChewieListItem(
+                    videoPlayerController: VideoPlayerController.file(
+                     _localFile
+                    ),
+                  ),
+                )
+              : this._stream
                   ? Container(
                       child: ChewieListItem(
-                        videoPlayerController: VideoPlayerController.asset(
-                          _localpath,
+                        videoPlayerController: VideoPlayerController.network(
+                          this.widget.url,
                         ),
                       ),
                     )
-                  : this._stream
-                      ? Container(
-                          child: ChewieListItem(
-                            videoPlayerController:
-                                VideoPlayerController.network(
-                              this.widget.url,
-                            ),
-                          ),
-                        )
-                      : Container(
-                          width: 230,
-                          margin: EdgeInsets.only(top: 20),
-                          child: RaisedButton(
-                            onPressed: () {
-                              setState(() {
-                                _stream = true;
-                              });
-                            },
-                            textColor: myDarkGrey,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: new BorderRadius.circular(20.0),
-                            ),
-                            color: mylightBlue,
-                            child: Container(
-                              width: double.maxFinite,
-                              decoration: BoxDecoration(color: mylightBlue),
-                              padding:
-                                  const EdgeInsets.fromLTRB(10.0, 10.0, 10, 10),
-                              child: Padding(
-                                  padding: EdgeInsets.only(right: 8.0),
+                  : Container(
+                      width: 150,
+                      margin: EdgeInsets.only(top: 20),
+                      child: RaisedButton(
+                        onPressed: () {
+                          setState(() {
+                            _stream = true;
+                          });
+                        },
+                        textColor: myDarkGrey,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.circular(20.0),
+                        ),
+                        color: mylightBlue,
+                        child: Container(
+                          width: 200,
+                          decoration: BoxDecoration(color: mylightBlue),
+                          child: Padding(
+                              padding: EdgeInsets.only(right: 8.0),
+                              child: Directionality(
+                                  textDirection: TextDirection.rtl,
                                   child: Text('شاهد الفيديو الآن...',
                                       textDirection: TextDirection.rtl,
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
-                                          fontSize: 20.0,
+                                          fontSize: 16.0,
                                           color: myDarkGrey,
-                                          height: 1))),
-                            ),
-                          ),
+                                          height: 1)))),
                         ),
-              flex: 4),
-          Expanded(
-            //nu
-            flex: 1,
-            child: DownloaderSingle(
-              callback: _donedown,
-              platform: platform,
-              link: {'name': this.widget.name, 'link': this.widget.url},
-            ),
-          )
+                      ),
+                    ),
+          DownloaderSingle(
+            callback: _donedown,
+            platform: platform,
+            link: {'name': this.widget.name, 'link': this.widget.url},
+          ),
         ],
       ),
     );

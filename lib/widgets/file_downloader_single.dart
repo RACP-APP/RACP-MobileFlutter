@@ -89,16 +89,19 @@ class _DownloaderSingleState extends State<DownloaderSingle> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      body: Builder(
+ 
+    return SizedBox(
+      width: 300,
+      height: 100,
+      child: Builder(
         builder: (context) => _isLoading
             ? new Center(
                 child: new CircularProgressIndicator(),
               )
             : _permissionReady
                 ? new Container(
-                    // height: MediaQuery.of(context).size.height,
-                    // width: MediaQuery.of(context).size.width,
+                    height: 100,
+                    width:200,
                     child: new Row(
                       children: <Widget>[
                         new Container(
@@ -124,7 +127,7 @@ class _DownloaderSingleState extends State<DownloaderSingle> {
                               children: <Widget>[
                                 new Container(
                                   width:
-                                      MediaQuery.of(context).size.width / 1.08,
+                                      200,
                                   height: 100,
                                   child: new Row(
                                     crossAxisAlignment:
@@ -178,7 +181,7 @@ class _DownloaderSingleState extends State<DownloaderSingle> {
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 24.0),
                             child: Text(
-                              'Please grant accessing storage permission to continue ',
+                              'الرجاء منح صلاحية التخزين لاكمال العملية  ',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   color: Colors.blueGrey, fontSize: 18.0),
@@ -196,7 +199,7 @@ class _DownloaderSingleState extends State<DownloaderSingle> {
                                 });
                               },
                               child: Text(
-                                'Retry',
+                                'اعادة المحاولة',
                                 style: TextStyle(
                                     color: Colors.blue,
                                     fontWeight: FontWeight.bold,
@@ -233,7 +236,7 @@ class _DownloaderSingleState extends State<DownloaderSingle> {
             },
             child: new Icon(
               Icons.pause,
-              color: Colors.red,
+              color: Color(0xff085576),
             ),
             shape: new CircleBorder(),
             constraints: new BoxConstraints(minHeight: 32.0, minWidth: 32.0),
@@ -244,7 +247,7 @@ class _DownloaderSingleState extends State<DownloaderSingle> {
             },
             child: Icon(
               Icons.cancel,
-              color: Colors.red,
+              color: Color(0xff085576),
             ),
             shape: new CircleBorder(),
             constraints: new BoxConstraints(minHeight: 32.0, minWidth: 32.0),
@@ -270,8 +273,8 @@ class _DownloaderSingleState extends State<DownloaderSingle> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           new Text(
-            'have you deleted it ?',
-            style: new TextStyle(color: Colors.red),
+            'هل قمت بحذفه ?',
+            style: new TextStyle(color: Color(0xff085576)),
           ),
           RawMaterialButton(
             onPressed: () {
@@ -279,7 +282,7 @@ class _DownloaderSingleState extends State<DownloaderSingle> {
             },
             child: Icon(
               Icons.refresh,
-              color: Colors.red,
+              color: Color(0xff085576),
             ),
             shape: new CircleBorder(),
             constraints: new BoxConstraints(minHeight: 32.0, minWidth: 32.0),
@@ -297,13 +300,13 @@ class _DownloaderSingleState extends State<DownloaderSingle> {
             },
             child: Icon(
               Icons.play_arrow,
-              color: Colors.red,
+              color: Color(0xff085576),
             ),
             shape: new CircleBorder(),
             constraints: new BoxConstraints(minHeight: 32.0, minWidth: 32.0),
           ),
           new Text(
-            'Ready',
+            'جاهز',
             style: new TextStyle(color: Colors.green),
           ),
           RawMaterialButton(
@@ -312,7 +315,7 @@ class _DownloaderSingleState extends State<DownloaderSingle> {
             },
             child: Icon(
               Icons.delete_forever,
-              color: Colors.red,
+              color: Color(0xff085576),
             ),
             shape: new CircleBorder(),
             constraints: new BoxConstraints(minHeight: 32.0, minWidth: 32.0),
@@ -324,7 +327,7 @@ class _DownloaderSingleState extends State<DownloaderSingle> {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          new Text('Cancled', style: new TextStyle(color: Colors.red)),
+          new Text('تم الالغاء', style: new TextStyle(color: Color(0xff085576))),
           RawMaterialButton(
             onPressed: () {
               _retryDownload(task);
@@ -343,7 +346,7 @@ class _DownloaderSingleState extends State<DownloaderSingle> {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          new Text('Failed', style: new TextStyle(color: Colors.red)),
+          new Text('فشل', style: new TextStyle(color: Color(0xff085576))),
           RawMaterialButton(
             onPressed: () {
               _retryDownload(task);

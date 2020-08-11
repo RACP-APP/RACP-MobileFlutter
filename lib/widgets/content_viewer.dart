@@ -1,10 +1,12 @@
 import 'package:RACR/stores/module_page_store.dart';
+import 'package:RACR/widgets/video_p.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 import './video_handler.dart';
 import '../utils/anlaytics.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
+import 'package:video_player/video_player.dart';
 
 class MContent extends StatefulWidget {
   final int modelId;
@@ -29,11 +31,20 @@ class _MContent extends State<MContent> {
   DateTime end;
 
   Widget _contentItem(type, details, context) {
-    
     if (type == "vedio") {
+      //  return  Container(
+      //           child: Container(
+      //             width: double.maxFinite,
+      //             child: ChewieListItem(
+      //               videoPlayerController:
+      //                   VideoPlayerController.network(details),
+      //             ),
+      //           ),
+      //         );
+
       return Container(
         padding: EdgeInsets.all(10),
-        child: Videohandler(name: "placeholder", url: details),
+        child: Videohandler(name: "كامل الشاشة", url: details),
       );
     } else if (type == "Text" && details != null) {
       return Container(
@@ -63,7 +74,7 @@ class _MContent extends State<MContent> {
     super.didUpdateWidget(oldWidget);
     end = DateTime.now();
     var duration = end.difference(begining).inMinutes;
-        var storeP = Provider.of<PageStore>(context);
+    var storeP = Provider.of<PageStore>(context);
     saveDuration(
         oldWidget.modelId, storeP.getTopicId, storeP.getArticleId, duration);
   }
@@ -72,7 +83,7 @@ class _MContent extends State<MContent> {
   Widget build(BuildContext context) {
     setDuration(articleId);
     var storeP = Provider.of<PageStore>(context);
-    
+
     return Container(
       color: Colors.white,
       width: double.maxFinite,
