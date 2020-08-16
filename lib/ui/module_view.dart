@@ -33,7 +33,7 @@ class ModulesView extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
                     TopicBar(
-                        50, progressStore.getModuleProgress, this.args['id']),
+                        50, this.args['id']),
                     Expanded(
                       child: Scrollbar(
                         isAlwaysShown: true,
@@ -131,18 +131,16 @@ class MyCustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 }
 
 class TopicBar extends StatefulWidget {
-  final Map<int, double> percent;
   final double height;
   final int modelId;
-  TopicBar(this.height, this.percent, this.modelId);
+  TopicBar(this.height,  this.modelId);
   @override
-  _TopicBar createState() => _TopicBar(this.height, this.percent, this.modelId);
+  _TopicBar createState() => _TopicBar(this.height,  this.modelId);
 }
 
 class _TopicBar extends State<TopicBar> {
   AudioPlayer advancedPlayer = AudioPlayer();
-  _TopicBar(this.height, this.percent, this.modelId) : super();
-  final Map<int, double> percent;
+  _TopicBar(this.height,  this.modelId) : super();
   final double height;
   final int modelId;
   var myDarkGrey = Color(0xff605E5E);
@@ -229,7 +227,7 @@ class _TopicBar extends State<TopicBar> {
               break;
             }
           }
-          await advancedPlayer.play(currentFile).then((result) {
+          await advancedPlayer.play(currentFile, isLocal: true).then((result) {
             if (result == 1) {
               setState(() {
                 audioButtonState = 'playing';
@@ -259,14 +257,9 @@ class _TopicBar extends State<TopicBar> {
   @override
   Widget build(BuildContext context) {
     var pageStore = Provider.of<PageStore>(context);
-    double progress = 0.0;
-    percent.forEach((key, value) {
-      if (key == modelId) {
-        progress = value;
-      }
-    });
-
-    return Container(
+        var progressStore = Provider.of<ProgressStore>(context);
+    return   Observer(
+          builder: (_) =>Container(
       decoration: new BoxDecoration(
         color: Colors.white,
       ),
@@ -294,7 +287,7 @@ class _TopicBar extends State<TopicBar> {
                   lineHeight: 20.0,
                   padding: EdgeInsets.all(0),
                   center: Text(
-                    (progress * 100).toStringAsFixed(2) + "%",
+                    (progressStore.getModuleProgress[modelId] * 100).toStringAsFixed(2) + "%",
                     style: GoogleFonts.lateef(
                         textStyle: TextStyle(
                             fontSize: 20.0, color: Colors.white, height: 1.1)),
@@ -302,7 +295,7 @@ class _TopicBar extends State<TopicBar> {
                   linearStrokeCap: LinearStrokeCap.roundAll,
                   backgroundColor: mylightBlue,
                   progressColor: myDarkBlue,
-                  percent: progress)),
+                  percent: progressStore.getModuleProgress[modelId])),
           Align(
             alignment: Alignment.centerRight,
             child: RawMaterialButton(
@@ -320,6 +313,6 @@ class _TopicBar extends State<TopicBar> {
           )
         ],
       ),
-    );
+    ));
   }
 }

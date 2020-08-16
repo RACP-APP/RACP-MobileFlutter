@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:io';
@@ -6,7 +7,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:collection/collection.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:flutter/services.dart';
+import 'package:image_downloader/image_downloader.dart';
 // import '../utils/progress.dart';
 import '../utils/db.dart';
 
@@ -44,26 +46,31 @@ Future fetchContent() async {
       connectivityResult == ConnectivityResult.mobile) {
     print('connected');
     print('trying to get the conent ********************************');
-    final response = await http.get('http://162.247.76.211:3000/JSONFile');
 
+    try {
+      final response = await http.get('http://162.247.76.211:3000/JSONFile');
+      if (response.statusCode == 200) {
+        // If the server did return a 200 OK response,
+        // then parse the JSON.
+        // writeContent(response.body);
+        print('goooooooooooooooooooot the contnt');
+        print('adding to dbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb');
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('ncdpDbSet', true);
+        await insertToDb(jsonDecode(response.body));
+      } else {
+        // If the server did not return a 200 OK response,
+        // then throw an exception.
+        print(
+            '********************* Need an Internet Connetion *********************');
+        throw Exception('Failed to load Content');
+      }
+    } catch (ex) {
+      print(' heloooooooooooooo from connections errors');
+      print(ex);
+    }
     // final response = await http.get('http://ncdp-dash.herokuapp.com/JSONFile');
 
-    if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
-      // writeContent(response.body);
-      print('goooooooooooooooooooot the contnt');
-      print('adding to dbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb');
-      await insertToDb(jsonDecode(response.body));
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setBool('ncdpDbSet', true);
-    } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      print(
-          '********************* Need an Internet Connetion *********************');
-      throw Exception('Failed to load Content');
-    }
   } else {
     print(
         '********************* Need an Internet Connetion *********************');
@@ -78,10 +85,29 @@ Future fetchContent() async {
   // }
 }
 
+Future<String> downloadFile(String url) async {
+  final response =
+      await http.head('https://jsonplaceholder.typicode.com/posts/1');
+
+  if (response.statusCode == 200) {
+    var dio = Dio();
+    String dir = (await getApplicationDocumentsDirectory()).path;
+    String filename = url.split("/").last;
+    try {
+      await dio.download(url, '$dir/$filename');
+      File file = new File('$dir/$filename');
+      return file.path;
+    } catch (ex) {
+      print('error while downloaing');
+    }
+  }
+  return url;
+}
+
 Future<void> insertToDb(content) async {
   for (var model in content) {
-    await insertModel(
-        new Model(model['ModelID'], model['Title'], model['Icon'], 0));
+    await insertModel(new Model(model['ModelID'], model['Title'], model['Icon'],
+        model['ModelOrder'], 0));
     for (var topic in model["Topics"]) {
       await insertTopic(new Topic(topic["TopicID"], topic['ModelID'],
           topic['Icon'], topic['Title'], 0));
@@ -97,7 +123,8 @@ Future<void> insertToDb(content) async {
             0,
             0,
             0,
-            0,
+            '',
+            1,
             0));
         var articleId = article['ArticleID'];
         var topicId = article['TopicID'];
@@ -118,13 +145,41 @@ Future<void> insertToDb(content) async {
                 0));
           }
           for (var media in content['Media']) {
+            // TODO IF MEDIA IS IMAGE OR AUDIO DOWNLOAD AND SAVE THE LOCAL PATH.
+            String mediaLink = media['MediaLink'];
+
+            if (media['MediaType'] == 'Image') {
+              try {
+                // Saved with this method.
+                var imageId = await ImageDownloader.downloadImage(mediaLink);
+                var path = await ImageDownloader.findPath(imageId);
+                mediaLink = path;
+                print(path);
+                // if (imageId == null) {
+                //   return;
+                // }
+
+                // Below is a method of obtaining saved image information.
+                // var fileName = await ImageDownloader.findName(imageId);
+
+                // var size = await ImageDownloader.findByteSize(imageId);
+                // var mimeType = await ImageDownloader.findMimeType(imageId);
+              } on PlatformException catch (error) {
+                print('image downloading error');
+                print(error);
+              }
+            } else if (media['MediaType'] == 'audio') {
+              mediaLink = await downloadFile(mediaLink);
+              print('audio file liiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiink');
+              print(mediaLink);
+            }
             await insertContent(new Content(
                 media['MediaID'],
                 contentId,
                 articleId,
                 topicId,
                 modelId,
-                media['MediaLink'],
+                mediaLink,
                 media['MediaType'],
                 media['MediaOrder'],
                 0));
@@ -146,11 +201,11 @@ Future<void> addNewContentOrUpdateAndRemoveDeletedContentToDb() async {
       for (var model in newModelsList) {
         List dbModel = await getModelById(model['ModelID']);
         if (dbModel.length == 0) {
-          await insertModel(
-              new Model(model['ModelID'], model['Title'], model['Icon'], 1));
+          await insertModel(new Model(model['ModelID'], model['Title'],
+              model['Icon'], model['ModelOrder'], 1));
         } else {
-          await updateModel(
-              new Model(model['ModelID'], model['Title'], model['Icon'], 1));
+          await updateModel(new Model(model['ModelID'], model['Title'],
+              model['Icon'], model['ModelOrder'], 1));
         }
         for (var topic in model["Topics"]) {
           List dbTopic = await getTopicByModelIdAndTopicId(
@@ -165,11 +220,8 @@ Future<void> addNewContentOrUpdateAndRemoveDeletedContentToDb() async {
           for (var article in topic["Article"]) {
             List dbArticle = await getArticleByIdAndByTopicIdAndModelId(
                 model['ModelID'], topic["TopicID"], article['ArticleID']);
-            print('articlesssssssssssssfrom conteeeeeeeeeeeeeeeeeeeeeeeent');
-            print(dbArticle.length);
+
             if (dbArticle.length == 0) {
-              print('inserting a new article');
-              print(article['Title']);
               await insertArticle(new Article(
                   article['ArticleID'],
                   article["TopicID"],
@@ -181,18 +233,18 @@ Future<void> addNewContentOrUpdateAndRemoveDeletedContentToDb() async {
                   0,
                   0,
                   0,
-                  0,
+                  '',
+                  1,
                   1));
             } else {
-              print('updating a new article');
-              //TODO RESET VIEWED IF THE CONTNET HAS ANY CHANGES.
               await updateArticle({
                 'ARTICLE_ID': article['ArticleID'],
                 'TOPIC_ID': article["TopicID"],
-                'MODEL_ID':  model['ModelID'],
+                'MODEL_ID': model['ModelID'],
                 'TITLE': article['Title'],
                 'ICON': article['Icon'],
                 'UPDATE_DATE': article['UpdateDate'],
+                'ANALYTICS_SAVED': 1,
                 'TO_BE_DELETED': 1
               });
             }
@@ -217,16 +269,29 @@ Future<void> addNewContentOrUpdateAndRemoveDeletedContentToDb() async {
                       text['MediaOrder'],
                       1));
                 } else {
-                  await updateContent(new Content(
-                      text['TextID'],
-                      contentId,
-                      articleId,
-                      topicId,
-                      modelId,
-                      text['ContentText'],
-                      text['MediaType'],
-                      text['MediaOrder'],
-                      1));
+                  //TODO check if it needS updating
+                  var originalText = await getContentById(
+                      modelId, topicId, articleId, contentId, text['TextID']);
+                  if (originalText != text['ContentText']) {
+                    await updateContent(new Content(
+                        text['TextID'],
+                        contentId,
+                        articleId,
+                        topicId,
+                        modelId,
+                        text['ContentText'],
+                        text['MediaType'],
+                        text['MediaOrder'],
+                        1));
+                    await updateArticle({
+                      'ARTICLE_ID': article['ArticleID'],
+                      'TOPIC_ID': article["TopicID"],
+                      'MODEL_ID': model['ModelID'],
+                      'VIEWED': 0,
+                      'UPDATE_DATE': article['UpdateDate'],
+                      'TO_BE_DELETED': 1
+                    });
+                  }
                 }
               }
               for (var media in content['Media']) {
@@ -261,7 +326,6 @@ Future<void> addNewContentOrUpdateAndRemoveDeletedContentToDb() async {
         }
       }
 
-     
       // This is to make sure that what ever is deleted from the dashboard is also deleted from our local db
       // delete every thing form all tables with TO_BE_DELETED column = 0
       await deleteContent();

@@ -13,12 +13,12 @@ Future<Database> openDb() async {
     onCreate: (db, version) {
       // Run the CREATE TABLE statement on the database.
       db.execute(
-          "CREATE TABLE MODELS(MODEL_ID INTEGER PRIMARY KEY, TITLE TEXT, ICON TEXT, TO_BE_DELETED INTEGER)");
+          "CREATE TABLE MODELS(MODEL_ID INTEGER PRIMARY KEY, TITLE TEXT, ICON TEXT, MODEL_ORDER INTEGER, TO_BE_DELETED INTEGER)");
       db.execute(
           "CREATE TABLE TOPICS(TOPIC_ID INTEGER ,MODEL_ID INTEGER , TITLE TEXT, ICON TEXT, TO_BE_DELETED INTEGER)");
       db.execute(
           "CREATE TABLE ATRICLES(ARTICLE_ID INTEGER ,TOPIC_ID INTEGER ,MODEL_ID INTEGER , TITLE TEXT, ICON TEXT," +
-              "UPDATE_DATE TEXT, CREATED_DATE TEXT, VIEWED INTEGER, TIMES_VIEWED INTEGER, TIME_SPENT_ON_ARTICLE INTEGER, ANALYTICS_SAVED INTEGER, TO_BE_DELETED INTEGER)");
+              "UPDATE_DATE TEXT, CREATED_DATE TEXT, VIEWED INTEGER, TIMES_VIEWED INTEGER, TIME_SPENT_ON_ARTICLE INTEGER, DATE_VIEWED TEXT, ANALYTICS_SAVED INTEGER, TO_BE_DELETED INTEGER)");
       db.execute(
           "CREATE TABLE CONTENT(ID INTEGER, CONTENT_ID INTEGER, ARTICLE_ID INTEGER ,TOPIC_ID INTEGER ,MODEL_ID INTEGER ," +
               "CONTENT_DETIALS TEXT,CONTENT_TYPE TEXT,CONTENT_ORDER INTEGER, TO_BE_DELETED INTEGER)");
@@ -36,14 +36,16 @@ class Model {
   int modelId;
   String title;
   String icon;
+  int modelOrder;
   int toBeDeleted;
 
-  Model(this.modelId, this.title, this.icon, this.toBeDeleted);
+  Model(this.modelId, this.title, this.icon, this.modelOrder, this.toBeDeleted);
   Map<String, dynamic> toMap() {
     return {
       'MODEL_ID': modelId,
       'TITLE': title,
       'ICON': icon,
+      'MODEL_ORDER': modelOrder,
       'TO_BE_DELETED': toBeDeleted
     };
   }
@@ -66,7 +68,7 @@ Future<List<Map>> getModels() async {
   final Database db = await openDb();
 
   // Query the table for all The Models.
-  return await db.query('MODELS');
+  return await db.rawQuery('SELECT * FROM MODELS ORDER BY MODEL_ORDER ASC');
 }
 
 Future<List> getModelById(int modelId) async {
@@ -169,6 +171,7 @@ class Article {
   int viewed;
   int timesViewd;
   int timeSpendOnArticle;
+  String dateViewed;
   int analyticsSaved;
   int toBeDeleted;
 
@@ -183,6 +186,7 @@ class Article {
       this.viewed,
       this.timesViewd,
       this.timeSpendOnArticle,
+      this.dateViewed,
       this.analyticsSaved,
       this.toBeDeleted);
 
@@ -198,6 +202,7 @@ class Article {
       'VIEWED': viewed,
       'TIMES_VIEWED': timesViewd,
       'TIME_SPENT_ON_ARTICLE': timeSpendOnArticle,
+      'DATE_VIEWED': dateViewed,
       'ANALYTICS_SAVED': analyticsSaved,
       'TO_BE_DELETED': toBeDeleted
     };
@@ -348,9 +353,6 @@ Future<void> updateContent(Content content) async {
 Future<void> deleteContent() async {
   // Get a reference to the database.
   final Database db = await openDb();
-  print(
-      'helooooooooooooooooooooooooooooooooooooooooooooo from deleting content');
-  print(await db.rawQuery('SELECT * FROM CONTENT WHERE TO_BE_DELETED =0'));
   await db.delete('CONTENT', where: "TO_BE_DELETED = ?", whereArgs: [0]);
 }
 
@@ -428,8 +430,11 @@ Future<bool> getIfAllArticlesViewedOfAtopicDb(modelId, topciId) async {
 
 Future<void> setArticleCompleted(modelId, topicId, articleId) async {
   final Database db = await openDb();
-  await db.rawQuery(
-      'UPDATE ATRICLES SET VIEWED = 1 WHERE MODEL_ID =$modelId  AND TOPIC_ID = $topicId AND ARTICLE_ID =$articleId');
+  var now = (new DateTime.now()).toString();
+
+  await db.rawQuery('UPDATE ATRICLES SET VIEWED = 1,TIMES_VIEWED = (' +
+      '(SELECT TIMES_VIEWED FROM ATRICLES  WHERE MODEL_ID =$modelId  AND TOPIC_ID = ' +
+      '$topicId AND ARTICLE_ID =$articleId) + 1 ), ANALYTICS_SAVED = 0, DATE_VIEWED = "$now" WHERE MODEL_ID =$modelId  AND TOPIC_ID = $topicId AND ARTICLE_ID =$articleId');
 }
 
 Future<void> saveDurationDb(modelId, topicId, articleId, duration) async {
@@ -438,4 +443,17 @@ Future<void> saveDurationDb(modelId, topicId, articleId, duration) async {
       'UPDATE ATRICLES SET TIME_SPENT_ON_ARTICLE = $duration ,TIMES_VIEWED = (' +
           '(SELECT TIMES_VIEWED FROM ATRICLES  WHERE MODEL_ID =$modelId  AND TOPIC_ID = ' +
           '$topicId AND ARTICLE_ID =$articleId) + 1 ), ANALYTICS_SAVED = 0 WHERE MODEL_ID =$modelId  AND TOPIC_ID = $topicId AND ARTICLE_ID =$articleId');
+}
+
+Future<List> getArticlesAnalyticsFromDb() async {
+  final Database db = await openDb();
+  List allArticles =
+      await db.rawQuery('SELECT * FROM ATRICLES WHERE ANALYTICS_SAVED =0');
+  return allArticles;
+}
+
+Future<void> setAllUnsavedAnalyticsIntoSaved() async {
+  final Database db = await openDb();
+  await db.rawQuery(
+      'UPDATE ATRICLES SET ANALYTICS_SAVED = 1 WHERE ANALYTICS_SAVED = 0 ');
 }

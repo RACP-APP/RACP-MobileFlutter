@@ -72,7 +72,6 @@ class _LandingState extends State<Landing> {
   @override
   void dispose() {
     super.dispose();
-
   }
 
   @override

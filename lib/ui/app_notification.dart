@@ -20,7 +20,6 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:connectivity/connectivity.dart';
 import '../stores/progress_store.dart';
-import '../utils/progress.dart';
 import '../utils/content_fetch.dart';
 
 class NotificationWidget extends StatefulWidget {
@@ -189,17 +188,16 @@ class _NotificationState extends State<NotificationWidget>
           if (prefs.getString('NCDPDeviceToken') != token) {
             //The same as inserting . it will be inserted with the new tocken
             http.post(
-              'http://162.247.76.211:3000/Articles/Registration', // CHANGE THIS LINE
-              headers: <String, String>{
-                'Content-Type': 'application/json; charset=UTF-8',
-              },
-               body: jsonEncode(<String, String>{
-              'id': deviceId,
-              'token': token,
-              'regDate':
-                  DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now())
-            })
-            );
+                'http://162.247.76.211:3000/Articles/Registration', // CHANGE THIS LINE
+                headers: <String, String>{
+                  'Content-Type': 'application/json; charset=UTF-8',
+                },
+                body: jsonEncode(<String, String>{
+                  'id': deviceId,
+                  'token': token,
+                  'regDate':
+                      DateFormat('yyyy-MM-dd hh:mm:ss').format(DateTime.now())
+                }));
             prefs.setString('NCDPDeviceToken', token);
           }
         }
@@ -375,8 +373,7 @@ class _NotificationState extends State<NotificationWidget>
               color: myDarkBlueOverlay,
             )));
 
-    progressBarForFile =
-        OverlayEntry(builder: (context) => ProgressDownload());
+    progressBarForFile = OverlayEntry(builder: (context) => ProgressDownload());
     overlayState.insert(overlayForProgress);
     overlayState.insert(progressBarForFile);
     double fileSize = await checkFileSizeBeforeDownload();
@@ -538,11 +535,11 @@ class _NotificationState extends State<NotificationWidget>
   //     showNoInternetAlert(context);
   //   }
   // }
-Future<void> saveNewContent() async {
+  Future<void> saveNewContent() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.wifi ||
         connectivityResult == ConnectivityResult.mobile) {
-      var progressStore = Provider.of<ProgressStore>(context,listen: false);
+      var progressStore = Provider.of<ProgressStore>(context, listen: false);
 
       var fileUrl = 'http://162.247.76.211:3000/JSONFile';
       var dio = Dio();
@@ -567,9 +564,9 @@ Future<void> saveNewContent() async {
           downloading = false;
           hasNotification = false;
         });
-       await addNewContentOrUpdateAndRemoveDeletedContentToDb();
-      // await  addNewContentToProgressFile();
-      await removeNotificationFromSharedPreferences();
+        await addNewContentOrUpdateAndRemoveDeletedContentToDb();
+        // await  addNewContentToProgressFile();
+        await removeNotificationFromSharedPreferences();
         Alert(
             context: context,
             title: "تم التنزيل بنجاح",
@@ -601,7 +598,7 @@ Future<void> saveNewContent() async {
               ),
               overlayColor: myDarkBlueOverlay,
             )).show();
-            progressStore.setProgress(0.0);
+        progressStore.setProgress(0.0);
       } catch (error) {
         print('File downloading error: ' + error);
         progressBarForFile.remove();
@@ -636,9 +633,9 @@ Future<void> saveNewContent() async {
       showNoInternetAlert(context);
     }
   }
+
   @override
   Widget build(BuildContext context) {
-
     return !hasNotification
         ? RawMaterialButton(
             onPressed: () => handleNoContent(context),
@@ -659,16 +656,13 @@ Future<void> saveNewContent() async {
 }
 
 class ProgressDownload extends StatelessWidget {
- 
   final myDarkGrey = Color(0xff605E5E);
   final myDarkBlue = Color(0xff085576);
-  final myDarkBlueOverlay = Color(0x55085576);
+  final myDarkBlueOverlay = Color(0x55605E5E);
   final mylightBlue = Color(0xff8AD0EE);
-
-
+  final myDarkGreyText = Color(0x88605E5E);
   @override
   Widget build(BuildContext context) {
-    print('building progress download ..............');
     var progressStore = Provider.of<ProgressStore>(context);
     return Observer(
         builder: (_) => Container(
@@ -677,27 +671,29 @@ class ProgressDownload extends StatelessWidget {
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text(
-                    'يتم البحث عن المحتوى وتنزيله...',
-                    style: GoogleFonts.lateef(
-                        textStyle: TextStyle(
-                            fontSize: 28.0, color: Colors.white, height: 1)),
-                  ),
-                  LinearPercentIndicator(
-                      lineHeight: 50.0,
-                      padding: EdgeInsets.all(0),
-                      center: Text(
-                        (progressStore.getProgress * 100).toStringAsFixed(2) +
-                            "%",
+                 Text(
+                        'يتم البحث عن المحتوى وتنزيله',
                         style: GoogleFonts.lateef(
                             textStyle: TextStyle(
                                 fontSize: 28.0,
-                                color: Colors.white,
+                                color: myDarkGrey,
                                 height: 1)),
+                      ),
+                  LinearPercentIndicator(
+                      lineHeight: 20.0,
+                      padding: EdgeInsets.all(0),
+                      center: Text(
+                        (progressStore.getProgress * 100).toStringAsFixed(0) +
+                            "%",
+                        style: GoogleFonts.lateef(
+                            textStyle: TextStyle(
+                                fontSize: 16.0,
+                                color: Colors.white,
+                                height: 0.5)),
                       ),
                       linearStrokeCap: LinearStrokeCap.butt,
                       backgroundColor: mylightBlue,
-                      progressColor: myDarkBlue,
+                      progressColor: myDarkGrey,
                       percent: progressStore.getProgress)
                 ])));
   }

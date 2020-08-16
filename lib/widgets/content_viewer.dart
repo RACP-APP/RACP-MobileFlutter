@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:RACR/stores/module_page_store.dart';
 import 'package:RACR/widgets/video_p.dart';
 import 'package:flutter/material.dart';
@@ -32,16 +34,6 @@ class _MContent extends State<MContent> {
 
   Widget _contentItem(type, details, context) {
     if (type == "vedio") {
-      //  return  Container(
-      //           child: Container(
-      //             width: double.maxFinite,
-      //             child: ChewieListItem(
-      //               videoPlayerController:
-      //                   VideoPlayerController.network(details),
-      //             ),
-      //           ),
-      //         );
-
       return Container(
         padding: EdgeInsets.all(10),
         child: Videohandler(name: "كامل الشاشة", url: details),
@@ -56,10 +48,11 @@ class _MContent extends State<MContent> {
         ),
       );
     } else if (type == "Image") {
+      File cImage= new File(details);
       return Container(
         padding: EdgeInsets.all(10),
         width: double.maxFinite / 1.07,
-        child: new Image.network(details),
+        child: new Image.file(cImage),
       );
     }
     return null;

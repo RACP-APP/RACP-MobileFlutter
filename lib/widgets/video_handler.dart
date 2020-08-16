@@ -33,8 +33,7 @@ class _VideohandlerState extends State<Videohandler> {
   }
 
   void _donedown(v) {
-    print('loooooooooooooooooooooooooocal');
-    print(v);
+  
     setState(() {
       _done = true;
       _localpath = v;

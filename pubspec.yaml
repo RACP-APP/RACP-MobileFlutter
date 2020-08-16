@@ -42,6 +42,7 @@ dependencies:
   collection: ^1.14.12
   sqflite: 
   path:
+  image_downloader: ^0.20.0
 
 dev_dependencies:
   flutter_test:

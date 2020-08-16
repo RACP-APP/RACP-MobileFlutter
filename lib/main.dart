@@ -29,8 +29,7 @@ void main() async {
   }else {
     print('there is db ***********************');
   }
-  // await checkProgressFile();
-  //await saveAnalyticsToServer();//TODO TEST THIS FUNCTION
+  await saveAnalyticsToServer();//TODO TEST THIS FUNCTION
 }
 
 class MyApp extends StatelessWidget {

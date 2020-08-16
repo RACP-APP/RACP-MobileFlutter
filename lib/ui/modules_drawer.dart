@@ -40,17 +40,33 @@ class _MyDrawer extends State<MyDrawer> {
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies(){
     setTopicsAndArticles();
   }
 
   setTopicsAndArticles() {
+    var storeP = Provider.of<PageStore>(context);
     for (var topic in itemList) {
       List articles = topicsArticles[topic['TOPIC_ID']];
+
       if (articles.length != 0) {
         topics[topic['TOPIC_ID']] = new List<dynamic>();
+
         articles.forEach((article) {
-          topics[topic['TOPIC_ID']]
-              .add({article['ARTICLE_ID']: false, "loading": false});
+          bool selected = false;
+          if (storeP.getTopicId == topic['TOPIC_ID'] &&
+              storeP.getArticleId == article['ARTICLE_ID']) {
+            selected = true;
+          }
+
+          topics[topic['TOPIC_ID']].add({
+            article['ARTICLE_ID']: false,
+            "loading": false,
+            "selected": selected
+          });
         });
       } else {
         topics[topic['TOPIC_ID']] = null;
@@ -80,6 +96,10 @@ class _MyDrawer extends State<MyDrawer> {
           if (key == articleId) {
             if (!value) {
               article["loading"] = true;
+              article["selected"] = true;
+            } else {
+              article["loading"] = false;
+              article["selected"] = false;
             }
           }
         });
@@ -122,6 +142,17 @@ class _MyDrawer extends State<MyDrawer> {
     return state;
   }
 
+bool getArticleSelected(topicId, articleId) {
+    bool selected = false;
+    topics[topicId].forEach((article) {
+      article.forEach((key, value) {
+        if (key == articleId) {
+          selected = article['selected'];
+        }
+      });
+    });
+    return selected;
+  }
   List getAudioFiles(articleContent) {
     List audioFiles = new List();
     if (articleContent != [] || articleContent != null) {
@@ -178,9 +209,11 @@ class _MyDrawer extends State<MyDrawer> {
     bool allArticlesViewed = false;
     var drawerContext = context;
 
-    Widget articles(item, context, modelId, topicId) {
-      return Observer(
-        builder: (_) => ListTile(
+    Widget articles(item, context, modelId, topicId)  {
+      return 
+        Container(
+                  color:getArticleSelected(topicId, item["ARTICLE_ID"]) ? mylightBlue : myDarkBlue,
+                  child:ListTile(
           contentPadding: EdgeInsets.fromLTRB(30.0, 5.0, 5.0, 10.0),
           leading: FutureBuilder<bool>(
               future: getIfArticleViewed(modelId, topicId, item["ARTICLE_ID"]),
@@ -207,7 +240,7 @@ class _MyDrawer extends State<MyDrawer> {
                     ? CircularProgressIndicator()
                     : Icon(
                         viewed || iconState ? Icons.done : Icons.remove,
-                        color: mylightBlue,
+                        color: getArticleSelected(topicId, item["ARTICLE_ID"]) ? myDarkBlue: mylightBlue,
                         size: 20,
                       );
               }),
@@ -218,39 +251,41 @@ class _MyDrawer extends State<MyDrawer> {
           trailing: Icon(Icons.keyboard_arrow_right, color: mylightBlue),
           onTap: () async {
             //todoS
-            bool state = await getIfArticleViewed(modelId, topicId, item["ARTICLE_ID"]);
-           
+            bool state =
+                await getIfArticleViewed(modelId, topicId, item["ARTICLE_ID"]);
+
             itemStore.setCurrent(item["TITLE"]);
             var orderedContent = await getContentByArticleId(
                 modelId, topicId, item["ARTICLE_ID"]);
 
             pageStore.setContent(orderedContent);
             pageStore.setTopicId(topicId);
-            print('cliiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiik');
-            print(pageStore.getTopicId);
+
             pageStore.setArticleId(item["ARTICLE_ID"]);
-                        print(pageStore.getArticleId);
 
             pageStore.setAudioFiles(getAudioFiles(orderedContent));
             if (!state) {
               setTopicAndArticleStateLoading(topicId, item["ARTICLE_ID"]);
               await setArticleCompleted(modelId, topicId, item["ARTICLE_ID"]);
               var value = await getModelProgressPercent(modelId);
-              print('vaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
-              print(value);
+
+              progressStore.setModuleProgress(modelId, value);
+              var newOverAllProgress = await getOverallProgressPercent();
+
+              progressStore.setOverAllProgress(newOverAllProgress);
+              setTopicAndArticleState(topicId, item["ARTICLE_ID"]);
               if (value == 1) {
                 showCompletedAlert(drawerContext);
+
+                // showCompletedAlert(drawerContext);
+              } else {
+                Navigator.pop(context);
               }
-              progressStore.setModuleProgress(modelId, value);
-              print(progressStore.getModuleProgress);
-              var newOverAllProgress = await getOverallProgressPercent();
-              progressStore.setOverAllProgress(newOverAllProgress);
-              setTopicAndArticleState(topicId, item["ArticleID"]);
-              
+            } else {
+              Navigator.pop(context);
             }
-             Navigator.pop(context);
           },
-          selected: itemStore.current == item["Title"] ? true : false,
+          selected: getArticleSelected(topicId, item["ARTICLE_ID"]),
         ),
       );
     }

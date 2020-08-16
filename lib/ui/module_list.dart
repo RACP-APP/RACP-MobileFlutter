@@ -121,21 +121,17 @@ class VerticalView extends StatelessWidget {
                     child: FutureBuilder<double>(
                         future: getOverallProgressPercent(),
                         builder: (context, AsyncSnapshot<double> snapshot) {
-                          var overAllP = 0.0;
                           if (snapshot.hasData) {
-                            overAllP = snapshot.data;
-
-                            progressStore.setOverAllProgress(overallProgress);
-                          } else {}
-
+                            progressStore.setOverAllProgress(snapshot.data);
+                          } 
+                           
                           return LinearPercentIndicator(
                             width: MediaQuery.of(context).size.width / 1.07,
                             animation: true,
                             lineHeight: 30.0,
                             animationDuration: 2000,
-                            percent: progressStore.getOverAllProgress > overAllP
-                                ? progressStore.getOverAllProgress
-                                : overAllP,
+                            percent: progressStore.getOverAllProgress
+                                ,
                             center: Text("مدى التقدم الكامل",
                                 style: GoogleFonts.lateef(
                                     textStyle: TextStyle(
@@ -168,18 +164,8 @@ class VerticalView extends StatelessWidget {
                                   horizontal: 4.0, vertical: 4.0),
                               child: GestureDetector(
                                   onTap: () async {
-                                    List content = [
-                                      {
-                                        "text": [
-                                          {
-                                            "ContentText": "",
-                                            "MediaType": "Text"
-                                          }
-                                        ],
-                                        "Media": []
-                                      }
-                                    ];
-                                    pageStore.setContent(content);
+                                    // get the content of the first article in the module
+
                                     progressStore.getModuleProgress
                                         .forEach((key, value) {
                                       if (key == item["MODEL_ID"]) {
@@ -190,12 +176,25 @@ class VerticalView extends StatelessWidget {
                                         item["MODEL_ID"]);
                                     Map<int, dynamic> topicArticles =
                                         new Map<int, dynamic>();
+                                    int firstTopic = topics[0]["TOPIC_ID"];
+                                    int firstArticle = 0;
                                     for (var topic in topics) {
-                                      topicArticles[topic['TOPIC_ID']] =
-                                          await getArticlesByTopicIdAndModelId(
+                                      await getArticlesByTopicIdAndModelId(
                                               item["MODEL_ID"],
-                                              topic['TOPIC_ID']);
+                                              topic['TOPIC_ID'])
+                                          .then((data) {
+                                        if (firstTopic == topic['TOPIC_ID']) {
+                                          firstArticle = data[0]['ARTICLE_ID'];
+                                        }
+                                        topicArticles[topic['TOPIC_ID']] = data;
+                                        //
+                                      });
                                     }
+                                    List content = await getContentByArticleId(
+                                        item["MODEL_ID"],
+                                        firstTopic,
+                                        firstArticle);
+                                    pageStore.setContent(content);
                                     Navigator.of(context).pushNamed(
                                       '/MV',
                                       arguments: {
